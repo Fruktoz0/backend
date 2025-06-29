@@ -1,0 +1,354 @@
+const { Sequelize, DataTypes } = require('sequelize');
+const dbConnection = new Sequelize('tisztaVaros', 'root', '', {
+    dialect: 'mysql',
+    host: 'localhost'
+});
+
+const users = dbConnection.define('user', {
+    'id': {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'username': {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    'password': {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'email': {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    'points': {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    'role': {
+        type: DataTypes.ENUM('user', 'admin', 'worker', 'municipality'),
+        defaultValue: 'user'
+    }
+})
+
+const reports = dbConnection.define('report', {
+    'id': {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'userId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'title': {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    'description': {
+        type: DataTypes.TEXT,
+        allowNull: false,
+    },
+    'category': {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    'locationLat': {
+        type: DataTypes.FLOAT,
+        allowNull: false
+    },
+    'locationLng': {
+        type: DataTypes.FLOAT,
+        allowNull: false
+    },
+    'imageUrl':{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'status':{
+        type: DataTypes.ENUM,
+        values: ['open', 'in_progress', 'resolved'],
+        defaultValue: 'open'
+    }
+})
+
+const reportVotes = dbConnection.define('reportVote', {
+    'id':{
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'reportId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'userId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'voteType': {
+        type: DataTypes.ENUM('upvote', 'downvote'),
+        allowNull: false
+    }
+})
+
+const petitions = dbConnection.define('petition',{
+    'id':{
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'userId':{
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'title': {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'description': {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    'category': {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'createdAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    'status':{
+        type: DataTypes.ENUM('open', 'closed', 'in_progress'),
+        defaultValue: 'open'
+    }
+})
+
+const petitionVotes = dbConnection.define('petitionVote', {
+    'id':{
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'petitionId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'userId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'voteType': {
+        type: DataTypes.ENUM('upvote', 'downvote'),
+        allowNull: false
+    }
+})
+const badges = dbConnection.define('badge', {
+    'id':{
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'name': {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    'description': {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'iconUrl': {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+})
+const userBadges = dbConnection.define('userBadge', {
+    'id':{
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'userId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+        foreignKey: true
+    },
+    'badgeId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'earnedAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    }
+})
+
+const challenges = dbConnection.define('challenge',{
+    'id':{
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'name': {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'description': {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    'category':{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'points': {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    'status': {
+        type: DataTypes.ENUM('active', 'completed', 'expired'),
+        defaultValue: 'active'
+    },
+    'startDate': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    'endDate': {
+        type: DataTypes.DATE,
+        allowNull: false
+    }
+})
+
+const userChallenges = dbConnection.define('userChallenge', {
+    'id':{
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'userId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'challengeId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'status': {
+        type: DataTypes.ENUM('active', 'completed', 'failed'),
+        defaultValue: 'active'
+    },
+    'pointsEarned': {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    }
+})
+
+const tasks = dbConnection.define('task', {
+    'id': {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'reportId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'workerId': {
+        type: DataTypes.UUID,
+        allowNull: true,
+    },
+    'assignedAt': {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    'completedAt': {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+    'status': {
+        type: DataTypes.ENUM('assigned', 'in_progress', 'completed'),
+        defaultValue: 'assigned'
+    },
+    'feedback':{
+        type: DataTypes.STRING,
+        allowNull: true
+    }
+})
+
+//Összekapcsolások
+
+// USER -> REPORT
+users.hasMany(reports, { foreignKey: 'userId' });
+reports.belongsTo(users, { foreignKey: 'userId' });
+
+// USER -> REPORT VOTES
+users.hasMany(reportVotes, { foreignKey: 'userId' });
+reportVotes.belongsTo(users, { foreignKey: 'userId' });
+
+// REPORT -> REPORT VOTES
+reports.hasMany(reportVotes, { foreignKey: 'reportId' });
+reportVotes.belongsTo(reports, { foreignKey: 'reportId' });
+
+// USER -> PETITIONS
+users.hasMany(petitions, { foreignKey: 'userId' });
+petitions.belongsTo(users, { foreignKey: 'userId' });
+
+// USER -> PETITION VOTES
+users.hasMany(petitionVotes, { foreignKey: 'userId' });
+petitionVotes.belongsTo(users, { foreignKey: 'userId' });
+
+// PETITION -> PETITION VOTES
+petitions.hasMany(petitionVotes, { foreignKey: 'petitionId' });
+petitionVotes.belongsTo(petitions, { foreignKey: 'petitionId' });
+
+// USER -> USER BADGES
+users.hasMany(userBadges, { foreignKey: 'userId' });
+userBadges.belongsTo(users, { foreignKey: 'userId' });
+
+// BADGE -> USER BADGES
+badges.hasMany(userBadges, { foreignKey: 'badgeId' });
+userBadges.belongsTo(badges, { foreignKey: 'badgeId' });
+
+// USER -> USER CHALLENGES
+users.hasMany(userChallenges, { foreignKey: 'userId' });
+userChallenges.belongsTo(users, { foreignKey: 'userId' });
+
+// CHALLENGE -> USER CHALLENGES
+challenges.hasMany(userChallenges, { foreignKey: 'challengeId' });
+userChallenges.belongsTo(challenges, { foreignKey: 'challengeId' });
+
+// REPORT -> TASKS
+reports.hasMany(tasks, { foreignKey: 'reportId' });
+tasks.belongsTo(reports, { foreignKey: 'reportId' });
+
+// USER -> TASKS (workerId)
+users.hasMany(tasks, { foreignKey: 'workerId' });
+tasks.belongsTo(users, { foreignKey: 'workerId' });
+
+
+module.exports = {
+    users,
+    reports,
+    reportVotes,
+    petitions,
+    petitionVotes,
+    badges,
+    userBadges,
+    challenges,
+    userChallenges,
+    tasks
+  };
