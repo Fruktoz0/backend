@@ -31,12 +31,29 @@ const users = dbConnection.define('user', {
         defaultValue: 0
     },
     'role': {
-        type: DataTypes.ENUM('user', 'admin', 'worker', 'institution'),
+        type: DataTypes.ENUM('user', 'admin', 'worker', 'institution', 'compliance'),
         defaultValue: 'user'
     },
     'isActive': {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
+        type: DataTypes.ENUM('active', 'inactive'),
+        defaultValue: 'active'
+    }
+})
+
+const categories = dbConnection.define('category', {
+    'id': {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'categoryName': {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    'defaultInstitutionId': {
+        type: DataTypes.UUID,
+        allowNull: false,
     }
 })
 
@@ -59,9 +76,10 @@ const reports = dbConnection.define('report', {
         type: DataTypes.TEXT,
         allowNull: false,
     },
-    'category': {
-        type: DataTypes.STRING,
-        allowNull: true,
+    //categoryId  - > erre módosítani
+    'categoryId': {
+        type: DataTypes.UUID,
+        allowNull: false
     },
     'locationLat': {
         type: DataTypes.FLOAT,
@@ -82,21 +100,22 @@ const reports = dbConnection.define('report', {
     }
 })
 
-const categories = dbConnection.define('category', {
-    'id': {
+const reportImages = dbConnection.define('reportImage', {
+    id: {
         type: DataTypes.UUID,
-        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+    },
+    reportId: {
+        type: DataTypes.UUID,
         allowNull: false
     },
-    'categoryName': {
+    imageUrl: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
-    'defaultInstitutionId':{
-        type: DataTypes.UUID,
-        allowNull: false,
-    }
-})
+});
+
 
 const statusHistories = dbConnection.define('statusHistory', {
     'id': {
@@ -461,16 +480,25 @@ forwardingLogs.belongsTo(users, { foreignKey: 'forwardedByUserId' });
 
 // INSTITUTIONS -> CATEGORIES
 institutions.hasMany(categories, { foreignKey: 'defaultInstitutionId' })
-categories.belongsTo(institutions, { foreignKey: 'defaultInstitutionId'})
+categories.belongsTo(institutions, { foreignKey: 'defaultInstitutionId' })
 
 // USER -> INSTITUTIONS
 users.hasMany(institutions, { foreignKey: 'userId' })
 institutions.belongsTo(users, { foreignKey: 'userId' })
 
+//CATEGORY -> REPORTS
+categories.hasMany(reports, { foreignKey: 'categoryId' });
+reports.belongsTo(categories, { foreignKey: 'categoryId' });
+
+//REPORTS -> REPORTIMAGES
+reports.hasMany(reportImages, { foreignKey: 'reportId' });
+reportImages.belongsTo(reports, { foreignKey: 'reportId' });
+
 
 
 module.exports = {
     users,
+    categories,
     reports,
     reportVotes,
     petitions,
@@ -480,8 +508,8 @@ module.exports = {
     userBadges,
     userChallenges,
     tasks,
-    categories,
     statusHistories,
     forwardingLogs,
-    institutions
+    institutions,
+    reportImages
 };

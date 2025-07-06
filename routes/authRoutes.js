@@ -5,11 +5,12 @@ const jwt = require('jsonwebtoken');
 const users = require('../dbHandler');
 const JWT_SECRET = process.env.JWT_SECRET;
 const expireTime = process.env.EXPIRE_TIME;
+const authenticateToken = require('../middleware/authMiddleware');
 
 
 
 router.post('/register', async (req, res) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, points, role, isActive, createdAt, updatedAt } = req.body;
     try {
         const existingUser = await users.users.findOne({ where: { email } });
         if (existingUser)
@@ -19,7 +20,12 @@ router.post('/register', async (req, res) => {
         const newUser = await users.users.create({
             username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            points,
+            role,
+            isActive,
+            createdAt,
+            updatedAt
         });
         const token = jwt.sign({ id: newUser.id }, JWT_SECRET, { expiresIn: expireTime });
         res.status(201).json({ token })
@@ -50,23 +56,11 @@ router.post('/login', async (req, res) => {
     }
 })
 
-//Middleware authentication
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.sendStatus(401);
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-}
 
 router.get('/user', authenticateToken, async (req, res) => {
   try {
     const user = await users.users.findByPk(req.user.id, {
-      attributes: ['id', 'username', 'email', 'points', 'role']
+      attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
     });
     if (!user) return res.status(404).json({ message: 'Felhasználó nem található.' });
     res.json(user);
