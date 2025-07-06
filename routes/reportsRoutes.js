@@ -1,17 +1,27 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path'); 
 const multer = require('multer');
-// A multer beállítása: ide mentjük a feltöltött fájlokat az uploads mappába
-const upload = multer({ dest: 'uploads/' });
-// Az autentikáció middleware – ez olvassa ki a JWT-t a headerből, és req.user-be teszi a user adatokat
-const authenticateToken = require('../middleware/authMiddleware');
-// Sequelize modellek importja
-const { reports, reportImages } = require('../dbHandler');
+const { reports, reportImages } = require('../dbHandler'); 
 
-// POST /api/reports végpont: új bejelentés létrehozása képfeltöltéssel
+// Multer storage beállítás kiterjesztéssel
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname); // eredeti fájl kiterjesztése
+    cb(null, Date.now() + ext); // pl.: 1689087900000.jpg
+  },
+});
+
+const upload = multer({ storage }); // storage használata itt
+
+const authenticateToken = require('../middleware/authMiddleware'); // Az autentikáció middleware – ez olvassa ki a JWT-t a headerből, és req.user-be teszi a user adatokat
+
+
+// Új bejelentés létrehozása képfeltöltéssel
 router.post('/sendReport', authenticateToken, upload.array("images", 3), async (req, res) => {
     try {
-        const { title, description, categoryId, locationLat, locationLng } = req.body;
+        const { title, description, categoryId, address, zipCode, city, locationLat, locationLng } = req.body;
 
         // Ellenőrizzük, hogy van-e legalább 1 kép
         if (!req.files || req.files.length === 0) {
@@ -19,14 +29,16 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
         }
         // Új report létrehozása az adatbázisban
         const newReport = await reports.create({
-            userId: req.user.id,              // authenticate middleware-ből
+            userId: req.user.id, // authenticate middleware-ből
             title,
             description,
             categoryId,
+            address,
+            zipCode,
+            city,
             locationLat,
             locationLng,
             status: 'open',
-            imageUrl: '',                     // Nem használjuk, mert több kép van
         });
         // A képek mentése a report_images táblába
         const imagePromises = req.files.map(file =>
@@ -45,6 +57,22 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
     } catch (error) {
         console.error('Hiba a report létrehozásakor:', error);
         res.status(500).json({ message: 'Szerverhiba a report mentésekor' });
+    }
+});
+
+router.get('/getAllReports', async (req, res) => {
+    try {
+        const allReports = await reports.findAll({
+            include: [{
+                model: reportImages,
+                attributes: ['imageUrl']
+            }],
+            order: [['createdAt', 'DESC']], // Legutóbb létrehozott jelentések előre
+        });
+        res.status(200).json(allReports);
+    } catch (error) {
+        console.error('Hiba a bejelentések lekérésekor:', error);
+        res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
     }
 });
 

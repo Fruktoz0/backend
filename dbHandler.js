@@ -76,10 +76,21 @@ const reports = dbConnection.define('report', {
         type: DataTypes.TEXT,
         allowNull: false,
     },
-    //categoryId  - > erre módosítani
     'categoryId': {
         type: DataTypes.UUID,
         allowNull: false
+    },
+    'address':{
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    'zipCode': {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    'city': {
+        type: DataTypes.STRING,
+        allowNull: true
     },
     'locationLat': {
         type: DataTypes.FLOAT,
@@ -87,10 +98,6 @@ const reports = dbConnection.define('report', {
     },
     'locationLng': {
         type: DataTypes.FLOAT,
-        allowNull: false
-    },
-    'imageUrl': {
-        type: DataTypes.STRING,
         allowNull: false
     },
     'status': {
