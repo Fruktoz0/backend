@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const path = require('path'); 
+const path = require('path');
 const multer = require('multer');
-const { reports, reportImages } = require('../dbHandler'); 
+const { reports, reportImages, users, categories, reportVotes } = require('../dbHandler');
 
 // Multer storage beállítás kiterjesztéssel
 const storage = multer.diskStorage({
-  destination: 'uploads/',
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname); // eredeti fájl kiterjesztése
-    cb(null, Date.now() + ext); // pl.: 1689087900000.jpg
-  },
+    destination: 'uploads/',
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname); // eredeti fájl kiterjesztése
+        cb(null, Date.now() + ext); // pl.: 1689087900000.jpg
+    },
 });
 
 const upload = multer({ storage }); // storage használata itt
@@ -66,7 +66,20 @@ router.get('/getAllReports', async (req, res) => {
             include: [{
                 model: reportImages,
                 attributes: ['imageUrl']
-            }],
+            },
+            {
+                model: users,
+                attributes: ['username'],
+            },
+            {
+                model: categories,
+                attributes: ['categoryName'],
+            },
+            {
+                model: reportVotes,
+                attributes: ['voteType', 'userId']
+            }
+            ],
             order: [['createdAt', 'DESC']], // Legutóbb létrehozott jelentések előre
         });
         res.status(200).json(allReports);

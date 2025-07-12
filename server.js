@@ -4,6 +4,7 @@ const dbHandler = require('./dbHandler');
 const authRoutes = require('./routes/authRoutes');
 const reportRoutes = require('./routes/reportsRoutes')
 const categoryRoutes = require('./routes/categoriesRoutes')
+const reportVotesRoutes = require('./routes/reportVotes');
 
 const cors = require('cors');
 
@@ -16,6 +17,7 @@ server.use('/api/auth', authRoutes);
 server.use('/api/reports', reportRoutes);
 server.use('/uploads', express.static('uploads'));
 server.use('/api/categories', categoryRoutes);
+server.use('/api/votes',reportVotesRoutes);
 
 
 //Adatbázis modellek szinkronizálása és szerver indítása
