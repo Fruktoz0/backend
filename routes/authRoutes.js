@@ -8,7 +8,7 @@ const expireTime = process.env.EXPIRE_TIME;
 const authenticateToken = require('../middleware/authMiddleware');
 
 
-
+//min 6 karakter a felhasználónév, password max 20 min 6 karakter
 router.post('/register', async (req, res) => {
     const { username, email, password, points, role, isActive, createdAt, updatedAt } = req.body;
     try {
@@ -27,7 +27,7 @@ router.post('/register', async (req, res) => {
             createdAt,
             updatedAt
         });
-        const token = jwt.sign({ id: newUser.id }, JWT_SECRET, { expiresIn: expireTime });
+        const token = jwt.sign({ id: newUser.id, }, JWT_SECRET, { expiresIn: expireTime });
         res.status(201).json({ token })
 
     } catch (error) {
@@ -47,7 +47,7 @@ router.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: 'Hibás email vagy jelszó.' });
         }
-        const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: expireTime });
+        const token = jwt.sign({ id: user.id, role: user.role}, JWT_SECRET, { expiresIn: expireTime });
         res.status(200).json({ token });
 
     } catch (error) {

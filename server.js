@@ -5,8 +5,11 @@ const authRoutes = require('./routes/authRoutes');
 const reportRoutes = require('./routes/reportsRoutes')
 const categoryRoutes = require('./routes/categoriesRoutes')
 const reportVotesRoutes = require('./routes/reportVotes');
+const userRoutes = require('./routes/usersRoutes');
+const summaryRoutes = require('./routes/summaryRoutes')
 
 const cors = require('cors');
+
 
 const server = express();
 const PORT = process.env.PORT;
@@ -18,6 +21,9 @@ server.use('/api/reports', reportRoutes);
 server.use('/uploads', express.static('uploads'));
 server.use('/api/categories', categoryRoutes);
 server.use('/api/votes',reportVotesRoutes);
+server.use('/api/summary', summaryRoutes);
+server.use('/api', userRoutes);
+
 
 
 //Adatbázis modellek szinkronizálása és szerver indítása
