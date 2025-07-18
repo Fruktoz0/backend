@@ -7,6 +7,7 @@ const categoryRoutes = require('./routes/categoriesRoutes')
 const reportVotesRoutes = require('./routes/reportVotes');
 const userRoutes = require('./routes/usersRoutes');
 const summaryRoutes = require('./routes/summaryRoutes')
+const institutionsRoutes = require('./routes/institutionsRoutes')
 
 const cors = require('cors');
 
@@ -20,8 +21,9 @@ server.use('/api/auth', authRoutes);
 server.use('/api/reports', reportRoutes);
 server.use('/uploads', express.static('uploads'));
 server.use('/api/categories', categoryRoutes);
-server.use('/api/votes',reportVotesRoutes);
+server.use('/api/votes', reportVotesRoutes);
 server.use('/api/summary', summaryRoutes);
+server.use('/api/institutions', institutionsRoutes)
 server.use('/api', userRoutes);
 
 

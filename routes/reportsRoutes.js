@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const { reports, reportImages, users, categories, reportVotes } = require('../dbHandler');
+const { reports, reportImages, users, categories, reportVotes, institutions } = require('../dbHandler');
 
 // Multer storage beállítás kiterjesztéssel
 const storage = multer.diskStorage({
@@ -60,6 +60,7 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
     }
 });
 
+//Összes reports lekérdezése
 router.get('/getAllReports', async (req, res) => {
     try {
         const allReports = await reports.findAll({
@@ -78,10 +79,15 @@ router.get('/getAllReports', async (req, res) => {
             {
                 model: reportVotes,
                 attributes: ['voteType', 'userId']
+            },
+            {
+                model: institutions,
+                attributes: ['name']
             }
             ],
             order: [['createdAt', 'DESC']], // Legutóbb létrehozott jelentések előre
         });
+
         res.status(200).json(allReports);
     } catch (error) {
         console.error('Hiba a bejelentések lekérésekor:', error);

@@ -80,7 +80,7 @@ const reports = dbConnection.define('report', {
         type: DataTypes.UUID,
         allowNull: false
     },
-    'address':{
+    'address': {
         type: DataTypes.STRING,
         allowNull: true
     },
@@ -437,10 +437,6 @@ reports.belongsTo(users, { foreignKey: 'userId' });
 users.hasMany(reportVotes, { foreignKey: 'userId' });
 reportVotes.belongsTo(users, { foreignKey: 'userId' });
 
-// REPORT -> REPORT VOTES
-reports.hasMany(reportVotes, { foreignKey: 'reportId' });
-reportVotes.belongsTo(reports, { foreignKey: 'reportId' });
-
 // USER -> PETITIONS
 users.hasMany(petitions, { foreignKey: 'userId' });
 petitions.belongsTo(users, { foreignKey: 'userId' });
@@ -449,21 +445,33 @@ petitions.belongsTo(users, { foreignKey: 'userId' });
 users.hasMany(petitionVotes, { foreignKey: 'userId' });
 petitionVotes.belongsTo(users, { foreignKey: 'userId' });
 
-// PETITION -> PETITION VOTES
-petitions.hasMany(petitionVotes, { foreignKey: 'petitionId' });
-petitionVotes.belongsTo(petitions, { foreignKey: 'petitionId' });
-
 // USER -> USER BADGES
 users.hasMany(userBadges, { foreignKey: 'userId' });
 userBadges.belongsTo(users, { foreignKey: 'userId' });
 
-// BADGE -> USER BADGES
-badges.hasMany(userBadges, { foreignKey: 'badgeId' });
-userBadges.belongsTo(badges, { foreignKey: 'badgeId' });
-
 // USER -> USER CHALLENGES
 users.hasMany(userChallenges, { foreignKey: 'userId' });
 userChallenges.belongsTo(users, { foreignKey: 'userId' });
+
+// USER -> TASKS (workerId)
+users.hasMany(tasks, { foreignKey: 'workerId' });
+tasks.belongsTo(users, { foreignKey: 'workerId' });
+
+// USER -> FORWARDINGLOGS (ki továbbította)
+users.hasMany(forwardingLogs, { foreignKey: 'forwardedByUserId' });
+forwardingLogs.belongsTo(users, { foreignKey: 'forwardedByUserId' });
+
+// USER -> INSTITUTIONS
+users.hasMany(institutions, { foreignKey: 'userId' })
+institutions.belongsTo(users, { foreignKey: 'userId' })
+
+// PETITION -> PETITION VOTES
+petitions.hasMany(petitionVotes, { foreignKey: 'petitionId' });
+petitionVotes.belongsTo(petitions, { foreignKey: 'petitionId' });
+
+// BADGE -> USER BADGES
+badges.hasMany(userBadges, { foreignKey: 'badgeId' });
+userBadges.belongsTo(badges, { foreignKey: 'badgeId' });
 
 // CHALLENGE -> USER CHALLENGES
 challenges.hasMany(userChallenges, { foreignKey: 'challengeId' });
@@ -473,25 +481,9 @@ userChallenges.belongsTo(challenges, { foreignKey: 'challengeId' });
 reports.hasMany(tasks, { foreignKey: 'reportId' });
 tasks.belongsTo(reports, { foreignKey: 'reportId' });
 
-// USER -> TASKS (workerId)
-users.hasMany(tasks, { foreignKey: 'workerId' });
-tasks.belongsTo(users, { foreignKey: 'workerId' });
-
-// REPORT -> FORWARDINGLOGS
-reports.hasMany(forwardingLogs, { foreignKey: 'reportId' });
-forwardingLogs.belongsTo(reports, { foreignKey: 'reportId' });
-
-// USER -> FORWARDINGLOGS (ki továbbította)
-users.hasMany(forwardingLogs, { foreignKey: 'forwardedByUserId' });
-forwardingLogs.belongsTo(users, { foreignKey: 'forwardedByUserId' });
-
 // INSTITUTIONS -> CATEGORIES
 institutions.hasMany(categories, { foreignKey: 'defaultInstitutionId' })
 categories.belongsTo(institutions, { foreignKey: 'defaultInstitutionId' })
-
-// USER -> INSTITUTIONS
-users.hasMany(institutions, { foreignKey: 'userId' })
-institutions.belongsTo(users, { foreignKey: 'userId' })
 
 //CATEGORY -> REPORTS
 categories.hasMany(reports, { foreignKey: 'categoryId' });
@@ -501,6 +493,17 @@ reports.belongsTo(categories, { foreignKey: 'categoryId' });
 reports.hasMany(reportImages, { foreignKey: 'reportId' });
 reportImages.belongsTo(reports, { foreignKey: 'reportId' });
 
+// REPORT -> FORWARDINGLOGS
+reports.hasMany(forwardingLogs, { foreignKey: 'reportId' });
+forwardingLogs.belongsTo(reports, { foreignKey: 'reportId' });
+
+// REPORT -> REPORT VOTES
+reports.hasMany(reportVotes, { foreignKey: 'reportId' });
+reportVotes.belongsTo(reports, { foreignKey: 'reportId' });
+
+//REPORTS -> INSTITUTIONS 
+reports.belongsTo(institutions, { foreignKey: 'institutionId' })  
+institutions.hasMany(reports, { foreignKey: 'institutionId'})
 
 
 module.exports = {
