@@ -46,5 +46,21 @@ router.post('/create', async (req, res) => {
     }
 })
 
+//Intézmény törlése
+router.delete("/delete/:id", async (req, res) => {
+    try {
+        const category = await categories.findByPk(req.params.id)
+        console.log("Törlésre érkezett kérés:", req.params.id);
+        if (!category)
+            return res.status(404).json({ message: "Kategória nem található" })
+
+        await category.destroy();
+        res.json({ message: "Kategória törölve" })
+    } catch (err) {
+        console.error("Hiba az kategória törlésekor", err)
+        res.status(500).json({ message: "Szerverhiba az kategória törlésekor" })
+    }
+})
+
 
 module.exports = router;
