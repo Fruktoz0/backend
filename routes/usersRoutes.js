@@ -3,6 +3,7 @@ const router = express.Router();
 const { users } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
 
+// Admin / Felhasználók adatainak listázása
 router.get('/admin/users', authenticateToken, async (req, res) => {
     try {
         if (req.user.role !== 'admin') {
@@ -15,6 +16,37 @@ router.get('/admin/users', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
+    }
+})
+
+// Admin / Felhasználó adatainak szerkesztése
+router.put('/admin/user/:id', authenticateToken, async (req, res) => {
+    const userId = req.params.id
+    const { role, isActive } = req.body
+
+    const validRoles = ["user", "admin", "worker", "compliance", "institution"]
+    const validStatuses = ["active", "inactive"]
+
+    if (role && !validRoles.includes(role)) {
+        return res.status(400).json({ message: "Érvénytelen szerepkör" })
+    }
+
+    if (isActive && !validStatuses.includes(isActive)) {
+        return res.status(400).json({ message: "Érvénytelen státusz." })
+    }
+    try {
+        const user = await users.findByPk(userId)
+        if (!user) {
+            return res.status(404).json({ message: "Felhasználó nem található" })
+        }
+        if(role) user.role = role
+        if(isActive) user.isActive = isActive
+
+        await user.save()
+        return res.status(200).json({message: "Felhasználó sikeresen frissítve", user})
+    } catch (error) {
+        console.error("Hiba a felhasználó frissítésekor", error)
+        res.status(500).json({ message: "Szerverhiba a felhasználó frissítésekor" })
     }
 })
 
