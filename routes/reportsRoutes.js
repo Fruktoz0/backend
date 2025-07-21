@@ -95,4 +95,24 @@ router.get('/getAllReports', async (req, res) => {
     }
 });
 
+//Bejelentkezett felhasználó reportjainak lekérdezése
+router.get('/userReports', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id
+        const userReports = await reports.findAll({
+            where: { userId },
+            include: [{
+                model: categories,
+                attributes: ['categoryName']
+            }],
+            orderBy: [['createdAt', 'DESC']]
+
+        })
+        res.json(userReports)
+    } catch (error) {
+        console.error("Hiba a felhasználó bejelentések lekérdezésekor", error)
+        res.status(500).json({ message: "Szerverhiba a felhasználó bejelentéseinek lekérdezésekor" })
+    }
+})
+
 module.exports = router;

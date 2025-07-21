@@ -1,9 +1,14 @@
 const { Sequelize, DataTypes } = require('sequelize');
+require('dotenv').config();
 
-const dbConnection = new Sequelize('tisztaVaros', 'root', '', {
-    dialect: 'mysql',
-    host: 'localhost'
-});
+const dbConnection = new Sequelize(
+    process.env.DB_NAME,
+    process.env.DB_USER,
+    process.env.DB_PASS,
+    {
+        dialect: 'mysql',
+        host: 'process.env.DB_HOST'
+    });
 
 const users = dbConnection.define('user', {
     'id': {
@@ -102,7 +107,7 @@ const reports = dbConnection.define('report', {
     },
     'status': {
         type: DataTypes.ENUM,
-        values: ['open', 'in_progress', 'resolved'],
+        values: ['open', 'rejected', 'in_progress', 'resolved'],
         defaultValue: 'open'
     }
 })
@@ -502,8 +507,8 @@ reports.hasMany(reportVotes, { foreignKey: 'reportId' });
 reportVotes.belongsTo(reports, { foreignKey: 'reportId' });
 
 //REPORTS -> INSTITUTIONS 
-reports.belongsTo(institutions, { foreignKey: 'institutionId' })  
-institutions.hasMany(reports, { foreignKey: 'institutionId'})
+reports.belongsTo(institutions, { foreignKey: 'institutionId' })
+institutions.hasMany(reports, { foreignKey: 'institutionId' })
 
 
 module.exports = {

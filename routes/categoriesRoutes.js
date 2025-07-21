@@ -46,7 +46,7 @@ router.post('/create', async (req, res) => {
     }
 })
 
-//Intézmény törlése
+//Kategória törlése
 router.delete("/delete/:id", async (req, res) => {
     try {
         const category = await categories.findByPk(req.params.id)
