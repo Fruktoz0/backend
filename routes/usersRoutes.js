@@ -50,5 +50,7 @@ router.put('/admin/user/:id', authenticateToken, async (req, res) => {
     }
 })
 
+//Működik
+
 
 module.exports = router;
