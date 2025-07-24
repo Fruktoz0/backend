@@ -10,7 +10,8 @@ router.get('/list', async (req, res) => {
             //Meghívom a hozzákapcsolt tábla adatait is a későbbi lekérdezéshez
             include: {
                 model: institutions,
-                attributes: ['id', "name", "email", "description", "contactInfo", "userId"]
+                attributes: ['id', "name", "email", "description", "contactInfo", "userId"],
+                through:{attributes: []}
             }
         })
         res.json(categoryList)
