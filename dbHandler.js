@@ -502,8 +502,8 @@ reports.hasMany(tasks, { foreignKey: 'reportId' });
 tasks.belongsTo(reports, { foreignKey: 'reportId' });
 
 // INSTITUTIONS -> CATEGORIES
-institutions.hasMany(categories, { foreignKey: 'defaultInstitutionId', as: "categories" })
-categories.belongsTo(institutions, { foreignKey: 'defaultInstitutionId', as: "institution" })
+institutions.hasMany(categories, { foreignKey: 'defaultInstitutionId'})
+categories.belongsTo(institutions, { foreignKey: 'defaultInstitutionId' })
 
 //CATEGORY -> REPORTS
 categories.hasMany(reports, { foreignKey: 'categoryId' });
