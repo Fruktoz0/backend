@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { categories, institutions } = require('../dbHandler');
+const authenticateToken = require('../middleware/authMiddleware');
 
 //Összes kategória lekérdezése
 router.get('/list', async (req, res) => {
@@ -11,7 +12,7 @@ router.get('/list', async (req, res) => {
             include: {
                 model: institutions,
                 attributes: ['id', "name", "email", "description", "contactInfo", "userId"],
-                through:{attributes: []}
+                through: { attributes: [] }
             }
         })
         res.json(categoryList)
@@ -20,7 +21,10 @@ router.get('/list', async (req, res) => {
     }
 })
 
-router.post('/create', async (req, res) => {
+router.post('/create', authenticateToken, async (req, res) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Nincs jogosultságod kategória létrehozására." })
+    }
     const { categoryName, defaultInstitutionId } = req.body
     if (!categoryName || !defaultInstitutionId) {
         return res.status(400).json({ message: "Hiányzó mezők: 'categoryName' vagy 'defaultInstitutionId'" })
@@ -48,7 +52,10 @@ router.post('/create', async (req, res) => {
 })
 
 //Kategória törlése
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id", authenticateToken, async (req, res) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Nincs jogosultságod kategória törlésére." })
+    }
     try {
         const category = await categories.findByPk(req.params.id)
         console.log("Törlésre érkezett kérés:", req.params.id);
