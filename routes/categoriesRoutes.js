@@ -13,7 +13,6 @@ router.get('/list', async (req, res) => {
                 model: institutions,
                 as: 'institution',
                 attributes: ['id', "name", "email", "description", "contactInfo", "userId"],
-                through: { attributes: [] }
             }
         })
         res.json(categoryList)
