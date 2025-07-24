@@ -11,6 +11,7 @@ router.get('/list', async (req, res) => {
             //Meghívom a hozzákapcsolt tábla adatait is a későbbi lekérdezéshez
             include: {
                 model: institutions,
+                as: 'institution',
                 attributes: ['id', "name", "email", "description", "contactInfo", "userId"],
                 through: { attributes: [] }
             }
