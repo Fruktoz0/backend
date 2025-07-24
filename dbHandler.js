@@ -426,9 +426,18 @@ const institutions = dbConnection.define('institution', {
     'contactInfo': {
         type: DataTypes.TEXT,
     },
-    'userId': {
+})
+
+const userInstitutions = dbConnection.define("userInstitution", {
+    userId: {
         type: DataTypes.UUID,
         allowNull: false,
+        primaryKey: true
+    },
+    institutionId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true
     }
 })
 
@@ -467,8 +476,14 @@ users.hasMany(forwardingLogs, { foreignKey: 'forwardedByUserId' });
 forwardingLogs.belongsTo(users, { foreignKey: 'forwardedByUserId' });
 
 // USER -> INSTITUTIONS
-users.hasMany(institutions, { foreignKey: 'userId' })
-institutions.belongsTo(users, { foreignKey: 'userId' })
+users.belongsToMany(institutions, {
+    through: userInstitutions,
+    foreignKey: 'userId'
+})
+institutions.belongsToMany(users, {
+    through: userInstitutions,
+    foreignKey: "institutionId"
+})
 
 // PETITION -> PETITION VOTES
 petitions.hasMany(petitionVotes, { foreignKey: 'petitionId' });
@@ -526,5 +541,6 @@ module.exports = {
     statusHistories,
     forwardingLogs,
     institutions,
-    reportImages
+    reportImages,
+    userInstitutions,
 };
