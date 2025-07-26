@@ -159,11 +159,6 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
         const report = await reports.findByPk(req.params.id)
         if (!report)
             return res.status(404).json({ message: 'Bejelentés nem található' })
-
-          // jogosultság ellenőrzéshez
-        console.log('==== JOGOSULTSÁG DEBUG ====');
-        console.log('Felhasználó:', req.user);
-        console.log('Bejelentés institutionId:', report.institutionId);
         //Jogosultság ellenőrzése
         if (req.user.role !== 'admin' && req.user.institutionId !== report.institutionId) {
             return res.status(403).json({ message: 'Nincs jogosultságod a státusz váltzáshoz.' })

@@ -47,7 +47,7 @@ router.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: 'Hibás email vagy jelszó.' });
         }
-        const token = jwt.sign({ id: user.id, role: user.role}, JWT_SECRET, { expiresIn: expireTime });
+        const token = jwt.sign({ id: user.id, role: user.role, institutionId: user.institutionId}, JWT_SECRET, { expiresIn: expireTime });
         res.status(200).json({ token });
 
     } catch (error) {
