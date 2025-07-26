@@ -495,10 +495,6 @@ userBadges.belongsTo(badges, { foreignKey: 'badgeId' });
 challenges.hasMany(userChallenges, { foreignKey: 'challengeId' });
 userChallenges.belongsTo(challenges, { foreignKey: 'challengeId' });
 
-// REPORT -> TASKS
-reports.hasMany(tasks, { foreignKey: 'reportId' });
-tasks.belongsTo(reports, { foreignKey: 'reportId' });
-
 // INSTITUTIONS -> CATEGORIES
 institutions.hasMany(categories, { foreignKey: 'defaultInstitutionId' })
 categories.belongsTo(institutions, { foreignKey: 'defaultInstitutionId' })
@@ -511,17 +507,28 @@ reports.belongsTo(categories, { foreignKey: 'categoryId' });
 reports.hasMany(reportImages, { foreignKey: 'reportId' });
 reportImages.belongsTo(reports, { foreignKey: 'reportId' });
 
-// REPORT -> FORWARDINGLOGS
+//REPORT -> FORWARDINGLOGS
 reports.hasMany(forwardingLogs, { foreignKey: 'reportId' });
 forwardingLogs.belongsTo(reports, { foreignKey: 'reportId' });
 
-// REPORT -> REPORT VOTES
+//REPORT -> REPORT VOTES
 reports.hasMany(reportVotes, { foreignKey: 'reportId' });
 reportVotes.belongsTo(reports, { foreignKey: 'reportId' });
 
-//REPORTS -> INSTITUTIONS 
+//REPORT -> INSTITUTIONS 
 reports.belongsTo(institutions, { foreignKey: 'institutionId' })
 institutions.hasMany(reports, { foreignKey: 'institutionId' })
+
+//REPORT -> TASKS
+reports.hasMany(tasks, { foreignKey: 'reportId' });
+tasks.belongsTo(reports, { foreignKey: 'reportId' });
+
+//Report -> STATUS HISTORY
+reports.hasMany(statusHistories, { foreignKey: 'reportId' });
+statusHistories.belongsTo(reports, { foreignKey: 'reportId' });
+
+statusHistories.belongsTo(users, { foreignKey: 'setByUserId', as: 'setByUser' });
+
 
 //STATUSHISTORIES -> USER
 statusHistories.belongsTo(users, { foreignKey: 'setByUserId', as: 'setByUser' });
