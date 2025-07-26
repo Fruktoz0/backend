@@ -47,7 +47,6 @@ server.use('/api', userRoutes);
         await dbHandler.statusHistories.sync({ alter: true });
         await dbHandler.forwardingLogs.sync({ alter: true });
         await dbHandler.reportImages.sync({ alter: true });
-        await dbHandler.userInstitutions.sync({ alter: true });
 
         server.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);

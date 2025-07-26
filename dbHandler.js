@@ -42,6 +42,10 @@ const users = dbConnection.define('user', {
     'isActive': {
         type: DataTypes.ENUM('active', 'inactive'),
         defaultValue: 'active'
+    },
+    'institutionId': {
+        type: DataTypes.UUID,
+        allowNull: true,
     }
 })
 
@@ -141,7 +145,7 @@ const statusHistories = dbConnection.define('statusHistory', {
         allowNull: false,
     },
     'statusId': {
-        type: DataTypes.UUID,
+        type: DataTypes.ENUM('open', 'rejected', 'in_progress', 'resolved'),
         allowNull: false,
     },
     'changedAt': {
@@ -476,14 +480,8 @@ users.hasMany(forwardingLogs, { foreignKey: 'forwardedByUserId' });
 forwardingLogs.belongsTo(users, { foreignKey: 'forwardedByUserId' });
 
 // USER -> INSTITUTIONS
-users.belongsToMany(institutions, {
-    through: userInstitutions,
-    foreignKey: 'userId'
-})
-institutions.belongsToMany(users, {
-    through: userInstitutions,
-    foreignKey: "institutionId"
-})
+users.belongsTo(institutions, { foreignKey: 'institutionId' });
+institutions.hasMany(users, { foreignKey: 'institutionId' });
 
 // PETITION -> PETITION VOTES
 petitions.hasMany(petitionVotes, { foreignKey: 'petitionId' });
@@ -502,7 +500,7 @@ reports.hasMany(tasks, { foreignKey: 'reportId' });
 tasks.belongsTo(reports, { foreignKey: 'reportId' });
 
 // INSTITUTIONS -> CATEGORIES
-institutions.hasMany(categories, { foreignKey: 'defaultInstitutionId'})
+institutions.hasMany(categories, { foreignKey: 'defaultInstitutionId' })
 categories.belongsTo(institutions, { foreignKey: 'defaultInstitutionId' })
 
 //CATEGORY -> REPORTS
@@ -525,6 +523,11 @@ reportVotes.belongsTo(reports, { foreignKey: 'reportId' });
 reports.belongsTo(institutions, { foreignKey: 'institutionId' })
 institutions.hasMany(reports, { foreignKey: 'institutionId' })
 
+//STATUSHISTORIES -> USER
+statusHistories.belongsTo(users, { foreignKey: 'setByUserId', as: 'setByUser' });
+users.hasMany(statusHistories, { foreignKey: 'setByUserId' });
+
+
 
 module.exports = {
     users,
@@ -542,5 +545,5 @@ module.exports = {
     forwardingLogs,
     institutions,
     reportImages,
-    userInstitutions,
+
 };
