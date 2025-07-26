@@ -56,11 +56,17 @@ router.post('/login', async (req, res) => {
     }
 })
 
-
+//Felhasználó adatainak lekérdezése
 router.get('/user', authenticateToken, async (req, res) => {
   try {
     const user = await users.users.findByPk(req.user.id, {
-      attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
+      attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt', "institutionId"],
+      include:[
+        {
+            model: users.institutions,
+            attributes: ['name']
+        }
+      ]
     });
     if (!user) return res.status(404).json({ message: 'Felhasználó nem található.' });
     res.json(user);

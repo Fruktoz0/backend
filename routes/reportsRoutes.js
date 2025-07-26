@@ -139,7 +139,8 @@ router.get('/assignedReports', authenticateToken, async (req, res) => {
                 { model: users, attributes: ['username'] },
                 { model: categories, attributes: ['categoryName'] },
                 { model: institutions, attributes: ['name'] },
-                { model: reportImages, attributes: ['imageUrl'] }
+                { model: reportImages, attributes: ['imageUrl'] },
+                 { model: statusHistories, include: [{ model: users, as: 'setByUser', attributes: ['username'] }] }
             ],
             order: [['createdAt', 'DESC']]
         })
