@@ -108,10 +108,13 @@ router.get('/userReports', authenticateToken, async (req, res) => {
         const userId = req.user.id
         const userReports = await reports.findAll({
             where: { userId },
-            include: [{
-                model: categories,
-                attributes: ['categoryName']
-            }],
+            include: [
+                { model: reportImages, attributes: ['imageUrl'] },
+                { model: users, attributes: ['username'] },
+                { model: categories, attributes: ['categoryName'] },
+                { model: institutions, attributes: ['name'] },
+                { model: reportVotes, attributes: ['voteType', 'userId'] }
+            ],
             order: [['createdAt', 'DESC']]
 
         })
