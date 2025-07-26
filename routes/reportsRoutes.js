@@ -23,6 +23,13 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
     try {
         const { title, description, categoryId, address, zipCode, city, locationLat, locationLng } = req.body;
 
+        //Kategória lekérése
+        const cat = await categories.findByPk(categoryId)
+        if(!cat){
+            return res.status(400).json({message: "Érvénytelen kategória"})
+        }
+        const institutionId = cat.defaultInstitutionId
+
         // Ellenőrizzük, hogy van-e legalább 1 kép
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ message: 'Legalább 1 kép feltöltése kötelező.' });
@@ -33,6 +40,7 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
             title,
             description,
             categoryId,
+            institutionId,
             address,
             zipCode,
             city,
@@ -105,7 +113,7 @@ router.get('/userReports', authenticateToken, async (req, res) => {
                 model: categories,
                 attributes: ['categoryName']
             }],
-            orderBy: [['createdAt', 'DESC']]
+            order: [['createdAt', 'DESC']]
 
         })
         res.json(userReports)
