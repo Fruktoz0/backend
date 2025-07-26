@@ -527,9 +527,6 @@ tasks.belongsTo(reports, { foreignKey: 'reportId' });
 reports.hasMany(statusHistories, { foreignKey: 'reportId' });
 statusHistories.belongsTo(reports, { foreignKey: 'reportId' });
 
-statusHistories.belongsTo(users, { foreignKey: 'setByUserId', as: 'setByUser' });
-
-
 //STATUSHISTORIES -> USER
 statusHistories.belongsTo(users, { foreignKey: 'setByUserId', as: 'setByUser' });
 users.hasMany(statusHistories, { foreignKey: 'setByUserId' });
