@@ -44,7 +44,7 @@ const users = dbConnection.define('user', {
         defaultValue: 'active'
     },
     'institutionId': {
-        type: DataTypes.UUID,
+        type: DataTypes.STRING(36),
         allowNull: true,
     }
 })
