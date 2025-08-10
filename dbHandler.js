@@ -430,6 +430,10 @@ const institutions = dbConnection.define('institution', {
     'contactInfo': {
         type: DataTypes.TEXT,
     },
+    'logoUrl': {
+        type: DataTypes.STRING,
+        allowNull: true
+    }
 })
 
 const userInstitutions = dbConnection.define("userInstitution", {
