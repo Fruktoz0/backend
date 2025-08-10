@@ -54,12 +54,23 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
                 imageUrl: `/uploads/${file.filename}`, // a fájl relatív URL-je
             })
         );
+        //10 pont hozzáadása a felhasználóhoz
+        await users.increment('points',
+            {
+                by: 10,
+                where: { id: req.user.id }
+            });
+        const updatedUser = await users.findByPk(req.user.id, {
+            attributes: ['id', 'points']
+        });
+
         await Promise.all(imagePromises);
         // A válasz a frontendnek
         res.status(201).json({
             message: 'Report sikeresen létrehozva',
             reportId: newReport.id,
-            images: req.files.map(f => `/uploads/${f.filename}`)
+            images: req.files.map(f => `/uploads/${f.filename}`),
+            newPoints: updatedUser.points
         });
     } catch (error) {
         console.error('Hiba a report létrehozásakor:', error);
@@ -140,7 +151,7 @@ router.get('/assignedReports', authenticateToken, async (req, res) => {
                 { model: categories, attributes: ['categoryName'] },
                 { model: institutions, attributes: ['name'] },
                 { model: reportImages, attributes: ['imageUrl'] },
-                 { model: statusHistories, include: [{ model: users, as: 'setByUser', attributes: ['username'] }] }
+                { model: statusHistories, include: [{ model: users, as: 'setByUser', attributes: ['username'] }] }
             ],
             order: [['createdAt', 'DESC']]
         })
