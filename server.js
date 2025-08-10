@@ -8,6 +8,7 @@ const reportVotesRoutes = require('./routes/reportVotes');
 const userRoutes = require('./routes/usersRoutes');
 const summaryRoutes = require('./routes/summaryRoutes')
 const institutionsRoutes = require('./routes/institutionsRoutes')
+const newsRoutes = require('./routes/newsRoutes');
 
 const cors = require('cors');
 
@@ -24,6 +25,7 @@ server.use('/api/categories', categoryRoutes);
 server.use('/api/votes', reportVotesRoutes);
 server.use('/api/summary', summaryRoutes);
 server.use('/api/institutions', institutionsRoutes)
+server.use('api/news', newsRoutes)
 server.use('/api', userRoutes);
 
 
@@ -47,6 +49,7 @@ server.use('/api', userRoutes);
         await dbHandler.statusHistories.sync({ alter: true });
         await dbHandler.forwardingLogs.sync({ alter: true });
         await dbHandler.reportImages.sync({ alter: true });
+        await dbHandler.institutionNews.sync({ alter: true });
 
         server.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);

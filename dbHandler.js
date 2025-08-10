@@ -436,6 +436,52 @@ const institutions = dbConnection.define('institution', {
     }
 })
 
+const institutionNews = dbConnection.define('institutionNews', {
+    'id': {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false
+    },
+    'institutionId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+        foreignKey: true
+    },
+    'slug': {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'title': {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'content': {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    'imageUrl': {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    'createdAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    'createdBy': {
+        type: DataTypes.UUID,
+        allowNull: false
+    },
+    'updatedAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    'status': {
+        type: DataTypes.ENUM('published', 'archived'),
+        defaultValue: 'published'
+    }
+})
+
 const userInstitutions = dbConnection.define("userInstitution", {
     userId: {
         type: DataTypes.UUID,
@@ -535,7 +581,12 @@ statusHistories.belongsTo(reports, { foreignKey: 'reportId' });
 statusHistories.belongsTo(users, { foreignKey: 'setByUserId', as: 'setByUser' });
 users.hasMany(statusHistories, { foreignKey: 'setByUserId' });
 
-
+//INSTITUTION -> INSTITUTION NEWS
+institutions.hasMany(institutionNews, { foreignKey: 'institutionId' });
+institutionNews.belongsTo(institutions, { foreignKey: 'institutionId' });
+//USER -> INSTITUTION NEWS
+users.hasMany(institutionNews, { foreignKey: 'createdBy' });
+institutionNews.belongsTo(users, { foreignKey: 'createdBy', as: 'author' });
 
 module.exports = {
     users,
@@ -553,5 +604,6 @@ module.exports = {
     forwardingLogs,
     institutions,
     reportImages,
+    institutionNews,
 
 };
