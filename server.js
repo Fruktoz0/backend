@@ -25,7 +25,7 @@ server.use('/api/categories', categoryRoutes);
 server.use('/api/votes', reportVotesRoutes);
 server.use('/api/summary', summaryRoutes);
 server.use('/api/institutions', institutionsRoutes)
-server.use('api/news', newsRoutes)
+server.use('/api/news', newsRoutes)
 server.use('/api', userRoutes);
 
 
@@ -34,21 +34,29 @@ server.use('/api', userRoutes);
 
 (async () => {
     try {
-        await dbHandler.users.sync({ alter: true });
+
+        //Hivatkozott táblák szinkronizálása
         await dbHandler.institutions.sync({ alter: true });
-        await dbHandler.categories.sync({ alter: true });
-        await dbHandler.reports.sync({ alter: true });
-        await dbHandler.reportVotes.sync({ alter: true });
-        await dbHandler.petitions.sync({ alter: true });
-        await dbHandler.petitionVotes.sync({ alter: true });
+        await dbHandler.users.sync({ alter: true });
         await dbHandler.badges.sync({ alter: true });
-        await dbHandler.userBadges.sync({ alter: true });
         await dbHandler.challenges.sync({ alter: true });
-        await dbHandler.userChallenges.sync({ alter: true });
+        await dbHandler.categories.sync({ alter: true });
+
+
+        await dbHandler.reports.sync({ alter: true });
         await dbHandler.tasks.sync({ alter: true });
+        await dbHandler.reportImages.sync({ alter: true });
+        await dbHandler.reportVotes.sync({ alter: true });
         await dbHandler.statusHistories.sync({ alter: true });
         await dbHandler.forwardingLogs.sync({ alter: true });
-        await dbHandler.reportImages.sync({ alter: true });
+
+
+        await dbHandler.petitions.sync({ alter: true });
+        await dbHandler.petitionVotes.sync({ alter: true });
+
+        await dbHandler.userBadges.sync({ alter: true });
+        await dbHandler.userChallenges.sync({ alter: true });
+
         await dbHandler.institutionNews.sync({ alter: true });
 
         server.listen(PORT, () => {
