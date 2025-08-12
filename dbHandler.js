@@ -145,7 +145,7 @@ const statusHistories = dbConnection.define('statusHistory', {
         allowNull: false,
     },
     'statusId': {
-        type: DataTypes.ENUM('open', 'rejected', 'in_progress', 'resolved'),
+        type: DataTypes.ENUM('open', 'rejected', 'in_progress', 'resolved', 'forwarded', 'reopened'),
         allowNull: false,
     },
     'changedAt': {
