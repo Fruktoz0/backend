@@ -60,7 +60,7 @@ server.use('/api', userRoutes);
         await dbHandler.institutionNews.sync({ alter: true });
 
         server.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
+            console.log(`\n \n Server is running on port ${PORT}`);
         });
     } catch (error) {
         console.error('Error syncing database models:', error);
