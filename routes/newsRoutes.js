@@ -1,63 +1,85 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 const authenticateToken = require('../middleware/authMiddleware');
 const { institutionNews, institutions, users } = require('../dbHandler');
-const { title } = require('process');
 
-
-//Intézmény hírek létrehozása képfeltöltéssel
-router.post('/add', authenticateToken, async (req, res) => {
-    const storage = multer.diskStorage({
-        destination: (req, file, cb) => cb(null, path.join('uploads', 'news')),
-        filename: (req, file, cb) => {
-            const ext = path.extname(file.originalname);
-            cb(null, Date.now() + ext);
-        }
-    })
-
-    const fileFilter = (req, file, cb) => {
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        if (allowedTypes.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error('Csak képek engedélyezettek!'), false);
-        }
+// Multer config
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, path.join('uploads', 'news')),
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, Date.now() + ext);
     }
-    const upload = multer({ storage, fileFilter, limits: { fileSize: 4 * 1024 * 1024 } }).single('image');
+});
 
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Csak képek engedélyezettek!'), false);
+};
+
+const upload = multer({
+    storage,
+    fileFilter,
+    limits: { fileSize: 4 * 1024 * 1024 }
+}).single('image');
+
+//  Új hír létrehozása 
+router.post('/add', authenticateToken, (req, res) => {
     upload(req, res, async (err) => {
         if (err) {
             console.error('Multer error:', err);
             return res.status(400).json({ message: 'Hibás képfeltöltés.' });
         }
+
         try {
-            const { institutionId, slug, title, content, status = 'published' } = req.body;
-
-            if (!institutionId || !slug || !title || !content) {
-                return res.status(400).json({ message: 'Minden mező kitöltése kötelező.' });
+            const { title, content, institutionId } = req.body;
+            if (!title || !content) {
+                return res.status(400).json({ message: 'A cím és a tartalom kötelező.' });
             }
 
-            //Jogosultság ellenőrzése
-            const { role, institutionId: userInst } = req.user || {};
-            if (role !== 'admin' && userInst !== institutionId) {
-                return res.status(403).json({ message: 'Nincs jogosultságod hírt létrehozni ebben az intézményben.' });
+            const { role, institutionId: userInst, id: userId } = req.user || {};
+
+            // Jogosultság ellenőrzés
+            if (role === 'user') {
+                return res.status(403).json({ message: 'Nincs jogosultságod hírt létrehozni.' });
             }
 
+            let finalInstitutionId = institutionId;
+
+            if (role === 'institution') {
+                finalInstitutionId = userInst;
+            } else if (role === 'admin') {
+                if (!institutionId) {
+                    return res.status(400).json({ message: 'Adminnak ki kell választania egy intézményt.' });
+                }
+            }
+
+            // kép mentése
             let imageUrl = null;
             if (req.file) {
                 imageUrl = path.join('uploads', 'news', req.file.filename);
             }
 
+            // slug automatikus generálása 
+            const slug = title
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, '-')       // szóközök helyett kötőjel
+                .replace(/[^a-z0-9\-]/g, '') // ékezetek és extra karakterek kiszedése
+                .substring(0, 50);           // max 50 karakter
+
             const newsItem = await institutionNews.create({
-                institutionId,
+                institutionId: finalInstitutionId,
                 slug,
                 title,
                 content,
                 imageUrl,
-                createdBy: req.user.id,
-                status
+                createdBy: userId,
+                status: 'published'
             });
 
             const result = await institutionNews.findByPk(newsItem.id, {
@@ -68,17 +90,14 @@ router.post('/add', authenticateToken, async (req, res) => {
             });
 
             res.status(201).json(result);
-
         } catch (error) {
             console.error('Hiba a hír hozzáadásakor:', error);
             return res.status(500).json({ message: 'Hiba történt a hír hozzáadásakor.' });
         }
-
-
     });
 });
 
-//Összes hír lekérdezése
+// Összes hír lekérdezése 
 router.get('/allNews', async (req, res) => {
     try {
         const news = await institutionNews.findAll({
@@ -95,23 +114,8 @@ router.get('/allNews', async (req, res) => {
     }
 });
 
-
-// Intézmény híreinek szerkesztése
+// Hír frissítése 
 router.put('/update/:id', authenticateToken, (req, res) => {
-    // Multer config
-    const storage = multer.diskStorage({
-        destination: (req, file, cb) => cb(null, path.join('uploads', 'news')),
-        filename: (req, file, cb) => {
-            const ext = path.extname(file.originalname);
-            cb(null, Date.now() + ext);
-        }
-    });
-    const fileFilter = (req, file, cb) => {
-        const ok = ['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype);
-        cb(null, ok);
-    };
-    const upload = multer({ storage, fileFilter, limits: { fileSize: 4 * 1024 * 1024 } }).single('image');
-
     upload(req, res, async (err) => {
         if (err) {
             console.error('Multer error:', err);
@@ -124,14 +128,10 @@ router.put('/update/:id', authenticateToken, (req, res) => {
                 return res.status(404).json({ message: 'Hír nem található.' });
             }
 
-            // Jogosultság: admin vagy saját intézmény híre
             const { role, institutionId: userInst } = req.user || {};
-            if (!(role === 'admin' || (userInst && userInst === newsItem.institutionId))) {
+            if (!(role === 'admin' || (role === 'institution' && userInst === newsItem.institutionId))) {
                 return res.status(403).json({ message: 'Nincs jogosultság a hír szerkesztéséhez.' });
             }
-
-            //Régi kép törlése, ha van 
-            const fs = require('fs');
 
             if (req.file && newsItem.imageUrl) {
                 try {
@@ -141,31 +141,20 @@ router.put('/update/:id', authenticateToken, (req, res) => {
                 }
             }
 
-            // Új kép beállítása, ha van feltöltve
             let imageUrl = newsItem.imageUrl;
             if (req.file) {
                 imageUrl = path.join('uploads', 'news', req.file.filename);
             }
 
-            // Frissíthető mezők
-            const fieldsToUpdate = {
-                institutionId: req.body.institutionId ?? newsItem.institutionId,
+            await newsItem.update({
                 slug: req.body.slug ?? newsItem.slug,
                 title: req.body.title ?? newsItem.title,
                 content: req.body.content ?? newsItem.content,
                 imageUrl,
                 status: req.body.status ?? newsItem.status,
                 updatedAt: new Date()
-            };
+            });
 
-            // Admin esetén szerző is módosítható
-            if (role === 'admin' && req.body.createdBy) {
-                fieldsToUpdate.createdBy = req.body.createdBy;
-            }
-
-            await newsItem.update(fieldsToUpdate);
-
-            // Kapcsolt adatokkal visszaadjuk
             const updated = await institutionNews.findByPk(newsItem.id, {
                 include: [
                     { model: institutions, attributes: ['id', 'name', 'logoUrl'] },
@@ -181,7 +170,7 @@ router.put('/update/:id', authenticateToken, (req, res) => {
     });
 });
 
-// Hír törlése
+// Hír törlése 
 router.delete('/:id', authenticateToken, async (req, res) => {
     try {
         const newsItem = await institutionNews.findByPk(req.params.id);
@@ -189,17 +178,12 @@ router.delete('/:id', authenticateToken, async (req, res) => {
             return res.status(404).json({ message: 'Hír nem található.' });
         }
 
-        // Jogosultság: admin vagy saját intézmény híre
         const { role, institutionId: userInst } = req.user || {};
-        if (!(role === 'admin' || (userInst && userInst === newsItem.institutionId))) {
+        if (!(role === 'admin' || (role === 'institution' && userInst === newsItem.institutionId))) {
             return res.status(403).json({ message: 'Nincs jogosultság a hír törléséhez.' });
         }
 
-        // Kép törlése, ha van
         if (newsItem.imageUrl) {
-            const fs = require('fs');
-            const path = require('path');
-
             try {
                 fs.unlinkSync(path.join(__dirname, '..', newsItem.imageUrl));
             } catch (err) {
@@ -208,7 +192,6 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         }
 
         await newsItem.destroy();
-
         res.status(200).json({ message: 'Hír törölve.' });
     } catch (error) {
         console.error('Hiba történt a hír törlésekor:', error);
@@ -216,7 +199,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 });
 
-//Kiválasztott hír adataiank lekérdezése
+// Kiválasztott hír lekérése 
 router.get('/:id', async (req, res) => {
     try {
         const newsItem = await institutionNews.findByPk(req.params.id, {

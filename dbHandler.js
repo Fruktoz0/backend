@@ -132,7 +132,6 @@ const reportImages = dbConnection.define('reportImage', {
     },
 });
 
-
 const statusHistories = dbConnection.define('statusHistory', {
     'id': {
         type: DataTypes.UUID,
@@ -172,7 +171,7 @@ const forwardingLogs = dbConnection.define('forwardingLog', {
         type: DataTypes.UUID,
         allowNull: false,
     },
-    'forwardedToID': {
+    'forwardedToId': {
         type: DataTypes.UUID,
         allowNull: false,
     },
@@ -184,7 +183,6 @@ const forwardingLogs = dbConnection.define('forwardingLog', {
         type: DataTypes.UUID,
         allowNull: false,
     },
-
     'forwardedAt': {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
@@ -194,7 +192,6 @@ const forwardingLogs = dbConnection.define('forwardingLog', {
         allowNull: false
     },
 })
-
 
 const reportVotes = dbConnection.define('reportVote', {
     'id': {
@@ -528,6 +525,9 @@ tasks.belongsTo(users, { foreignKey: 'workerId' });
 // USER -> FORWARDINGLOGS (ki továbbította)
 users.hasMany(forwardingLogs, { foreignKey: 'forwardedByUserId' });
 forwardingLogs.belongsTo(users, { foreignKey: 'forwardedByUserId' });
+forwardingLogs.belongsTo(institutions, { foreignKey: 'forwardedFromId', as: 'forwardedFrom' });
+forwardingLogs.belongsTo(institutions, { foreignKey: 'forwardedToId', as: 'forwardedTo' });
+forwardingLogs.belongsTo(reports, { foreignKey: 'reportId', as: 'report' });
 
 // USER -> INSTITUTIONS
 users.belongsTo(institutions, { foreignKey: 'institutionId' });
@@ -559,7 +559,6 @@ reportImages.belongsTo(reports, { foreignKey: 'reportId' });
 
 //REPORT -> FORWARDINGLOGS
 reports.hasMany(forwardingLogs, { foreignKey: 'reportId' });
-forwardingLogs.belongsTo(reports, { foreignKey: 'reportId' });
 
 //REPORT -> REPORT VOTES
 reports.hasMany(reportVotes, { foreignKey: 'reportId' });
@@ -584,6 +583,7 @@ users.hasMany(statusHistories, { foreignKey: 'setByUserId' });
 //INSTITUTION -> INSTITUTION NEWS
 institutions.hasMany(institutionNews, { foreignKey: 'institutionId' });
 institutionNews.belongsTo(institutions, { foreignKey: 'institutionId' });
+
 //USER -> INSTITUTION NEWS
 users.hasMany(institutionNews, { foreignKey: 'createdBy' });
 institutionNews.belongsTo(users, { foreignKey: 'createdBy', as: 'author' });
