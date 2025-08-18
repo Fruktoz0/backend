@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (allowedTypes.includes(file.mimetype)) cb(null, true);
     else cb(new Error('Csak képek engedélyezettek!'), false);
 };
@@ -24,7 +24,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
     storage,
     fileFilter,
-    limits: { fileSize: 4 * 1024 * 1024 }
+    limits: { fileSize: 6 * 1024 * 1024 }
 }).single('image');
 
 //  Új hír létrehozása 
