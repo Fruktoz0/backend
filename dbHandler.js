@@ -66,6 +66,14 @@ const users = dbConnection.define('user', {
     'avatarSeed':{
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    'avatarChangedToday':{
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    'lastAvatarChangeDate': {
+        type: DataTypes.DATE,
+        allowNull: true
     }
 })
 

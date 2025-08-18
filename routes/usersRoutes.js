@@ -114,6 +114,16 @@ router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található.' });
         }
+        const today = new Date().toISOString().split('T')[0]; // csak YYYY-MM-DD rész
+        if (user.lastAvatarChangeDate !== today) {
+            user.avatarChangesToday = 0;
+            user.lastAvatarChangeDate = today;
+        }
+
+        if(user.avatarChangesToday >= 3){
+            return res.status(400).json({ message: 'Már elhasználtad a napi 3 avatar cserédet.' });
+        }
+
         //Ellnőrzöm a felhasználónak van-e elég pontja a vásárláshoz
         if (user.points < 50) {
             return res.status(400).json({ message: 'Nincs elég pontod az avatar cseréjéhez' });
@@ -127,6 +137,7 @@ router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
 
         user.avatarStyle = randomStyle;
         user.avatarSeed = randomSeed;
+        user.avatarChangesToday += 1;
 
         await user.save();
 
@@ -135,7 +146,8 @@ router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
             message: 'Avatar sikeresen frissítve.', avatarStyle: randomStyle,
             avatarSeed: randomSeed,
             avatarUrl,
-            points: user.points
+            points: user.points,
+            avatarChangesToday: user.avatarChangesToday
         });
     } catch (error) {
         console.error(error);
