@@ -114,7 +114,7 @@ router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található.' });
         }
-        const today = new Date().toISOString().split('T')[0]; // csak YYYY-MM-DD rész
+        const today = new Date().toISOString().split('T')[0]; 
         if (user.lastAvatarChangeDate !== today) {
             user.avatarChangesToday = 0;
             user.lastAvatarChangeDate = today;
