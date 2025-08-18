@@ -31,6 +31,18 @@ const users = dbConnection.define('user', {
         allowNull: false,
         unique: true
     },
+    'zipCode': {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
+    'city': {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    'address': {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     'points': {
         type: DataTypes.INTEGER,
         defaultValue: 0
@@ -68,8 +80,8 @@ const categories = dbConnection.define('category', {
 
 const reports = dbConnection.define('report', {
     'id': {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
         allowNull: false
     },
@@ -113,6 +125,10 @@ const reports = dbConnection.define('report', {
         type: DataTypes.ENUM,
         values: ['open', 'rejected', 'in_progress', 'resolved'],
         defaultValue: 'open'
+    },
+    'institutionId': {
+        type: DataTypes.UUID,
+        allowNull: false
     }
 })
 
@@ -123,7 +139,7 @@ const reportImages = dbConnection.define('reportImage', {
         primaryKey: true
     },
     reportId: {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     imageUrl: {
@@ -140,7 +156,7 @@ const statusHistories = dbConnection.define('statusHistory', {
         allowNull: false
     },
     'reportId': {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     'statusId': {
@@ -168,7 +184,7 @@ const forwardingLogs = dbConnection.define('forwardingLog', {
         primaryKey: true,
     },
     'reportId': {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     'forwardedToId': {
@@ -201,7 +217,7 @@ const reportVotes = dbConnection.define('reportVote', {
         allowNull: false
     },
     'reportId': {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     'userId': {
@@ -312,8 +328,8 @@ const userBadges = dbConnection.define('userBadge', {
 
 const challenges = dbConnection.define('challenge', {
     'id': {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
         allowNull: false
     },
@@ -359,7 +375,7 @@ const userChallenges = dbConnection.define('userChallenge', {
         allowNull: false,
     },
     'challengeId': {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     'status': {
@@ -380,7 +396,7 @@ const tasks = dbConnection.define('task', {
         allowNull: false
     },
     'reportId': {
-        type: DataTypes.UUID,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     'workerId': {
