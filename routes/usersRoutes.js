@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { users, institutions } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
+const { v4: uuidv4 } = require('uuid');
 
 // Admin / Felhasználók adatainak listázása
 router.get('/admin/users', authenticateToken, async (req, res) => {
@@ -77,6 +78,68 @@ router.put('/admin/user/:id/institutions', authenticateToken, async (req, res) =
     } catch (error) {
         console.error("Hiba az intézmények adatainak lekérdezések.", error)
         return res.status(500).json({ message: "Szerverhiba az intézmények lekérdezésekor" })
+    }
+})
+
+router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
+    // Dicebear stílusok listája
+    const dicebearStyles = [
+        "adventurer",
+        "adventurer-neutral",
+        "avataaars",
+        "avataaars-neutral",
+        "big-ears",
+        "big-ears-neutral",
+        "big-smile",
+        "bottts",
+        "croodles",
+        "croodles-neutral",
+        "fun-emoji",
+        "icons",
+        "identicon",
+        "initials",
+        "lorelei",
+        "lorelei-neutral",
+        "notionists",
+        "micah",
+        "miniavs",
+        "open-peeps",
+        "personas",
+        "pixel-art",
+        "pixel-art-neutral"
+    ];
+
+    try {
+        const user = await users.findByPk(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'Felhasználó nem található.' });
+        }
+        //Ellnőrzöm a felhasználónak van-e elég pontja a vásárláshoz
+        if (user.points < 50) {
+            return res.status(400).json({ message: 'Nincs elég pontod az avatar cseréjéhez' });
+        }
+
+        //Ha van elég pontja, pontlevonás
+        user.points -= 50;
+        //új random style + seed beállítása avatarnak
+        const randomStyle = dicebearStyles[Math.floor(Math.random() * dicebearStyles.length)];
+        const randomSeed = uuidv4();
+
+        user.avatarStyle = randomStyle;
+        user.avatarSeed = randomSeed;
+
+        await user.save();
+
+        const avatarUrl = `https://api.dicebear.com/9.x/${randomStyle}/svg?seed=${randomSeed}`;
+        res.status(200).json({
+            message: 'Avatar sikeresen frissítve.', avatarStyle: randomStyle,
+            avatarSeed: randomSeed,
+            avatarUrl,
+            points: user.points
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Hiba az avatar frissítésekor.' });
     }
 })
 
