@@ -12,12 +12,12 @@ const authenticateToken = require('../middleware/authMiddleware');
 router.post('/register', async (req, res) => {
     const { username, email, password, points, role, isActive, createdAt, updatedAt } = req.body;
     try {
-        const existingUser = await users.users.findOne({ where: { email } });
+        const existingUser = await users.findOne({ where: { email } });
         if (existingUser)
             return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await users.users.create({
+        const newUser = await users.create({
             username,
             email,
             password: hashedPassword,
@@ -39,7 +39,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
-        const user = await users.users.findOne({ where: { email } });
+        const user = await users.findOne({ where: { email } });
         if (!user) {
             return res.status(404).json({ message: 'Hibás email vagy jelszó.' });
         }
@@ -59,11 +59,11 @@ router.post('/login', async (req, res) => {
 //Felhasználó adatainak lekérdezése
 router.get('/user', authenticateToken, async (req, res) => {
     try {
-        const user = await users.users.findByPk(req.user.id, {
+        const user = await users.findByPk(req.user.id, {
             attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt', "institutionId"],
             include: [
                 {
-                    model: users.institutions,
+                    model: institutions,
                     attributes: ['name']
                 }
             ]
