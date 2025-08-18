@@ -16,9 +16,11 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (allowedTypes.includes(file.mimetype)) cb(null, true);
-    else cb(new Error('Csak képek engedélyezettek!'), false);
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Csak képek engedélyezettek!'), false);
+    }
 };
 
 const upload = multer({
