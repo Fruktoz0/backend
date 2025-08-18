@@ -58,6 +58,14 @@ const users = dbConnection.define('user', {
     'institutionId': {
         type: DataTypes.UUID,
         allowNull: true,
+    },
+    'avatarStyle':{
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    'avatarSeed':{
+        type: DataTypes.STRING,
+        allowNull: false,
     }
 })
 
