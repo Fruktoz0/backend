@@ -120,8 +120,8 @@ router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
             user.lastAvatarChangeDate = today;
         }
 
-        if(user.avatarChangesToday >= 3){
-            return res.status(400).json({ message: 'Már elhasználtad a napi 3 avatar cserédet.' });
+        if(user.avatarChangesToday >= 5){
+            return res.status(400).json({ message: 'Már elhasználtad a napi 5 avatar cserédet.' });
         }
 
         //Ellnőrzöm a felhasználónak van-e elég pontja a vásárláshoz
