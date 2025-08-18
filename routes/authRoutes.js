@@ -60,7 +60,9 @@ router.post('/login', async (req, res) => {
 router.get('/user', authenticateToken, async (req, res) => {
     try {
         const user = await users.findByPk(req.user.id, {
-            attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt', "institutionId"],
+            attributes: [
+                'id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt', "institutionId", 'zipCode', 'city', 'address', 'avatarSeed', 'avatarStyle', 'avatarChangesToday', 'lastAvatarChangeDate'
+            ],
             include: [
                 {
                     model: institutions,
