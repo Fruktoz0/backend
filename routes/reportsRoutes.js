@@ -88,7 +88,7 @@ router.get('/getAllReports', async (req, res) => {
             },
             {
                 model: users,
-                attributes: ['username'],
+                attributes: ['username', 'avatarStyle', 'avatarSeed'],
             },
             {
                 model: categories,
@@ -121,7 +121,7 @@ router.get('/userReports', authenticateToken, async (req, res) => {
             where: { userId },
             include: [
                 { model: reportImages, attributes: ['imageUrl'] },
-                { model: users, attributes: ['username'] },
+                { model: users, attributes: ['username', 'avatarStyle', 'avatarSeed'] },
                 { model: categories, attributes: ['categoryName'] },
                 { model: institutions, attributes: ['name'] },
                 { model: reportVotes, attributes: ['voteType', 'userId'] }
@@ -147,7 +147,7 @@ router.get('/assignedReports', authenticateToken, async (req, res) => {
         const assignedReports = await reports.findAll({
             where: { institutionId: user.institutionId },
             include: [
-                { model: users, attributes: ['username'] },
+                { model: users, attributes: ['username', 'avatarStyle', 'avatarSeed'] },
                 { model: categories, attributes: ['categoryName'] },
                 { model: institutions, attributes: ['name'] },
                 { model: reportImages, attributes: ['imageUrl'] },
@@ -214,7 +214,7 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
                 {
                     model: users,
                     as: 'setByUser',
-                    attributes: ['username']
+                    attributes: ['username', 'avatarStyle', 'avatarSeed']
                 }
             ],
             order: [['changedAt', 'ASC']]
