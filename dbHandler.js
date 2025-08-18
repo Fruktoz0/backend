@@ -72,7 +72,7 @@ const users = dbConnection.define('user', {
         defaultValue: 0
     },
     'lastAvatarChangeDate': {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: true
     }
 })
