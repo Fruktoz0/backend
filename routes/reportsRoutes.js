@@ -223,7 +223,11 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
         const formatted = history.map(entry => ({
             status: entry.statusId,
             changedAt: entry.changedAt,
-            changedBy: entry.setByUser?.username || 'Ismeretlen',
+            changedBy: {
+                username: entry.setByUser?.username || 'Ismeretlen',
+                avatarStyle: entry.setByUser?.avatarStyle || null,
+                avatarSeed: entry.setByUser?.avatarSeed || null
+            },
             comment: entry.comment || null
         }));
 
