@@ -165,19 +165,19 @@ router.put('/users/:id', authenticateToken, async (req, res) => {
             return res.status(403).json({ message: "Nincs jogosultságod a felhasználó adatainak frissítéséhez." });
         }
 
-        const user = await user.findByPk(userId)
-        if (!user) {
+        const userRecord = await users.findByPk(userId)
+        if (!userRecord) {
             return res.status(404).json({ message: "Felhasználó nem található." });
         }
 
         const { username, email, zipCode, city, address } = req.body;
-        user.username = username ?? user.username;
-        user.email = email ?? user.email;
-        user.zipCode = zipCode ?? user.zipCode;
-        user.city = city ?? user.city;
-        user.address = address ?? user.address;
+        userRecord.username = username ?? userRecord.username;
+        userRecord.email = email ?? userRecord.email;
+        userRecord.zipCode = zipCode ?? userRecord.zipCode;
+        userRecord.city = city ?? userRecord.city;
+        userRecord.address = address ?? userRecord.address;
 
-        await user.save();
+        await userRecord.save();
         res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user });
     } catch (error) {
         console.error("Hiba a felhasználó adatainak frissítésekor", error);
