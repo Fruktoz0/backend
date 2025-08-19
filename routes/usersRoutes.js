@@ -81,6 +81,7 @@ router.put('/admin/user/:id/institutions', authenticateToken, async (req, res) =
     }
 })
 
+//Avatar csere
 router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
     // Dicebear stílusok listája
     const dicebearStyles = [
@@ -114,13 +115,13 @@ router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található.' });
         }
-        const today = new Date().toISOString().split('T')[0]; 
+        const today = new Date().toISOString().split('T')[0];
         if (user.lastAvatarChangeDate !== today) {
             user.avatarChangesToday = 0;
             user.lastAvatarChangeDate = today;
         }
 
-        if(user.avatarChangesToday >= 5){
+        if (user.avatarChangesToday >= 5) {
             return res.status(400).json({ message: 'Már elhasználtad a napi 5 avatar cserédet.' });
         }
 
@@ -152,6 +153,35 @@ router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Hiba az avatar frissítésekor.' });
+    }
+})
+
+//Felhasználó saját adataink szerkesztése
+
+router.put('/users/:id', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.params.id
+        if (req.user.id !== userId) {
+            return res.status(403).json({ message: "Nincs jogosultságod a felhasználó adatainak frissítéséhez." });
+        }
+
+        const user = await user.findByPk(userId)
+        if (!user) {
+            return res.status(404).json({ message: "Felhasználó nem található." });
+        }
+
+        const { username, email, zipCode, city, address } = req.body;
+        user.username = username ?? user.username;
+        user.email = email ?? user.email;
+        user.zipCode = zipCode ?? user.zipCode;
+        user.city = city ?? user.city;
+        user.address = address ?? user.address;
+
+        await user.save();
+        res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user });
+    } catch (error) {
+        console.error("Hiba a felhasználó adatainak frissítésekor", error);
+        res.status(500).json({ message: "Szerverhiba a felhasználó adatainak frissítésekor" });
     }
 })
 
