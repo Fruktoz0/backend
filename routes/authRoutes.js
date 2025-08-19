@@ -66,7 +66,6 @@ router.get('/user', authenticateToken, async (req, res) => {
             include: [
                 {
                     model: institutions,
-                    attributes: ['name']
                 }
             ]
         });
