@@ -73,36 +73,30 @@ router.put("/update/:id", authenticateToken, async (req, res) => {
     const { id } = req.params
     const { name, email, description, contactInfo } = req.body
     try {
-        const institution = await institutions.findByPk(req.params.id)
+        const institution = await institutions.findByPk(id)
         if (!institution)
             return res.status(404).json({ message: "Intézmény nem található" })
 
         //Jogosultságellnőrzés
-        if (req.user.role === "admin") {
-
-        } else if (req.user.role === "institution") {
-            const user = await users.findByPk(req.user.id)
-            const userInstitutions = await user.getInstitutions({ attributes: ['id'] })
-            const institutionIds = userInstitutions.map(i => i.id)
-
-            if (!institutionIds.includes(institution.id)) {
-                return res.status(403).json({ message: "Nincs jogosultságod más intézmény szerkesztésére." })
-            }
-        } else {
-            return res.status(403).json({ message: "Nincs jogosultságod intézmény szerkesztésére" })
+        if (req.user.role === "institution") {
+            return res.status(403).json({ message: "Nincs jogosultságod az intézmény szerkesztésére." })
         }
-
+        const user = await users.findByPk(req.user.id)
+        if (!user || user.institutionId !== institutionId) {
+            return res.status(403).json({ message: "Nincs jogosultságod más intézmény szerkesztésére" })
+        }
+            //Adatok frissítése
             institution.name = name,
             institution.email = email,
             institution.description = description,
             institution.contactInfo = contactInfo,
 
             await institution.save()
-        res.json(institution)
+        res.status(200).json({ message: "Intézmény sikeresen frissítve", institution })
 
     } catch (err) {
         console.error("Hiba az intézmény módosításakor.", err)
-        res.status(500).json({ message: "Szerverhiba az intézmény módosításakor" })
+        res.status(500).json({ message: "Szerverhiba az intézmény módosításakor", error: err.message })
     }
 })
 
