@@ -170,18 +170,17 @@ router.put('/users/:id', authenticateToken, async (req, res) => {
             return res.status(404).json({ message: "Felhasználó nem található." });
         }
 
-        const { username, email, zipCode, city, address } = req.body;
+        const { username, zipCode, city, address } = req.body;
         userRecord.username = username ?? userRecord.username;
-        userRecord.email = email ?? userRecord.email;
         userRecord.zipCode = zipCode ?? userRecord.zipCode;
         userRecord.city = city ?? userRecord.city;
         userRecord.address = address ?? userRecord.address;
 
         await userRecord.save();
-        res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user });
+        res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user: userRecord });
     } catch (error) {
         console.error("Hiba a felhasználó adatainak frissítésekor", error);
-        res.status(500).json({ message: "Szerverhiba a felhasználó adatainak frissítésekor" });
+        res.status(500).json({ message: "Szerverhiba a felhasználó adatainak frissítésekor", error: error.message });
     }
 })
 
