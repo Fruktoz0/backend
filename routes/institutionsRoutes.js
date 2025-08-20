@@ -82,7 +82,7 @@ router.put("/update/:id", authenticateToken, async (req, res) => {
             return res.status(403).json({ message: "Nincs jogosultságod az intézmény szerkesztésére." })
         }
         const user = await users.findByPk(req.user.id)
-        if (!user || user.institutionId !== institutionId) {
+        if (!user || user.institutionId !== institution.id) {
             return res.status(403).json({ message: "Nincs jogosultságod más intézmény szerkesztésére" })
         }
             //Adatok frissítése
