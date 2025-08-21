@@ -149,20 +149,20 @@ const reports = dbConnection.define('report', {
 })
 
 const reportImages = dbConnection.define('reportImage', {
-    id: {
+    'id': {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
-    reportId: {
+    'reportId': {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    imageUrl: {
+    'imageUrl': {
         type: DataTypes.STRING,
         allowNull: false
     },
-});
+})
 
 const statusHistories = dbConnection.define('statusHistory', {
     'id': {
@@ -299,6 +299,7 @@ const petitionVotes = dbConnection.define('petitionVote', {
         allowNull: false
     }
 })
+
 const badges = dbConnection.define('badge', {
     'id': {
         type: DataTypes.UUID,
@@ -320,6 +321,7 @@ const badges = dbConnection.define('badge', {
         allowNull: false
     },
 })
+
 const userBadges = dbConnection.define('userBadge', {
     'id': {
         type: DataTypes.UUID,
@@ -375,63 +377,72 @@ const challenges = dbConnection.define('challenge', {
     },
     'startDate': {
         type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
+        defaultValue: DataTypes.NOW,
+        allowNull: false
     },
     'endDate': {
         type: DataTypes.DATE,
         allowNull: false
+    },
+    'createdAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    'updatedAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 })
 
 const userChallenges = dbConnection.define('userChallenge', {
-    id: {
+    'id': {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false
     },
-    userId: {
+    'userId': {
         type: DataTypes.UUID,
         allowNull: false,
     },
-    challengeId: {
+    'challengeId': {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    unlockDate: {
+    'unlockDate': {
         type: DataTypes.DATE,
         allowNull: true
     },
-    submittedAt: {       // Felhasználó amikor beküldte a kihívást
+    'submittedAt': {       // Felhasználó amikor beküldte a kihívást
         type: DataTypes.DATE,
         allowNull: true
     },
-    approvedAt: {        // Admin, intézményi felhasználó általi jóváhagyás időpontja
+    'approvedAt': {        // Admin, intézményi felhasználó általi jóváhagyás időpontja
         type: DataTypes.DATE,
         allowNull: true
     },
-    status: {
+    'status': {
         type: DataTypes.ENUM('unlocked', 'pending', 'approved', 'rejected', 'expired'),
         defaultValue: 'unlocked'
     },
-    pointsEarned: {
+    'pointsEarned': {
         type: DataTypes.INTEGER,
         defaultValue: 0,
         allowNull: false,
     },
-    description: {
+    'description': {
         type: DataTypes.STRING,
         allowNull: true
     },
-    image1: {
+    'image1': {
         type: DataTypes.STRING,
         allowNull: true
     },
-    image2: {
+    'image2': {
         type: DataTypes.STRING,
         allowNull: true
     },
-    image3: {
+    'image3': {
         type: DataTypes.STRING,
         allowNull: true
     }
