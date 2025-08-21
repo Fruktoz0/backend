@@ -9,7 +9,7 @@ const userRoutes = require('./routes/usersRoutes');
 const summaryRoutes = require('./routes/summaryRoutes')
 const institutionsRoutes = require('./routes/institutionsRoutes')
 const newsRoutes = require('./routes/newsRoutes');
-
+const challengesRoutes = require('./routes/challengesRoutes');
 const cors = require('cors');
 
 
@@ -26,6 +26,7 @@ server.use('/api/votes', reportVotesRoutes);
 server.use('/api/summary', summaryRoutes);
 server.use('/api/institutions', institutionsRoutes)
 server.use('/api/news', newsRoutes)
+server.use('/api/challenges', challengesRoutes)
 server.use('/api', userRoutes);
 
 

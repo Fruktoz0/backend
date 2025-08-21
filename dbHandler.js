@@ -59,15 +59,15 @@ const users = dbConnection.define('user', {
         type: DataTypes.UUID,
         allowNull: true,
     },
-    'avatarStyle':{
+    'avatarStyle': {
         type: DataTypes.STRING,
         allowNull: true
     },
-    'avatarSeed':{
+    'avatarSeed': {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    'avatarChangesToday':{
+    'avatarChangesToday': {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
@@ -349,25 +349,29 @@ const challenges = dbConnection.define('challenge', {
         primaryKey: true,
         allowNull: false
     },
-    'name': {
+    'title': {
         type: DataTypes.STRING,
         allowNull: false
     },
     'description': {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
         allowNull: false
     },
     'category': {
         type: DataTypes.STRING,
         allowNull: false
     },
-    'points': {
+    'costPoints': {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+    },
+    'rewardPoints': {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     },
     'status': {
-        type: DataTypes.ENUM('active', 'completed', 'expired'),
-        defaultValue: 'active'
+        type: DataTypes.ENUM('active', 'inactive', 'archived'),
+        defaultValue: 'inactive'
     },
     'startDate': {
         type: DataTypes.DATE,
@@ -380,29 +384,66 @@ const challenges = dbConnection.define('challenge', {
 })
 
 const userChallenges = dbConnection.define('userChallenge', {
-    'id': {
+    id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
         allowNull: false
     },
-    'userId': {
+    userId: {
         type: DataTypes.UUID,
         allowNull: false,
     },
-    'challengeId': {
+    challengeId: {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    'status': {
-        type: DataTypes.ENUM('active', 'completed', 'failed'),
-        defaultValue: 'active'
+    unlockDate: {
+        type: DataTypes.DATE,
+        allowNull: true
     },
-    'pointsEarned': {
+    submittedAt: {       // Felhasználó amikor beküldte a kihívást
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    approvedAt: {        // Admin, intézményi felhasználó általi jóváhagyás időpontja
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+    status: {
+        type: DataTypes.ENUM('unlocked', 'pending', 'approved', 'rejected', 'expired'),
+        defaultValue: 'unlocked'
+    },
+    pointsEarned: {
         type: DataTypes.INTEGER,
-        defaultValue: 0
+        defaultValue: 0,
+        allowNull: false,
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    image1: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    image2: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    image3: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
-})
+}, {
+    indexes: [
+        {
+            unique: true,
+            fields: ['userId', 'challengeId']
+        }
+    ]
+});
+
 
 const tasks = dbConnection.define('task', {
     'id': {
