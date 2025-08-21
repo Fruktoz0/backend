@@ -115,10 +115,12 @@ router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található.' });
         }
-        const today = new Date().toISOString().split('T')[0];
-        if (user.lastAvatarChangeDate !== today) {
+        const today = new Date().toDateString();
+        const lastChange = user.lastAvatarChangeDate ? new Date(user.lastAvatarChangeDate).toDateString() : null;
+
+        if (today !== lastChange) {
             user.avatarChangesToday = 0;
-            user.lastAvatarChangeDate = today;
+            user.lastAvatarChangeDate = new Date();
         }
 
         if (user.avatarChangesToday >= 5) {
