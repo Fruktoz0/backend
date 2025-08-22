@@ -42,7 +42,7 @@ const upload = multer({
 
 //Kihívás létrehozása admin/intézményi felhasználónak
 router.post('/create', authenticateToken, (req, res) => {
-    upload(req, res, async (err) => {
+    upload.single('image')(req, res, async (err) => {
         if (err) {
             console.error('Multer error:', err);
             return res.status(400).json({ message: "Hibás képfeltöltés." });
