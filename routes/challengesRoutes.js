@@ -4,6 +4,36 @@ const { challenges, userChallenges, users, institutions } = require('../dbHandle
 const authenticateToken = require('../middleware/authMiddleware')
 const multer = require('multer')
 const path = require('path')
+const fs = require('fs')
+const path = require('path')
+
+//Multer conf a képfeltöltéshez
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join('uploads', 'challenges'));
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, Date.now() + ext);
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Csak JPEG és PNG fájlok engedélyezettek!'), false);
+    }
+};
+
+const upload = multer({
+    storage,
+    fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 7 // 7MB
+    }
+});
 
 
 //Kihívás létrehozása admin/intézményi felhasználónak
@@ -14,6 +44,10 @@ router.post('/create', authenticateToken, async (req, res) => {
         //Jogosultság ellenőrzés
         if (!req.user.role || (req.user.role !== 'admin' && req.user.role !== 'institution')) {
             return res.status(403).json({ message: "Nincs jogosultsága a kihívás létrehozásához." })
+        }
+        //Kép ellenőrzés
+        if (!req.file) {
+            return res.status(400).json({ message: "Kép feltöltése kötelező." })
         }
         //Összes mező kitöltésének ellenőrzése
         if (!title || !description || !category || !costPoints || !rewardPoints || !startDate || !endDate) {
@@ -40,6 +74,7 @@ router.post('/create', authenticateToken, async (req, res) => {
             startDate,
             endDate,
             status,
+            image: `/uploads/challenges/${req.file.filename}`, // kép útvonala
             institutionId: req.user.institutionId || null, // Intézményi felhasználóknál
         })
         res.status(201).json(createChallenge)
@@ -184,34 +219,6 @@ router.post('/:id/unlock', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a kihívás feloldásakor." })
     }
 })
-//Multer conf a képfeltöltéshez
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join('uploads', 'challenges'));
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, Date.now() + ext);
-    }
-});
-
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error('Csak JPEG és PNG fájlok engedélyezettek!'), false);
-    }
-};
-
-const upload = multer({
-    storage,
-    fileFilter,
-    limits: {
-        fileSize: 1024 * 1024 * 7 // 7MB
-    }
-});
-
 
 // Kihívás teljesítésének beküldése felhasználó által
 router.post('/:id/submit', authenticateToken, upload.array('images', 3), async (req, res) => {
@@ -320,19 +327,47 @@ router.delete('/delete', authenticateToken, async (req, res) => {
         }
         const challengeId = req.params.id
 
-        //Kihívás törlése
+        //Kihívás lekérése
         const challenge = await challenges.findByPk(challengeId)
         if (!challenge) {
             res.status(404).json({ message: "Kihavás nem található" })
         }
-        //Kapcsolódó userChallenges törlése
-        await userChallenges.destroy(
+        //Kapcsolódó userChallenge lekérése képek törléséhez
+        const relatedUserChallenge = await userChallenges.findOne(
             {
                 where: {
                     challengeId
                 }
             }
         )
+        //Felhasználó által csatolt képek törlése
+        if (relatedUserChallenge) {
+            for (const imgPath of [relatedUserChallenge.image1, relatedUserChallenge.image2, relatedUserChallenge.image3]) {
+                if (imgPath) {
+                    const filePath = path.join(__dirname, '..', imgPath);
+                    try {
+                        await fs.promises.unlink(filePath);
+                    } catch (err) {
+                        if (err.code !== 'ENOENT') {
+                            console.error("Kép törlés hiba:", err);
+                        }
+                    }
+                }
+            }
+        }
+        //Challenge képeinek törlése
+        if (challenge.image) {
+            const challengeImgPath = path.join(__dirname, '..', challenge.image);
+            try {
+                await fs.promises.unlink(challengeImgPath);
+            } catch (err) {
+                if (err.code !== 'ENOENT') {
+                    console.error("Kép törlés hiba:", err);
+                }
+            }
+        }
+        // Kapcsolódó userChallenges törlése
+        await userChallenges.destroy({ where: { challengeId } });
         //Kihívás törlése
         await challenge.destroy()
         res.json({ message: "Kihívás sikeresen törölve." })
