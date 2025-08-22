@@ -5,7 +5,6 @@ const authenticateToken = require('../middleware/authMiddleware')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
-const path = require('path')
 
 //Multer conf a képfeltöltéshez
 const storage = multer.diskStorage({
