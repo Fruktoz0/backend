@@ -39,7 +39,7 @@ const upload = multer({
 //Kihívás létrehozása admin/intézményi felhasználónak
 router.post('/create', authenticateToken, async (req, res) => {
     try {
-        const { title, description, category, costPoints, rewardPoints, startDate, endDate } = req.body;
+        const { title, description, category, costPoints, rewardPoints, startDate, endDate, institutionId } = req.body;
 
         //Jogosultság ellenőrzés
         if (!req.user.role || (req.user.role !== 'admin' && req.user.role !== 'institution')) {
@@ -65,6 +65,15 @@ router.post('/create', authenticateToken, async (req, res) => {
             status = 'archived';
         }
 
+        // InstitutionId logika
+        let finalInstitutionId = null;
+        if (req.user.role === 'institution') {
+            // intézményi user -> mindig a saját institutionId alapján
+            finalInstitutionId = req.user.institutionId;
+        } else if (req.user.role === 'admin') {
+            finalInstitutionId = institutionId || null;
+        }
+
         const createChallenge = await challenges.create({
             title,
             description,
@@ -75,7 +84,7 @@ router.post('/create', authenticateToken, async (req, res) => {
             endDate,
             status,
             image: `/uploads/challenges/${req.file.filename}`, // kép útvonala
-            institutionId: req.user.institutionId || null, // Intézményi felhasználóknál
+            institutionId: finalInstitutionId
         })
         res.status(201).json(createChallenge)
 

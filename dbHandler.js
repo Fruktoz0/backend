@@ -351,6 +351,10 @@ const challenges = dbConnection.define('challenge', {
         primaryKey: true,
         allowNull: false
     },
+    "institutionId": {
+        type: DataTypes.UUID,
+        allowNull: true
+    },
     'title': {
         type: DataTypes.STRING,
         allowNull: false
@@ -636,6 +640,10 @@ userChallenges.belongsTo(challenges, { foreignKey: 'challengeId' });
 // INSTITUTIONS -> CATEGORIES
 institutions.hasMany(categories, { foreignKey: 'defaultInstitutionId' })
 categories.belongsTo(institutions, { foreignKey: 'defaultInstitutionId' })
+
+// INSTITUTIONS -> CHALLENGES
+institutions.hasMany(challenges, { foreignKey: 'institutionId' });
+challenges.belongsTo(institutions, { foreignKey: 'institutionId' });
 
 //CATEGORY -> REPORTS
 categories.hasMany(reports, { foreignKey: 'categoryId' });
