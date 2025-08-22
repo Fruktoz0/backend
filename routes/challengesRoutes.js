@@ -36,62 +36,73 @@ const upload = multer({
 
 
 //Kihívás létrehozása admin/intézményi felhasználónak
-router.post('/create', authenticateToken, async (req, res) => {
-    try {
-        const { title, description, category, costPoints, rewardPoints, startDate, endDate, institutionId } = req.body;
-
-        //Jogosultság ellenőrzés
-        if (!req.user.role || (req.user.role !== 'admin' && req.user.role !== 'institution')) {
-            return res.status(403).json({ message: "Nincs jogosultsága a kihívás létrehozásához." })
-        }
-        //Kép ellenőrzés
-        if (!req.file) {
-            return res.status(400).json({ message: "Kép feltöltése kötelező." })
-        }
-        //Összes mező kitöltésének ellenőrzése
-        if (!title || !description || !category || !costPoints || !rewardPoints || !startDate || !endDate) {
-            return res.status(400).json({ message: "Minden mező kitöltése kötelező." })
-        }
-        //Start és End dátum ellenőrzése ne legyen ütközés
-        if (new Date(endDate) < new Date(startDate)) {
-            return res.status(400).json({ message: "A kihívás befejezési dátuma nem lehet korábbi, mint a kezdési dátum." })
-        }
-        //Dátumok ellenőrzése active/inactive/archived
-        let status = 'active';
-        if (new Date(startDate) > new Date()) {
-            status = 'inactive';
-        } else if (new Date(endDate) < new Date()) {
-            status = 'archived';
+router.post('/create', authenticateToken, (req, res) => {
+    upload.single('image')(req, res, async (err) => {
+        if (err) {
+            console.error('Multer error:', err);
+            return res.status(400).json({ message: "Hibás képfeltöltés." });
         }
 
-        // InstitutionId logika
-        let finalInstitutionId = null;
-        if (req.user.role === 'institution') {
-            // intézményi user -> mindig a saját institutionId alapján
-            finalInstitutionId = req.user.institutionId;
-        } else if (req.user.role === 'admin') {
-            finalInstitutionId = institutionId || null;
+        try {
+            const { title, description, category, costPoints, rewardPoints, startDate, endDate, institutionId } = req.body;
+
+            // Jogosultság ellenőrzés
+            if (req.user.role !== 'admin' && req.user.role !== 'institution') {
+                return res.status(403).json({ message: "Nincs jogosultsága a kihívás létrehozásához." });
+            }
+
+            // Kép ellenőrzés
+            if (!req.file) {
+                return res.status(400).json({ message: "Kép feltöltése kötelező." });
+            }
+
+            // Összes mező kitöltésének ellenőrzése
+            if (!title || !description || !category || !costPoints || !rewardPoints || !startDate || !endDate) {
+                return res.status(400).json({ message: "Minden mező kitöltése kötelező." });
+            }
+
+            // Start és End dátum ellenőrzése ne legyen ütközés
+            if (new Date(endDate) < new Date(startDate)) {
+                return res.status(400).json({ message: "A kihívás befejezési dátuma nem lehet korábbi, mint a kezdési dátum." });
+            }
+
+            // Dátumok ellenőrzése active/inactive/archived
+            let status = 'active';
+            if (new Date(startDate) > new Date()) {
+                status = 'inactive';
+            } else if (new Date(endDate) < new Date()) {
+                status = 'archived';
+            }
+
+            // InstitutionId logika
+            let finalInstitutionId = null;
+            if (req.user.role === 'institution') {
+                finalInstitutionId = req.user.institutionId;
+            } else if (req.user.role === 'admin') {
+                finalInstitutionId = institutionId || null;
+            }
+
+            const createChallenge = await challenges.create({
+                title,
+                description,
+                category,
+                costPoints,
+                rewardPoints,
+                startDate,
+                endDate,
+                status,
+                image: `uploads/challenges/${req.file.filename}`, // kép útvonala
+                institutionId: finalInstitutionId
+            });
+
+            res.status(201).json(createChallenge);
+
+        } catch (error) {
+            console.error("Hiba a kihívás létrehozásakor:", error);
+            res.status(500).json({ message: "Szerverhiba a kihívás létrehozásakor." });
         }
-
-        const createChallenge = await challenges.create({
-            title,
-            description,
-            category,
-            costPoints,
-            rewardPoints,
-            startDate,
-            endDate,
-            status,
-            image: `/uploads/challenges/${req.file.filename}`, // kép útvonala
-            institutionId: finalInstitutionId
-        })
-        res.status(201).json(createChallenge)
-
-    } catch (error) {
-        console.error("Hiba a kihívás létrehozásakor:", error)
-        res.status(500).json({ message: "Szerverhiba a kihívás létrehozásakor." })
-    }
-})
+    });
+});
 
 // Összes aktív challenges lekérése
 router.get('/active', async (req, res) => {
