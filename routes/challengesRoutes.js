@@ -115,9 +115,25 @@ router.get('/active', async (req, res) => {
         const activeChallengesList = await challenges.findAll({
             where: {
                 status: 'active'
-            }
+            },
+            include: [
+                {
+                    model: userChallenges,
+                    where: { userId: req.user.id },
+                    required: false,
+                    attributes: ['status']
+                }
+            ]
         })
-        res.json(activeChallengesList)
+
+        const formatted = activeChallengesList.map(challenge => ({
+            ...challenge.toJSON(),
+            isUnlocked: challenge.userChallenges && challenge.userChallenges.length > 0
+                && challenge.userChallenges[0].status === 'unlocked'
+        }));
+
+        res.json(formatted);
+ 
     } catch (err) {
         console.error("Hiba az aktív kihívások lekérésekor:", err)
         res.status(500).json({ message: "Szerverhiba az aktív kihívások lekérésekor." })
