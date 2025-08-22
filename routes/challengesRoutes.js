@@ -96,7 +96,7 @@ router.post('/create', authenticateToken, (req, res) => {
                 startDate,
                 endDate,
                 status,
-                image: `uploads/challenges/${req.file.filename}`, // kép útvonala
+                image: `/uploads/challenges/${req.file.filename}`, // kép útvonala
                 institutionId: finalInstitutionId
             });
 
