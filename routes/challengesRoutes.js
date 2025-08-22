@@ -110,8 +110,9 @@ router.post('/create', authenticateToken, (req, res) => {
 });
 
 // Összes aktív challenges lekérése
-router.get('/active', async (req, res) => {
+router.get('/active', authenticateToken, async (req, res) => {
     try {
+        const userId = req.user.id
         const activeChallengesList = await challenges.findAll({
             where: {
                 status: 'active'
@@ -119,7 +120,7 @@ router.get('/active', async (req, res) => {
             include: [
                 {
                     model: userChallenges,
-                    where: { userId: req.user.id },
+                    where: { userId},
                     required: false,
                     attributes: ['status']
                 }
