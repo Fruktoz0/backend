@@ -78,7 +78,7 @@ router.put("/update/:id", authenticateToken, async (req, res) => {
             return res.status(404).json({ message: "Intézmény nem található" })
 
         //Jogosultságellnőrzés
-        if (req.user.role !== "institution") {
+        if (req.user.role !== "institution" && req.user.role !== "admin") {
             return res.status(403).json({ message: "Nincs jogosultságod az intézmény szerkesztésére." })
         }
         const user = await users.findByPk(req.user.id)
@@ -105,7 +105,6 @@ router.delete("/delete/:id", authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
         return res.status(403).json({ message: "Nincs jogosultságod intézmény törlésére" })
     }
-
     try {
         const institution = await institutions.findByPk(req.params.id)
         if (!institution)
