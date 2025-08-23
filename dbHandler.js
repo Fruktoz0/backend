@@ -53,7 +53,7 @@ const users = dbConnection.define('user', {
     },
     'isActive': {
         type: DataTypes.ENUM('active', 'inactive'),
-        defaultValue: 'active'
+        defaultValue: 'inactive'
     },
     'institutionId': {
         type: DataTypes.UUID,
@@ -73,6 +73,14 @@ const users = dbConnection.define('user', {
     },
     'lastAvatarChangeDate': {
         type: DataTypes.DATEONLY,
+        allowNull: true
+    },
+    'activationToken': {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    'activationExpires': {
+        type: DataTypes.DATE,
         allowNull: true
     }
 })

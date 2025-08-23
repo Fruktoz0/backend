@@ -7,6 +7,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const expireTime = process.env.EXPIRE_TIME;
 const authenticateToken = require('../middleware/authMiddleware');
 const rateLimit = require('express-rate-limit');
+const crypto = require('crypto');
+const { sendValidationEmail } = require('../utils/mailService');
 
 
 const loginLimiter = rateLimit({
@@ -23,7 +25,7 @@ const loginLimiter = rateLimit({
 
 //min 6 karakter a felhasználónév, password max 20 min 6 karakter
 router.post('/register', async (req, res) => {
-    const { username, email, password, confirmPassword, points, role, isActive, createdAt, updatedAt } = req.body;
+    const { username, email, password, confirmPassword } = req.body;
     try {
 
         //Jelszó megerősítés ellenőrzése
@@ -31,7 +33,7 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' });
         }
         //Felhasználónév ellenőrzés
-        if (!username || username.length < 4 || username.length > 30) {
+        if (!username || username.length < 4 || username.length > 12) {
             return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' });
         }
         //Email formátum ellenőrzés
@@ -49,23 +51,54 @@ router.post('/register', async (req, res) => {
         }
         //Jelszó hash-elése
         const hashedPassword = await bcrypt.hash(password, 10);
+        //Aktivációs token generálása + lejárati idő
+        const activationToken = crypto.randomBytes(32).toString('hex');
+        const activationExpires = new Date(Date.now() + 3600000);
 
         const newUser = await users.create({
             username,
             email,
             password: hashedPassword,
-            points,
-            role,
-            isActive,
+            points: 0,
+            role: "user",
+            isActive: "inactive",
+            activationToken,
+            activationExpires,
             createdAt,
             updatedAt
         });
-        const token = jwt.sign({ id: newUser.id, }, JWT_SECRET, { expiresIn: expireTime });
-        res.status(201).json({ token })
 
+        //Aktiváló email kiküldése
+        await sendValidationEmail(email, activationToken);
+        res.json({ message: "Regisztráció sikeres! Erősísd meg az emailed." })
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Szerverbiba történt a regisztráció során.', error });
+    }
+})
+
+//Email megerősítése
+router.get('/verify-email', async (req, res) => {
+    const { token } = req.query;
+    try {
+        const user = await users.findOne({
+            where: { activationToken: token }
+        })
+        if (!user) {
+            return res.status(400).json({ message: "Érvénytelen vagy lejárt token." })
+        }
+        if (user.activationExpires && new Date() > user.activationExpires) {
+            return res.status(400).json({ message: "Az aktivációs email lejárt." })
+        }
+        //Aktiválás
+        user.isActive = "active";
+        user.activationToken = null;
+        user.activationExpires = null;
+        await user.save();
+        res.status(200).json({ message: "Email sikeresen megerősítve. Most már bejelentkezhetsz." })
+    } catch (error) {
+        console.error("Hiba történt az email megerősítése során.", error);
+        res.status(500).json({ message: 'Szerverhiba történt az email megerősítése során.', error });
     }
 })
 
@@ -94,7 +127,7 @@ router.post('/login', loginLimiter, async (req, res) => {
         }
         //Fiók státuszának ellenőrzése
         if (user.isActive !== "active") {
-            return res.status(403).json({ message: 'A fiók inaktív.' });
+            return res.status(403).json({ message: 'A fiók inaktív, kérlek erősítsd meg az emailed.' });
         }
         const token = jwt.sign({ id: user.id, role: user.role, institutionId: user.institutionId }, JWT_SECRET, { expiresIn: expireTime });
         res.status(200).json({ token });
