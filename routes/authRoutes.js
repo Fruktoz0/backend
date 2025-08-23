@@ -64,15 +64,15 @@ router.post('/register', async (req, res) => {
             isActive: "inactive",
             activationToken,
             activationExpires,
-            createdAt,
-            updatedAt
+            createdAt: new Date(),
+            updatedAt: new Date()
         });
 
         //Aktiváló email kiküldése
         await sendValidationEmail(email, activationToken);
         res.json({ message: "Regisztráció sikeres! Erősísd meg az emailed." })
     } catch (error) {
-        console.error(error);
+        console.error(error.message);
         res.status(500).json({ message: 'Szerverbiba történt a regisztráció során.', error });
     }
 })
@@ -97,7 +97,7 @@ router.get('/verify-email', async (req, res) => {
         await user.save();
         res.status(200).json({ message: "Email sikeresen megerősítve. Most már bejelentkezhetsz." })
     } catch (error) {
-        console.error("Hiba történt az email megerősítése során.", error);
+        console.error("Hiba történt az email megerősítése során.", error.message);
         res.status(500).json({ message: 'Szerverhiba történt az email megerősítése során.', error });
     }
 })
@@ -133,7 +133,7 @@ router.post('/login', loginLimiter, async (req, res) => {
         res.status(200).json({ token });
 
     } catch (error) {
-        console.error("Hiba történt a bejelentkezés során.", error);
+        console.error("Hiba történt a bejelentkezés során.", error.message);
         res.status(500).json({ message: 'Szerverhiba történt a bejelentkezés során.', error });
     }
 })
@@ -164,8 +164,8 @@ router.get('/user', authenticateToken, async (req, res) => {
             reportCount
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Hiba a felhasználói adatok lekérésekor.' });
+        console.error("Hiba történt a felhasználói adatok lekérésekor.", error.message);
+        res.status(500).json({ message: 'Szerverhiba a felhasználói adatok lekérésekor.' });
     }
 });
 
