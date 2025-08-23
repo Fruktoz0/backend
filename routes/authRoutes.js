@@ -30,28 +30,23 @@ router.post('/register', async (req, res) => {
         if (password !== confirmPassword) {
             return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' });
         }
-        
         //Felhasználónév ellenőrzés
         if (!username || username.length < 4 || username.length > 30) {
             return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' });
         }
-
-        //Jelszó ellenőrzés
-        if (!password || password.length < 6 || password.length > 20) {
-            return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' });
-        }
-
         //Email formátum ellenőrzés
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !emailRegex.test(email)) {
             return res.status(400).json({ message: 'Érvénytelen email cím formátum.' });
         }
-
         //Email duplikáció ellenőrzés
         const existingUser = await users.findOne({ where: { email } });
         if (existingUser)
             return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });
-
+        //Jelszó ellenőrzés
+        if (!password || password.length < 6 || password.length > 20) {
+            return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' });
+        }
         //Jelszó hash-elése
         const hashedPassword = await bcrypt.hash(password, 10);
 
