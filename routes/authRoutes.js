@@ -70,10 +70,10 @@ router.post('/register', async (req, res) => {
 
         //Aktiváló email kiküldése
         await sendValidationEmail(email, activationToken);
-        res.json({ message: "Regisztráció sikeres! Erősísd meg az emailed." })
+        res.status(201).json({ message: "Regisztráció sikeres! Erősísd meg az emailed." })
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ message: 'Szerverbiba történt a regisztráció során.', error });
+        res.status(500).json({ message: 'Szerverhiba történt a regisztráció során.', error });
     }
 })
 
@@ -95,7 +95,16 @@ router.get('/verify-email', async (req, res) => {
         user.activationToken = null;
         user.activationExpires = null;
         await user.save();
-        res.status(200).json({ message: "Email sikeresen megerősítve. Most már bejelentkezhetsz." })
+        res.send(`
+  <html>
+    <head><title>Felhasználói fiók aktiválás</title></head>
+    <body style="font-family:sans-serif; text-align:center; padding:40px;">
+      <h1> Sikeres aktiválás</h1>
+      <p>Most már bejelentkezhetsz a Tiszta Város alkalmazásban.</p>
+     
+    </body>
+  </html>
+`);
     } catch (error) {
         console.error("Hiba történt az email megerősítése során.", error.message);
         res.status(500).json({ message: 'Szerverhiba történt az email megerősítése során.', error });
