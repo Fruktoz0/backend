@@ -6,7 +6,7 @@ const mailjet = Mailjet.apiConnect(
 );
 
 async function sendValidationEmail(toEmail, token) {
-    const link = `https://tisztavaros.hu/verify-email?token=${token}`;
+    const link = `https://tisztavaros.hu/auth/verify-email?token=${token}`;
 
     try {
         await mailjet
