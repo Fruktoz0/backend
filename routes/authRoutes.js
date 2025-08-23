@@ -23,7 +23,7 @@ const loginLimiter = rateLimit({
 });
 
 
-//min 6 karakter a felhasználónév, password max 20 min 6 karakter
+//Regisztráció felhasználók számára
 router.post('/register', async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
     try {
@@ -76,6 +76,63 @@ router.post('/register', async (req, res) => {
         res.status(500).json({ message: 'Szerverhiba történt a regisztráció során.', error });
     }
 })
+
+//Admin által létrehozott felhasználó regisztráció
+router.post('/admin/register', authenticateToken, async (req, res) => {
+    const { username, email, password, confirmPassword } = req.body;
+
+    try {
+        // Jogosultság ellenőrzés
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Nincs jogosultságod új felhasználót létrehozni." });
+        }
+
+        // Jelszó megerősítés ellenőrzése
+        if (password !== confirmPassword) {
+            return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' });
+        }
+        // Felhasználónév ellenőrzés
+        if (!username || username.length < 4 || username.length > 12) {
+            return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' });
+        }
+        // Email formátum ellenőrzés
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            return res.status(400).json({ message: 'Érvénytelen email cím formátum.' });
+        }
+        // Email duplikáció ellenőrzés
+        const existingUser = await users.findOne({ where: { email } });
+        if (existingUser) {
+            return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });
+        }
+        // Jelszó ellenőrzés
+        if (!password || password.length < 6 || password.length > 20) {
+            return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' });
+        }
+
+        // Jelszó hash-elése
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Új user létrehozása egyből aktívként
+        const newUser = await users.create({
+            username,
+            email,
+            password: hashedPassword,
+            points: 0,
+            role: 'user',               
+            isActive: "active", 
+            activationToken: null,
+            activationExpires: null,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
+
+        res.status(201).json({ message: "Felhasználó sikeresen létrehozva és aktiválva.", userId: newUser.id });
+    } catch (error) {
+        console.error("Admin általi felhasználó létrehozás hiba:", error.message);
+        res.status(500).json({ message: 'Szerverhiba történt a felhasználó létrehozásakor.', error });
+    }
+});
 
 //Email megerősítése
 router.get('/verify-email', async (req, res) => {
