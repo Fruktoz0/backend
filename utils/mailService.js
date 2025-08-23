@@ -1,12 +1,13 @@
 const Mailjet = require('node-mailjet');
 
+
 const mailjet = Mailjet.apiConnect(
     process.env.MAILJET_API_KEY,
     process.env.MAILJET_API_SECRET
 );
 
 async function sendValidationEmail(toEmail, token) {
-    const link = `https://tisztavaros.hu/auth/verify-email?token=${token}`;
+    const link = `https://tisztavaros.hu/api/auth/verify-email?token=${token}`;
 
     try {
         await mailjet
