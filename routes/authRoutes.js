@@ -79,7 +79,7 @@ router.post('/register', async (req, res) => {
 
 //Admin által létrehozott felhasználó regisztráció
 router.post('/admin/register', authenticateToken, async (req, res) => {
-    const { username, email, password, confirmPassword } = req.body;
+    const { username, email, password, confirmPassword, role } = req.body;
 
     try {
         // Jogosultság ellenőrzés
@@ -119,7 +119,7 @@ router.post('/admin/register', authenticateToken, async (req, res) => {
             email,
             password: hashedPassword,
             points: 0,
-            role: 'user',               
+            role,               
             isActive: "active", 
             activationToken: null,
             activationExpires: null,
