@@ -296,24 +296,27 @@ router.get("/status-duration/average", authenticateToken, async (req, res) => {
         const durations = {}; // { status: összes_ms }
         const counts = {};    // { status: hány db }
 
-        for (let i = 0; i < histories.length; i++) {
+        for (let i = 0; i < histories.length - 1; i++) {
             const current = histories[i];
             const next = histories[i + 1];
 
             // ha másik report jön, ne számolj tovább
-            if (!next || next.reportId !== current.reportId) continue;
+            if (current.reportId !== next.reportId) continue;
 
-            const endTime = new Date(next.changedAt);
             const startTime = new Date(current.changedAt);
+            const endTime = new Date(next.changedAt);
             const durationMs = endTime - startTime;
 
-            if (!durations[current.status]) {
-                durations[current.status] = 0;
-                counts[current.status] = 0;
+            if (!durations[current.statusId]) {   // nálad a mező `statusId` a táblában!
+                durations[current.statusId] = 0;
+                counts[current.statusId] = 0;
             }
-            durations[current.status] += durationMs;
-            counts[current.status] += 1;
+
+            // mindig összeadjuk (akkor is, ha current.statusId === next.statusId)
+            durations[current.statusId] += durationMs;
+            counts[current.statusId] += 1;
         }
+
 
         // Átlag számítás
         const averages = {};
