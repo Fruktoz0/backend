@@ -33,6 +33,8 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ message: 'Legalább 1 kép feltöltése kötelező.' });
         }
+
+
         // Új report létrehozása az adatbázisban
         const newReport = await reports.create({
             userId: req.user.id, // authenticate middleware-ből
@@ -263,8 +265,8 @@ router.get("/status-duration/:id", authenticateToken, async (req, res) => {
             const durationMs = new Date(endTime) - new Date(current.changedAt)
 
             durations.push({
-                status: current.status,
-                from: current.changeAt,
+                status: current.statusId,
+                from: current.changedAt,
                 to: endTime,
                 durationMs,
                 durationHours: (durationMs / (1000 * 60 * 60)).toFixed(2)
@@ -280,7 +282,6 @@ router.get("/status-duration/:id", authenticateToken, async (req, res) => {
 //Összes bejelentés státuszaiban töltött idejének megjelenítése
 router.get("/status-duration/average", authenticateToken, async (req, res) => {
     try {
-        //Jogosultság ellenőrzés, admin vagy instituton felhasználó
         if (req.user.role !== "admin" && req.user.role !== "institution") {
             return res.status(403).json({ message: "Nincs jogosultságod." });
         }
@@ -293,39 +294,40 @@ router.get("/status-duration/average", authenticateToken, async (req, res) => {
             return res.json({ message: "Nincs adat a statisztikához." });
         }
 
-        const durations = {}; // { status: összes_ms }
-        const counts = {};    // { status: hány db }
+        const durations = {};
+        const counts = {};
 
-        for (let i = 0; i < histories.length - 1; i++) {
+        for (let i = 0; i < histories.length; i++) {
             const current = histories[i];
             const next = histories[i + 1];
 
-            // ha másik report jön, ne számolj tovább
-            if (current.reportId !== next.reportId) continue;
+            // ha van következő ugyanahhoz a reporthoz, addig tart
+            // ha nincs, akkor mostanáig számoljuk
+            const endTime =
+                next && next.reportId === current.reportId
+                    ? new Date(next.changedAt)
+                    : new Date();
 
             const startTime = new Date(current.changedAt);
-            const endTime = new Date(next.changedAt);
             const durationMs = endTime - startTime;
 
-            if (!durations[current.statusId]) {   // nálad a mező `statusId` a táblában!
+            if (!durations[current.statusId]) {
                 durations[current.statusId] = 0;
                 counts[current.statusId] = 0;
             }
 
-            // mindig összeadjuk (akkor is, ha current.statusId === next.statusId)
             durations[current.statusId] += durationMs;
             counts[current.statusId] += 1;
         }
 
-
         // Átlag számítás
         const averages = {};
-        Object.keys(durations).forEach((status) => {
-            const avgMs = durations[status] / counts[status];
-            averages[status] = {
+        Object.keys(durations).forEach((statusId) => {
+            const avgMs = durations[statusId] / counts[statusId];
+            averages[statusId] = {
                 avgMs,
                 avgHours: (avgMs / (1000 * 60 * 60)).toFixed(2),
-                avgDays: (avgMs / (1000 * 60 * 60 * 24)).toFixed(2)
+                avgDays: (avgMs / (1000 * 60 * 60 * 24)).toFixed(2),
             };
         });
 
