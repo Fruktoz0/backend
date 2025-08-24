@@ -238,5 +238,117 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
     }
 });
 
+//Adott bejelentés státuszban töltött idejének megjelenítése
+router.get("/status-duration/:id", authenticateToken, async (req, res) => {
+    try {
+        //Jogosultság ellenőrzés, admin vagy instituton felhasználó
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
+            return res.status(403).json({ message: "Nincs jogosultságod a státuszban töltött idő megtekintéséhez." })
+        }
+        const reportId = req.params.id
+        const histories = await statusHistories.findAll({
+            where: { reportId },
+            order: [["changedAt", "ASC"]],
+        })
+        if (histories.length === 0) {
+            return res.json({ message: "Nincs státuszváltás ehhez a reporthoz" })
+        }
+        const durations = []
+        for (let i = 0; i < histories.length; i++) {
+            const current = histories[i]
+            const next = histories[i + 1]
+
+            //Ha van következő státusz addig tart
+            const endTime = next ? next.changedAt : new Date();
+            const durationMs = new Date(endTime) - new Date(current.changedAt)
+
+            durations.push({
+                status: current.status,
+                from: current.changeAt,
+                to: endTime,
+                durationMs,
+                durationHours: (durationMs / (1000 * 60 * 60)).toFixed(2)
+            })
+        }
+        res.json(durations)
+    } catch {
+        console.error("Hiba történt a státusz idők lekérdezésekor", error)
+        res.status(500).json({ message: "Szerverhiba történt a státusz idők lekérdezésekor" })
+    }
+})
+
+//Összes bejelentés státuszaiban töltött idejének megjelenítése
+router.get("/status-duration/average", authenticateToken, async (req, res) => {
+    try {
+        //Jogosultság ellenőrzés, admin vagy instituton felhasználó
+        if (req.user.role !== "admin" && req.user.role !== "institution") {
+            return res.status(403).json({ message: "Nincs jogosultságod." });
+        }
+
+        const histories = await statusHistories.findAll({
+            order: [["reportId", "ASC"], ["changedAt", "ASC"]],
+        });
+
+        if (histories.length === 0) {
+            return res.json({ message: "Nincs adat a statisztikához." });
+        }
+
+        const durations = {}; // { status: összes_ms }
+        const counts = {};    // { status: hány db }
+
+        for (let i = 0; i < histories.length; i++) {
+            const current = histories[i];
+            const next = histories[i + 1];
+
+            // ha másik report jön, ne számolj tovább
+            if (!next || next.reportId !== current.reportId) continue;
+
+            const endTime = new Date(next.changedAt);
+            const startTime = new Date(current.changedAt);
+            const durationMs = endTime - startTime;
+
+            if (!durations[current.status]) {
+                durations[current.status] = 0;
+                counts[current.status] = 0;
+            }
+            durations[current.status] += durationMs;
+            counts[current.status] += 1;
+        }
+
+        // Átlag számítás
+        const averages = {};
+        Object.keys(durations).forEach((status) => {
+            const avgMs = durations[status] / counts[status];
+            averages[status] = {
+                avgMs,
+                avgHours: (avgMs / (1000 * 60 * 60)).toFixed(2),
+                avgDays: (avgMs / (1000 * 60 * 60 * 24)).toFixed(2)
+            };
+        });
+
+        res.json(averages);
+    } catch (error) {
+        console.error("Hiba az átlag státusz idők számításánál:", error);
+        res.status(500).json({ message: "Szerverhiba az átlag számításánál." });
+    }
+});
+
+//Bejelentések státuszainak darabszáma
+router.get("/stats", authenticateToken, async (req, res) => {
+    try {
+        // Jogosultság ellenőrzése
+        if (req.user.role !== 'admin' && req.user.role !== "institution") {
+            return res.status(403).json({ message: 'Nincs jogosultságod a státuszok mennyiségének megtekintéséhez.' });
+        }
+        const stats = await reports.count({
+            group: "status"
+        })
+        res.json(stats)
+    } catch (error) {
+        console.error("Hiba történt a statok lekérdezése során.", error)
+        res.status(500).json({ message: "Szerverhiba a statok lekérdezése során." })
+    }
+})
+
 
 module.exports = router;
