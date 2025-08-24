@@ -240,45 +240,6 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
     }
 });
 
-//Adott bejelentés státuszban töltött idejének megjelenítése
-router.get("/status-duration/:id", authenticateToken, async (req, res) => {
-    try {
-        //Jogosultság ellenőrzés, admin vagy instituton felhasználó
-        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
-            return res.status(403).json({ message: "Nincs jogosultságod a státuszban töltött idő megtekintéséhez." })
-        }
-        const reportId = req.params.id
-        const histories = await statusHistories.findAll({
-            where: { reportId },
-            order: [["changedAt", "ASC"]],
-        })
-        if (histories.length === 0) {
-            return res.json({ message: "Nincs státuszváltás ehhez a reporthoz" })
-        }
-        const durations = []
-        for (let i = 0; i < histories.length; i++) {
-            const current = histories[i]
-            const next = histories[i + 1]
-
-            //Ha van következő státusz addig tart
-            const endTime = next ? next.changedAt : new Date();
-            const durationMs = new Date(endTime) - new Date(current.changedAt)
-
-            durations.push({
-                status: current.statusId,
-                from: current.changedAt,
-                to: endTime,
-                durationMs,
-                durationHours: (durationMs / (1000 * 60 * 60)).toFixed(2)
-            })
-        }
-        res.json(durations)
-    } catch {
-        console.error("Hiba történt a státusz idők lekérdezésekor", error)
-        res.status(500).json({ message: "Szerverhiba történt a státusz idők lekérdezésekor" })
-    }
-})
-
 //Összes bejelentés státuszaiban töltött idejének megjelenítése
 router.get("/status-duration/average", authenticateToken, async (req, res) => {
     try {
@@ -352,6 +313,45 @@ router.get("/stats", authenticateToken, async (req, res) => {
     } catch (error) {
         console.error("Hiba történt a statok lekérdezése során.", error)
         res.status(500).json({ message: "Szerverhiba a statok lekérdezése során." })
+    }
+})
+
+//Adott bejelentés státuszban töltött idejének megjelenítése
+router.get("/status-duration/:id", authenticateToken, async (req, res) => {
+    try {
+        //Jogosultság ellenőrzés, admin vagy instituton felhasználó
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
+            return res.status(403).json({ message: "Nincs jogosultságod a státuszban töltött idő megtekintéséhez." })
+        }
+        const reportId = req.params.id
+        const histories = await statusHistories.findAll({
+            where: { reportId },
+            order: [["changedAt", "ASC"]],
+        })
+        if (histories.length === 0) {
+            return res.json({ message: "Nincs státuszváltás ehhez a reporthoz" })
+        }
+        const durations = []
+        for (let i = 0; i < histories.length; i++) {
+            const current = histories[i]
+            const next = histories[i + 1]
+
+            //Ha van következő státusz addig tart
+            const endTime = next ? next.changedAt : new Date();
+            const durationMs = new Date(endTime) - new Date(current.changedAt)
+
+            durations.push({
+                status: current.statusId,
+                from: current.changedAt,
+                to: endTime,
+                durationMs,
+                durationHours: (durationMs / (1000 * 60 * 60)).toFixed(2)
+            })
+        }
+        res.json(durations)
+    } catch {
+        console.error("Hiba történt a státusz idők lekérdezésekor", error)
+        res.status(500).json({ message: "Szerverhiba történt a státusz idők lekérdezésekor" })
     }
 })
 
