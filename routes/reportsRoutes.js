@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories } = require('../dbHandler');
+const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs } = require('../dbHandler');
 
 // Multer storage beállítás kiterjesztéssel
 const storage = multer.diskStorage({
@@ -239,6 +239,94 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a státusz történet lekérdezésekor" });
     }
 });
+//Adott bejelentés továbbításainak lekérdezése
+router.get("/:id/forwardLogs", authenticateToken, async (req, res) => {
+    const { id } = req.params
+    try {
+        //Report ellenőrzés
+        const report = await reports.findByPk(id);
+        if (!report) {
+            return res.status(404).json({ message: "Bejelentés nem található" });
+        }
+
+        //Jogosultság ellenőrzés
+        if (req.user.role !== "admin") {
+            if (req.user.role === "institution") {
+                if (report.institutionId !== req.user.institutionId) {
+                    return res.status(403).json({ message: "Nincs jogosultságod a logok megtekintésére." });
+                }
+            } else {
+                return res.status(403).json({ message: "Nincs jogosultságod a logok megtekintésére." });
+            }
+        }
+        //Lekérdezés a logokkal
+        const logs = await forwardingLogs.findAll({
+            where: { reportId: id },
+            include: [
+                { model: institutions, as: "fromInstitution", attributes: ["id", "name"] },
+                { model: institutions, as: "toInstitution", attributes: ["id", "name"] },
+                { model: users, as: "forwardedByUser", attributes: ["id", "username", "email"] }
+            ],
+            order: [["forwardedAt", "DESC"]]
+        });
+
+        res.json(logs);
+    } catch (error) {
+        console.error("Hiba történt a továbbítási logok lekérdezésénél", error)
+        res.status(500).json({ message: "Szerverhiba a logok lekérdezése során." })
+    }
+})
+
+//Adott bejelentés hozzárendelése más intézményhez Admin/Intézményi felhasználó
+router.put("/forward/:id", authenticateToken, async (req, res) => {
+    const { id } = req.params;
+    const { institutionId, categoryId, reason } = req.body;
+
+    try {
+        const report = await reports.findByPk(id);
+        if (!report) {
+            return res.status(404).json({ message: "Bejelentés nem található" });
+        }
+
+        // Jogosultság ellenőrzés
+        if (req.user.role !== "admin") {
+            if (req.user.role === "institution") {
+                if (report.institutionId !== req.user.institutionId) {
+                    return res.status(403).json({ message: "Nincs jogosultságod a bejelentés továbbítására." });
+                }
+            } else {
+                return res.status(403).json({ message: "Nincs jogosultságod a bejelentés továbbítására." });
+            }
+        }
+
+        if (!reason) {
+            return res.status(409).json({ message: "Indok megadása kötelező!" });
+        }
+
+        // Forward log
+        const fromInstitutionId = report.institutionId;
+
+        // Report update
+        report.institutionId = institutionId;
+        report.categoryId = categoryId;
+        await report.save();
+
+        // Mentés a forwardingLogs-ba
+        await forwardingLogs.create({
+            reportId: report.id,
+            forwardedFromId: fromInstitutionId,
+            forwardedToId: institutionId,
+            forwardedByUserId: req.user.id,
+            reason: reason
+        });
+
+        res.json({ message: "Bejelentés sikeresen továbbítva." });
+
+    } catch (error) {
+        console.error("Hiba történt a bejelentés továbbítása során", error);
+        res.status(500).json({ message: "Szerverhiba történt a bejelentés továbbítása során" });
+    }
+});
 
 //Összes bejelentés státuszaiban töltött idejének megjelenítése
 router.get("/status-duration/average", authenticateToken, async (req, res) => {
@@ -316,7 +404,7 @@ router.get("/stats", authenticateToken, async (req, res) => {
     }
 })
 
-//Adott bejelentés státuszban töltött idejének megjelenítése
+//Adott bejelentés státuszban töltött idejének megjelenítése  // Ez legyen mindig az utolsó vagy rosszul fut el!!!
 router.get("/status-duration/:id", authenticateToken, async (req, res) => {
     try {
         //Jogosultság ellenőrzés, admin vagy instituton felhasználó
