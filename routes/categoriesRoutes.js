@@ -20,6 +20,21 @@ router.get('/list', async (req, res) => {
     }
 })
 
+//Kategóriák lekérdezése intézmény alapján
+router.get('/byInstitution/:institutionId', async (req, res) => {
+    try {
+        const { institutionId } = req.params;
+        const categoryList = await categories.findAll({
+            where: { defaultInstitutionId: institutionId },
+            attributes: ['id', 'categoryName']
+        });
+        res.json(categoryList);
+    } catch (error) {
+        res.status(500).json({ message: 'Szerverhiba a kategóriák lekérésekor' });
+    }
+});
+
+
 router.post('/create', authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
         return res.status(403).json({ message: "Nincs jogosultságod kategória létrehozására." })

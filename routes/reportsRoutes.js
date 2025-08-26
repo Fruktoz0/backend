@@ -263,8 +263,8 @@ router.get("/:id/forwardLogs", authenticateToken, async (req, res) => {
         const logs = await forwardingLogs.findAll({
             where: { reportId: id },
             include: [
-                { model: institutions, as: "fromInstitution", attributes: ["id", "name"] },
-                { model: institutions, as: "toInstitution", attributes: ["id", "name"] },
+                { model: institutions, as: "forwardedFrom", attributes: ["id", "name"] },
+                { model: institutions, as: "forwardedTo", attributes: ["id", "name"] },
                 { model: users, as: "forwardedByUser", attributes: ["id", "username", "email"] }
             ],
             order: [["forwardedAt", "DESC"]]

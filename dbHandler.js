@@ -624,7 +624,7 @@ tasks.belongsTo(users, { foreignKey: 'workerId' });
 
 // USER -> FORWARDINGLOGS (ki továbbította)
 users.hasMany(forwardingLogs, { foreignKey: 'forwardedByUserId' });
-forwardingLogs.belongsTo(users, { foreignKey: 'forwardedByUserId' });
+forwardingLogs.belongsTo(users, { foreignKey: 'forwardedByUserId', as: 'forwardedByUser' });
 forwardingLogs.belongsTo(institutions, { foreignKey: 'forwardedFromId', as: 'forwardedFrom' });
 forwardingLogs.belongsTo(institutions, { foreignKey: 'forwardedToId', as: 'forwardedTo' });
 forwardingLogs.belongsTo(reports, { foreignKey: 'reportId', as: 'report' });
