@@ -667,8 +667,6 @@ reportVotes.belongsTo(reports, { foreignKey: 'reportId' });
 reports.belongsTo(institutions, { foreignKey: 'institutionId' })
 institutions.hasMany(reports, { foreignKey: 'institutionId' })
 
-
-
 //Report -> STATUS HISTORY
 reports.hasMany(statusHistories, { foreignKey: 'reportId' });
 statusHistories.belongsTo(reports, { foreignKey: 'reportId' });
@@ -692,7 +690,7 @@ module.exports = {
     reportVotes,
    // petitions, // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
     challenges,
-    petitionVotes,
+   // petitionVotes, // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
     badges,
     userBadges,
     userChallenges,
