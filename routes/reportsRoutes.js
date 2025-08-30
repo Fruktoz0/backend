@@ -101,7 +101,8 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
             message: 'Report sikeresen létrehozva',
             reportId: newReport.id,
             images: req.files.map(f => `/uploads/${f.filename}`),
-            newPoints: updatedUser.points
+            newPoints: updatedUser.points,
+            newBadges: newlyEarned
         });
     } catch (error) {
         console.error('Hiba a report létrehozásakor:', error);
