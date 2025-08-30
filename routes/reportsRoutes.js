@@ -67,6 +67,35 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
         });
 
         await Promise.all(imagePromises);
+
+        const reportCount = await reports.count({ where: { userId: req.user.id } })
+
+        // összes aktív badge lekérése
+        const activeBadges = await badges.findAll({ where: { isActive: true } });
+        const newlyEarned = [];
+
+        for (const badge of activeBadges) {
+            // csak a "total_reports" típusú badge-eket nézzük
+            if (badge.criteriaType === "total_reports" && reportCount >= badge.criteriaValue) {
+                const already = await userBadges.findOne({
+                    where: { userId: req.user.id, badgeId: badge.id }
+                });
+                if (!already) {
+                    const earned = await userBadges.create({
+                        userId: req.user.id,
+                        badgeId: badge.id
+                    });
+                    newlyEarned.push({
+                        id: badge.id,
+                        title: badge.title,
+                        description: badge.description,
+                        iconUrl: badge.iconUrl,
+                        earnedAt: earned.createdAt
+                    });
+                }
+            }
+        }
+
         // A válasz a frontendnek
         res.status(201).json({
             message: 'Report sikeresen létrehozva',
