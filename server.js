@@ -47,7 +47,6 @@ server.use('/api', userRoutes);
 
 
         await dbHandler.reports.sync({ alter: true });
-        await dbHandler.tasks.sync({ alter: true });
         await dbHandler.reportImages.sync({ alter: true });
         await dbHandler.reportVotes.sync({ alter: true });
         await dbHandler.statusHistories.sync({ alter: true });

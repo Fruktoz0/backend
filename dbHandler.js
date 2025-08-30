@@ -499,38 +499,6 @@ const userChallenges = dbConnection.define('userChallenge', {
 });
 
 
-const tasks = dbConnection.define('task', {
-    'id': {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true,
-        allowNull: false
-    },
-    'reportId': {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    'workerId': {
-        type: DataTypes.UUID,
-        allowNull: true,
-    },
-    'assignedAt': {
-        type: DataTypes.DATE,
-        allowNull: true,
-    },
-    'completedAt': {
-        type: DataTypes.DATE,
-        allowNull: true,
-    },
-    'status': {
-        type: DataTypes.ENUM('assigned', 'in_progress', 'completed'),
-        defaultValue: 'assigned'
-    },
-    'feedback': {
-        type: DataTypes.STRING,
-        allowNull: true
-    }
-})
 const institutions = dbConnection.define('institution', {
     'id': {
         type: DataTypes.UUID,
@@ -651,9 +619,7 @@ userBadges.belongsTo(users, { foreignKey: 'userId' });
 users.hasMany(userChallenges, { foreignKey: 'userId' });
 userChallenges.belongsTo(users, { foreignKey: 'userId' });
 
-// USER -> TASKS (workerId)
-users.hasMany(tasks, { foreignKey: 'workerId' });
-tasks.belongsTo(users, { foreignKey: 'workerId' });
+
 
 // USER -> FORWARDINGLOGS (ki továbbította)
 users.hasMany(forwardingLogs, { foreignKey: 'forwardedByUserId' });
@@ -701,9 +667,7 @@ reportVotes.belongsTo(reports, { foreignKey: 'reportId' });
 reports.belongsTo(institutions, { foreignKey: 'institutionId' })
 institutions.hasMany(reports, { foreignKey: 'institutionId' })
 
-//REPORT -> TASKS
-reports.hasMany(tasks, { foreignKey: 'reportId' });
-tasks.belongsTo(reports, { foreignKey: 'reportId' });
+
 
 //Report -> STATUS HISTORY
 reports.hasMany(statusHistories, { foreignKey: 'reportId' });
@@ -726,13 +690,12 @@ module.exports = {
     categories,
     reports,
     reportVotes,
-    petitions,
+   // petitions, // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
     challenges,
     petitionVotes,
     badges,
     userBadges,
     userChallenges,
-    tasks,
     statusHistories,
     forwardingLogs,
     institutions,
