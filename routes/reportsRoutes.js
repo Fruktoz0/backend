@@ -165,6 +165,21 @@ router.get('/assignedReports', authenticateToken, async (req, res) => {
     }
 })
 
+//Bejelentkezett felhasználó bejelentéseinek száma
+router.get('/userReportCount', async (req, res) => {
+    try {
+        const userId = req.user.id
+        const count = await reports.count({
+            where: { userId }
+        })
+        res.json({ reportCount: count })
+
+    } catch (error) {
+        console.error("Hiba történt a felhasználó bejelentéseinek száma lekérdezésekor", error)
+        res.status(500).json({ message: "Szerverhiba a felhasználó bejelentéseinek száma lekérdezésekor" })
+    }
+})
+
 //Report státusz váltás (admin vagy saját intézmény)
 router.post('/:id/status', authenticateToken, async (req, res) => {
     try {
