@@ -53,8 +53,8 @@ server.use('/api', userRoutes);
         await dbHandler.forwardingLogs.sync({ alter: true });
 
 
-        await dbHandler.petitions.sync({ alter: true });
-        await dbHandler.petitionVotes.sync({ alter: true });
+      //  await dbHandler.petitions.sync({ alter: true }); // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
+      //  await dbHandler.petitionVotes.sync({ alter: true }); // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
 
         await dbHandler.userBadges.sync({ alter: true });
         await dbHandler.userChallenges.sync({ alter: true });
