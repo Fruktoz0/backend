@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs } = require('../dbHandler');
+const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs, badges, userBadges } = require('../dbHandler');
 
 // Multer storage beállítás kiterjesztéssel
 const storage = multer.diskStorage({
