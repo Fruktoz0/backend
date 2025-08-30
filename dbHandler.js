@@ -254,6 +254,7 @@ const reportVotes = dbConnection.define('reportVote', {
     }
 })
 
+/*   //NEM KERÜL EGYENLŐRE FEJLESZTÉSRE
 const petitions = dbConnection.define('petition', {
     'id': {
         type: DataTypes.UUID,
@@ -287,6 +288,7 @@ const petitions = dbConnection.define('petition', {
     }
 })
 
+
 const petitionVotes = dbConnection.define('petitionVote', {
     'id': {
         type: DataTypes.UUID,
@@ -307,7 +309,7 @@ const petitionVotes = dbConnection.define('petitionVote', {
         allowNull: false
     }
 })
-
+*/
 const badges = dbConnection.define('badge', {
     'id': {
         type: DataTypes.UUID,
@@ -315,10 +317,14 @@ const badges = dbConnection.define('badge', {
         primaryKey: true,
         allowNull: false
     },
+    'code': {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
     'name': {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
     },
     'description': {
         type: DataTypes.STRING,
@@ -328,6 +334,27 @@ const badges = dbConnection.define('badge', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    'criteriaType': {
+        type: DataTypes.ENUM('total_reports'), //Később bővíthető
+        allowNull: false
+    },
+    'criteriaValue': {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    'isActive': {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
+    'createdAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    'updatedAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    }
 })
 
 const userBadges = dbConnection.define('userBadge', {
@@ -340,13 +367,13 @@ const userBadges = dbConnection.define('userBadge', {
     'userId': {
         type: DataTypes.UUID,
         allowNull: false,
-        foreignKey: true
+        foreignKey: true,
     },
     'badgeId': {
         type: DataTypes.UUID,
         allowNull: false,
     },
-    'earnedAt': {
+    'awardedAt': {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
     }
@@ -602,6 +629,7 @@ reports.belongsTo(users, { foreignKey: 'userId' });
 users.hasMany(reportVotes, { foreignKey: 'userId' });
 reportVotes.belongsTo(users, { foreignKey: 'userId' });
 
+/*   //EGYENLŐRE NEM KERÜL LEFEJLESZTÉSRE//
 // USER -> PETITIONS
 users.hasMany(petitions, { foreignKey: 'userId' });
 petitions.belongsTo(users, { foreignKey: 'userId' });
@@ -609,6 +637,11 @@ petitions.belongsTo(users, { foreignKey: 'userId' });
 // USER -> PETITION VOTES
 users.hasMany(petitionVotes, { foreignKey: 'userId' });
 petitionVotes.belongsTo(users, { foreignKey: 'userId' });
+
+// PETITION -> PETITION VOTES
+petitions.hasMany(petitionVotes, { foreignKey: 'petitionId' });
+petitionVotes.belongsTo(petitions, { foreignKey: 'petitionId' });
+*/   //EGYENLŐRE NEM KERÜL LEFEJLESZTÉSRE//
 
 // USER -> USER BADGES
 users.hasMany(userBadges, { foreignKey: 'userId' });
@@ -632,10 +665,6 @@ forwardingLogs.belongsTo(reports, { foreignKey: 'reportId', as: 'report' });
 // USER -> INSTITUTIONS
 users.belongsTo(institutions, { foreignKey: 'institutionId' });
 institutions.hasMany(users, { foreignKey: 'institutionId' });
-
-// PETITION -> PETITION VOTES
-petitions.hasMany(petitionVotes, { foreignKey: 'petitionId' });
-petitionVotes.belongsTo(petitions, { foreignKey: 'petitionId' });
 
 // BADGE -> USER BADGES
 badges.hasMany(userBadges, { foreignKey: 'badgeId' });
