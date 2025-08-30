@@ -166,7 +166,7 @@ router.get('/assignedReports', authenticateToken, async (req, res) => {
 })
 
 //Bejelentkezett felhasználó bejelentéseinek száma
-router.get('/userReportCount', async (req, res) => {
+router.get('/userReportCount', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id
         const count = await reports.count({
