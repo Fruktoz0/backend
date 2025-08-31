@@ -102,6 +102,12 @@ router.put('/admin/user/:id/institution', authenticateToken, async (req, res) =>
         if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található' })
         }
+        // Leválasztás engedése az intézményről
+        if (institutionId === null || institutionId === undefined || institutionId === "") {
+            await user.update({ institutionId: null });
+            return res.status(200).json({ message: "Intézmény leválasztva a felhasználóról." });
+        }
+
         const institution = await institutions.findByPk(institutionId)
 
         if (!institution) {
