@@ -11,7 +11,7 @@ router.get('/admin/users', authenticateToken, async (req, res) => {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
         const allUsers = await users.findAll({
-            attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
+            attributes: ['id', 'username', 'institutionId', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
         });
         res.status(200).json(allUsers);
     } catch (error) {
@@ -28,13 +28,13 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
-	var do_name = req.body.name != '' && req.body.name != undefined
-	var do_email = req.body.email != '' && req.body.email != undefined
-        if (test_y != '') { console.log("Email:", do_email , "- Name:", do_name) }
+        var do_name = req.body.name != '' && req.body.name != undefined
+        var do_email = req.body.email != '' && req.body.email != undefined
+        if (test_y != '') { console.log("Email:", do_email, "- Name:", do_name) }
         var s_name = '%' + req.body.name + '%'
         var s_email = '%' + req.body.email + '%'
 
-        if ( !do_name && !do_email) {
+        if (!do_name && !do_email) {
             return res._construct(404).json({ message: 'Hülye, legalább egy paramétert adj meg!' });
         } else if (!do_name && do_email) {
             allUser = await users.findAll({
@@ -52,7 +52,7 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
                 attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
             });
         }
-        return res.status(200).json(allUser);        
+        return res.status(200).json(allUser);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
