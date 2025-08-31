@@ -50,7 +50,7 @@ router.post('/register', async (req, res) => {
     //Email duplikáció ellenőrzés
         const existingUser = await users.findOne({ where: { email } });
         if (existingUser)
-            return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });        
+            return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });
 
     //Jelszó hash-elése
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -94,7 +94,7 @@ router.post('/admin/register', authenticateToken, async (req, res) => {
         if (password !== confirmPassword) {
             return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' });
         }
-        // Felhasználónév hosszának ellenőrzése
+    // Felhasználónév hosszának ellenőrzése
         if (!username || username.length < 4 || username.length > 12) {
             return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' });
         }
