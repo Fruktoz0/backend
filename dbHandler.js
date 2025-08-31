@@ -48,11 +48,11 @@ const users = dbConnection.define('user', {
         defaultValue: 0
     },
     'role': {
-        type: DataTypes.ENUM('user', 'admin', 'worker', 'institution', 'compliance'),
+        type: DataTypes.ENUM('user', 'admin', 'institution', 'compliance'),
         defaultValue: 'user'
     },
     'isActive': {
-        type: DataTypes.ENUM('active', 'inactive'),
+        type: DataTypes.ENUM('active', 'inactive', 'archived'),
         defaultValue: 'inactive'
     },
     'institutionId': {
@@ -688,9 +688,9 @@ module.exports = {
     categories,
     reports,
     reportVotes,
-   // petitions, // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
+    // petitions, // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
     challenges,
-   // petitionVotes, // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
+    // petitionVotes, // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
     badges,
     userBadges,
     userChallenges,

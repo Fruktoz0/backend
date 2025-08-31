@@ -29,31 +29,31 @@ const loginLimiter = rateLimit({
 router.post('/register', async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
     try {
-    //Jelszó megerősítés ellenőrzése
+        //Jelszó megerősítés ellenőrzése
         if (password !== confirmPassword) {
             return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' });
         }
-    //Felhasználónév ellenőrzés
+        //Felhasználónév ellenőrzés
         if (!username || username.length < 4 || username.length > 12) {
             return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' });
         }
-    //Email formátum ellenőrzés
+        //Email formátum ellenőrzés
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !emailRegex.test(email)) {
             return res.status(400).json({ message: 'Érvénytelen email cím formátum.' });
         }
-    //Jelszó ellenőrzés
+        //Jelszó ellenőrzés
         if (!password || password.length < 6 || password.length > 20) {
             return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' });
         }
-    //Email duplikáció ellenőrzés
+        //Email duplikáció ellenőrzés
         const existingUser = await users.findOne({ where: { email } });
         if (existingUser)
-            return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });        
+            return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });
 
-    //Jelszó hash-elése
+        //Jelszó hash-elése
         const hashedPassword = await bcrypt.hash(password, 10);
-    //Aktivációs token generálása + lejárati idő
+        //Aktivációs token generálása + lejárati idő
         const activationToken = crypto.randomBytes(32).toString('hex');
         const activationExpires = new Date(Date.now() + 3600000);
 
@@ -84,12 +84,12 @@ router.post('/admin/register', authenticateToken, async (req, res) => {
     const { username, email, password, confirmPassword, role } = req.body;
 
     try {
-    // Jogosultság ellenőrzés
+        // Jogosultság ellenőrzés
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Nincs jogosultságod új felhasználót létrehozni." });
         }
 
-    // Jelszó megerősítés ellenőrzése
+        // Jelszó megerősítés ellenőrzése
         if (password !== confirmPassword) {
             return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' });
         }
@@ -97,31 +97,31 @@ router.post('/admin/register', authenticateToken, async (req, res) => {
         if (!username || username.length < 4 || username.length > 12) {
             return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' });
         }
-    // Email formátum ellenőrzés
+        // Email formátum ellenőrzés
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !emailRegex.test(email)) {
             return res.status(400).json({ message: 'Érvénytelen email cím formátum.' });
         }
-    // Jelszó ellenőrzés
+        // Jelszó ellenőrzés
         if (!password || password.length < 6 || password.length > 20) {
             return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' });
         }
-    // Email duplikáció ellenőrzés
+        // Email duplikáció ellenőrzés
         const existingUser = await users.findOne({ where: { email } });
         if (existingUser) {
             return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });
         }
-    // Jelszó hash-elése
+        // Jelszó hash-elése
         const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Új user létrehozása egyből aktívként
+        // Új user létrehozása egyből aktívként
         const newUser = await users.create({
             username,
             email,
             password: hashedPassword,
             points: 0,
-            role,               
-            isActive: "active", 
+            role,
+            isActive: "active",
             activationToken: null,
             activationExpires: null,
             createdAt: new Date(),
@@ -195,6 +195,9 @@ router.post('/login', loginLimiter, async (req, res) => {
         //Fiók státuszának ellenőrzése
         if (user.isActive !== "active") {
             return res.status(403).json({ message: 'A fiók inaktív, kérlek erősítsd meg az emailed.' });
+        }
+        if (user.isActive !== "archived") {
+            return res.status(403).json({ message: "A felhasználó archiválva" })
         }
         const token = jwt.sign({ id: user.id, role: user.role, institutionId: user.institutionId }, JWT_SECRET, { expiresIn: expireTime });
         res.status(200).json({ token });

@@ -28,7 +28,10 @@ async function sendValidationEmail(toEmail, token) {
                         TextPart: `Kérlek kattints a linkre a regisztrációd megerősítéséhez: ${link}`,
                         HTMLPart: `<h3>Köszönjük, hogy regisztráltál a Tiszta Városban!</h3>
                        <p>Kattints a linkre a megerősítéshez:</p>
-                       <a href="${link}">${link}</a>`
+                       <a href="${link}">${link}</a>
+                       <p style="margin-top:16px; color:#888;">
+                        Amennyiben nem erősíted meg a regisztrációdat, úgy a következő napon, rendszer éjfélkor automatikusan törli.
+                        </p>`
                     }
                 ]
             });
