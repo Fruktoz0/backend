@@ -77,13 +77,11 @@ router.put("/update/:id", authenticateToken, async (req, res) => {
         if (!institution)
             return res.status(404).json({ message: "Intézmény nem található" })
 
-        //Jogosultságellnőrzés
-        if (req.user.role !== "institution" && req.user.role !== "admin" && user.institutionId !== institution.id) {
-            return res.status(403).json({ message: "Nincs jogosultságod az intézmény szerkesztésére." })
-        }
+    //Jogosultságellenőrzés
         const user = await users.findByPk(req.user.id)
-        if (!user || user.institutionId !== institution.id) {
-            return res.status(403).json({ message: "Nincs jogosultságod más intézmény szerkesztésére" })
+        if (req.user.role !== "admin" && req.user.role !== "Institution" && user.institutionId !== institution.id) {
+            console.log("403: ", user.role);
+            return res.status(403).json({ message: "Nincs jogosultságod az intézmény szerkesztésére" });
         }
             //Adatok frissítése
             institution.name = name,
