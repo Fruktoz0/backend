@@ -197,10 +197,10 @@ router.post('/login', loginLimiter, async (req, res) => {
         }
         if (test_y != '') { console.log("User.Active =",user.isActive) }
     //Fiók státuszának ellenőrzése
-        if (user.isActive !== "active") {
+        if (user.isActive === "inactive") {
             return res.status(403).json({ message: 'A fiók inaktív, kérlek erősítsd meg az emailed.' });
         }
-        if (user.isActive !== "archived") {
+        if (user.isActive === "archived") {
             return res.status(403).json({ message: "A felhasználó archiválva" })
         }
         const token = jwt.sign({ id: user.id, role: user.role, institutionId: user.institutionId }, JWT_SECRET, { expiresIn: expireTime });
