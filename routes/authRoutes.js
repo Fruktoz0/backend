@@ -195,11 +195,16 @@ router.post('/login', loginLimiter, async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ message: 'Helytelen jelszó.' });
         }
+    //Fiók státuszának ellenőrzése        
         if (test_y != '') { console.log("User.Active =",user.isActive) }
-    //Fiók státuszának ellenőrzése
+
+        if (user.isActive === "archived") {
+            return res.status(403).json({ message: "A felhasználó archiválva" })
+        }
         if (user.isActive !== "active") {
             return res.status(403).json({ message: 'A fiók inaktív, kérlek erősítsd meg az emailed.' });
         }
+
         const token = jwt.sign({ id: user.id, role: user.role, institutionId: user.institutionId }, JWT_SECRET, { expiresIn: expireTime });
         res.status(200).json({ token });
 
