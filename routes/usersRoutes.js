@@ -112,7 +112,7 @@ router.put('/admin/user/:id/institution', authenticateToken, async (req, res) =>
         }        
 
         if (test_y != '') { console.log("User.ID: ", userId) }
-        if (test_y != '') { console.log("Inst.ID: ", institutionIds) }
+        if (test_y != '') { console.log("Inst.ID: ", institutionId) }
 
         const user = await users.findByPk(userId)
         if (!user) {
@@ -125,8 +125,7 @@ router.put('/admin/user/:id/institution', authenticateToken, async (req, res) =>
         }
 
         const institution = await institutions.findByPk(institutionId)
-        if (test_y != '') { console.log("Institution: ", validInstitutions) }
-        if (!institution) {
+         if (!institution) {
             return res.status(400).json({ message: "Érvénytelen institution ID található a kérésben." })
         }
 
