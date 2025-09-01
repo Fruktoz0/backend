@@ -106,28 +106,36 @@ router.put('/admin/user/:id', authenticateToken, async (req, res) => {
 router.put('/admin/user/:id/institution', authenticateToken, async (req, res) => {
     try {
         const userId = req.params.id
-        const { institutionId } = req.body
+        if (req.body  === undefined) {
+            return res.status(401).json({ message: "Érvénytelen institution ID található a kérésben." })
+        }
+        const { institutionId } = req.body 
+
+        if (test_y != '') { console.log("User.ID: ", userId) }
+        if (test_y != '') { console.log("Sel. Inst.ID: ", institutionId) }        
+
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: "Nincs jogosultságod hozzá" })
         }        
 
-        if (test_y != '') { console.log("User.ID: ", userId) }
-        if (test_y != '') { console.log("Inst.ID: ", institutionId) }
-
-        const user = await users.findByPk(userId)
-        if (!user) {
+        const  user = await users.findByPk(userId)
+        if (! user) {
             return res.status(404).json({ message: 'Felhasználó nem található' })
         }
     // Leválasztás engedése az intézményről
         if (institutionId === null || institutionId === undefined || institutionId === "") {
             await user.update({ institutionId: null });
-            return res.status(200).json({ message: "Intézmény leválasztva a felhasználóról." });
+            return res.status(201).json({ message: "Intézmény leválasztva a felhasználóról." });
         }
 
         const institution = await institutions.findByPk(institutionId)
-         if (!institution) {
+        if (test_y != '') { console.log("Institution: ", institution) }
+        if (!institution) {
             return res.status(400).json({ message: "Érvénytelen institution ID található a kérésben." })
         }
+
+        //user.institutionId = institutionId;
+        //await user.save();
 
         await user.update({ institutionId })
         return res.status(200).json({ message: "Intézmény sikeresen frisítve a felhasználóhoz." })
