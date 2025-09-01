@@ -201,12 +201,14 @@ router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
     }
 })
 
-//Felhasználó saját adataink szerkesztése
 
+//Felhasználó saját adataink szerkesztése
 router.put('/users/:id', authenticateToken, async (req, res) => {
     try {
         const userId = req.params.id
-        if (req.user.id !== userId) {
+        if (test_y != '') { console.log("User.ID: ", userId) }
+
+        if (req.user.id !== userId && req.user.role !== "admin") {
             return res.status(403).json({ message: "Nincs jogosultságod a felhasználó adatainak frissítéséhez." });
         }
 
