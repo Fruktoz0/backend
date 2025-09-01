@@ -114,7 +114,6 @@ router.put('/admin/user/:id/institution', authenticateToken, async (req, res) =>
         }        
         if (test_y != '') { console.log("User.ID: ", userId) }
 
-
         const userId = req.params.id
         const  user = await users.findByPk(userId)
         if (! user) {
