@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const test_y = process.env.TEST_Y;
 const { Op } = require('sequelize');
 
+
 // Admin / Felhasználók adatainak listázása
 router.get('/admin/users', authenticateToken, async (req, res) => {
     try {
@@ -22,6 +23,7 @@ router.get('/admin/users', authenticateToken, async (req, res) => {
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
     }
 })
+
 
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
@@ -62,6 +64,7 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
     }
 })
 
+
 // Admin / Felhasználó szerepkörének és active/inactive/archived beállítás szerkesztése
 router.put('/admin/user/:id', authenticateToken, async (req, res) => {
     const userId = req.params.id
@@ -92,6 +95,7 @@ router.put('/admin/user/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a felhasználó frissítésekor" })
     }
 })
+
 
 //ADMIN / Felhasználók kapcsolása intézményekhez
 router.put('/admin/user/:id/institution', authenticateToken, async (req, res) => {
@@ -126,6 +130,7 @@ router.put('/admin/user/:id/institution', authenticateToken, async (req, res) =>
         return res.status(500).json({ message: "Szerverhiba az intézmények lekérdezésekor" })
     }
 })
+
 
 //Avatar csere
 router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
