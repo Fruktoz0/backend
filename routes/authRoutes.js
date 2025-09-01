@@ -196,7 +196,7 @@ router.post('/login', loginLimiter, async (req, res) => {
             return res.status(401).json({ message: 'Helytelen jelszó.' });
         }
     //Fiók státuszának ellenőrzése        
-        if (test_y != '') { console.log("User.Active =",user.isActive)
+        if (test_y != '') { console.log("User.Active =",user.isActive) }
 
         if (user.isActive === "archived") {
             return res.status(403).json({ message: "A felhasználó archiválva" })
