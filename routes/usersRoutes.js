@@ -105,29 +105,30 @@ router.put('/admin/user/:id', authenticateToken, async (req, res) => {
 //ADMIN / Felhasználók kapcsolása intézményekhez
 router.put('/admin/user/:id/institution', authenticateToken, async (req, res) => {
     try {
-        const userId = req.params.id
-        if (req.body  === undefined) {
-            return res.status(401).json({ message: "Érvénytelen institution ID található a kérésben." })
+        if (req.body === undefined) {
+            return res.status(400).json({ message: "Érvénytelen institution ID található a kérésben." })
         }
-        const { institutionId } = req.body 
-
-        if (test_y != '') { console.log("User.ID: ", userId) }
-        if (test_y != '') { console.log("Sel. Inst.ID: ", institutionId) }        
 
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: "Nincs jogosultságod hozzá" })
         }        
+        if (test_y != '') { console.log("User.ID: ", userId) }
 
+
+        const userId = req.params.id
         const  user = await users.findByPk(userId)
         if (! user) {
             return res.status(404).json({ message: 'Felhasználó nem található' })
         }
+
+        const { institutionId } = req.body 
     // Leválasztás engedése az intézményről
-        if (institutionId === null || institutionId === undefined || institutionId === "") {
+        if (institutionId === null || institutionId === "") {
             await user.update({ institutionId: null });
             return res.status(201).json({ message: "Intézmény leválasztva a felhasználóról." });
         }
 
+        if (test_y != '') { console.log("Sel. Inst.ID: ", institutionId) }        
         const institution = await institutions.findByPk(institutionId)
         if (test_y != '') { console.log("Institution: ", institution) }
         if (!institution) {

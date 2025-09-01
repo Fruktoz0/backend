@@ -160,5 +160,76 @@ describe('User Data of "users" route 2:', () => {
         .set('Authorization', 'bearer ' + token_admin)
         expect(response.statusCode).toBe(400)
     })
+    test('Admin clear User Institution with NOT send Inst.ID (undefined) [400]', async () => {
+        const response = await supertest(server).put('/admin/user/' + logged_user.id + '/institution')
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(400)
+    })
+})
+
+describe('User Data of "users" route 3:', () => {
+    test('User mod. Own Data [200]', async () => {
+        const response = await supertest(server).put('/users/' + logged_user.id).send({ username: 'Meki Admin', zipCode: '1045', city: 'Budapest', address: 'Józsika utca 73.' })
+        .set('Authorization', 'bearer ' + token_user)
+        expect(response.statusCode).toBe(200)
+    })
+    test('Admin modify User to Inactive [200]', async () => {
+        const response = await supertest(server).put('/admin/user/' + sel_user.id)
+        .send({ isActive: 'inactive' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+    })
+})
+
+describe('User Data of "users" route 3:', () => {
+    test('Login as inActive User     s11 - Fodbidden [403]', async () => {
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe2@smd.hu', password: 'Meki#012345' })
+        expect(response.statusCode).toBe(403)
+    })
+})
+
+describe('User Data of "users" route 3:', () => {
+    test('Login as inActive User     s11 - Fodbidden [403]', async () => {
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe2@smd.hu', password: 'Meki#012345' })
+        expect(response.statusCode).toBe(403)
+    })
+})
+
+describe('User Data of "users" route 4:', () => {
+    test('Admin Get Users Data by partial Email "smd.hu/Mek" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ email: 'smd.hu', name: 'Mek' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
+    test('Admin Get Users Data by partial Email "smd.hu/" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ email: 'smd.hu' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
+    test('Admin Get Users Data by partial Email "smd.hu/Admin" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ email: 'smd.hu', name: 'Admin' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
+    test('Admin Get Users Data by partial Email "/Elek" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ name: 'Elek' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
+    test('Admin Get Users Data by partial Email "smd.hu/" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ email: 'smd.hu', name: '' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
 })
 
