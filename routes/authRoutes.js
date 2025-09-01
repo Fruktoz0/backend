@@ -86,7 +86,7 @@ router.post('/admin/register', authenticateToken, async (req, res) => {
     const { username, email, password, confirmPassword, role } = req.body;
     if (test_y != '') { console.log("New Reg.User: ", req.body) }
     try {
-        // Jogosultság ellenőrzés
+    // Jogosultság ellenőrzés
         if (req.user.role !== "admin") {
             return res.status(403).json({ message: "Nincs jogosultságod új felhasználót létrehozni." });
         }
@@ -151,7 +151,7 @@ router.get('/verify-email', async (req, res) => {
         if (user.activationExpires && new Date() > user.activationExpires) {
             return res.status(400).json({ message: "Az aktivációs email lejárt." })
         }
-        //Aktiválás
+    //Aktiválás
         user.isActive = "active";
         user.activationToken = null;
         user.activationExpires = null;
@@ -231,7 +231,7 @@ router.get('/user', authenticateToken, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található.' });
         }
-        //Felhasználó reportjainak megszámlálása
+    //Felhasználó reportjainak megszámlálása
         const reportCount = await reports.count({
             where: { userId: req.user.id }
         })
