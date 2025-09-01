@@ -4,6 +4,9 @@ const { users, institutions } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
 const { v4: uuidv4 } = require('uuid');
 
+const test_y = process.env.TEST_Y;
+const { Op } = require('sequelize');
+
 // Admin / Felhasználók adatainak listázása
 router.get('/admin/users', authenticateToken, async (req, res) => {
     try {
