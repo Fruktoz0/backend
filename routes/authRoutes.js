@@ -30,31 +30,31 @@ router.post('/register', async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
     if (test_y != '') { console.log("New Reg.User: ", req.body) }
     try {
-        //Jelszó megerősítés ellenőrzése
+    //Jelszó megerősítés ellenőrzése
         if (password !== confirmPassword) {
             return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' });
         }
-        //Felhasználónév ellenőrzés
+    //Felhasználónév ellenőrzés
         if (!username || username.length < 4 || username.length > 12) {
             return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' });
         }
-        //Email formátum ellenőrzés
+    //Email formátum ellenőrzés
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !emailRegex.test(email)) {
             return res.status(400).json({ message: 'Érvénytelen email cím formátum.' });
         }
-        //Jelszó ellenőrzés
+    //Jelszó ellenőrzés
         if (!password || password.length < 6 || password.length > 20) {
             return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' });
         }
-        //Email duplikáció ellenőrzés
+    //Email duplikáció ellenőrzés
         const existingUser = await users.findOne({ where: { email } });
         if (existingUser)
             return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });
 
-        //Jelszó hash-elése
+    //Jelszó hash-elése
         const hashedPassword = await bcrypt.hash(password, 10);
-        //Aktivációs token generálása + lejárati idő
+    //Aktivációs token generálása + lejárati idő
         const activationToken = crypto.randomBytes(32).toString('hex');
         const activationExpires = new Date(Date.now() + 3600000);
 
@@ -71,7 +71,7 @@ router.post('/register', async (req, res) => {
             updatedAt: new Date()
         });
 
-        //Aktiváló email kiküldése
+    //Aktiváló email kiküldése
         await sendValidationEmail(email, activationToken);
         res.status(201).json({ message: "Regisztráció sikeres! Erősísd meg az emailed." })
     } catch (error) {
