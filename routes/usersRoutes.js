@@ -14,7 +14,7 @@ router.get('/admin/users', authenticateToken, async (req, res) => {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
         const allUsers = await users.findAll({
-            attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
+            attributes: ['id', 'username', 'institutionId', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
         });
         res.status(200).json(allUsers);
     } catch (error) {
@@ -31,13 +31,13 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
-	var do_name = req.body.name != '' && req.body.name != undefined
-	var do_email = req.body.email != '' && req.body.email != undefined
-        if (test_y != '') { console.log("Email:", do_email , "- Name:", do_name) }
+        var do_name = req.body.name != '' && req.body.name != undefined
+        var do_email = req.body.email != '' && req.body.email != undefined
+        if (test_y != '') { console.log("Email:", do_email, "- Name:", do_name) }
         var s_name = '%' + req.body.name + '%'
         var s_email = '%' + req.body.email + '%'
 
-        if ( !do_name && !do_email) {
+        if (!do_name && !do_email) {
             return res._construct(404).json({ message: 'Hülye, legalább egy paramétert adj meg!' });
         } else if (!do_name && do_email) {
             allUser = await users.findAll({
@@ -55,20 +55,20 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
                 attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
             });
         }
-        return res.status(200).json(allUser);        
+        return res.status(200).json(allUser);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
     }
 })
 
-// Admin / Felhasználó szerepkörének és active/inactive beállítás szerkesztése
+// Admin / Felhasználó szerepkörének és active/inactive/archived beállítás szerkesztése
 router.put('/admin/user/:id', authenticateToken, async (req, res) => {
     const userId = req.params.id
     const { role, isActive } = req.body
 
-    const validRoles = ["user", "admin", "worker", "compliance", "institution"]
-    const validStatuses = ["active", "inactive"]
+    const validRoles = ["user", "admin", "compliance", "institution"]
+    const validStatuses = ["active", "inactive", "archived"]
 
     if (role && !validRoles.includes(role)) {
         return res.status(400).json({ message: "Érvénytelen szerepkör" })
@@ -94,9 +94,9 @@ router.put('/admin/user/:id', authenticateToken, async (req, res) => {
 })
 
 //ADMIN / Felhasználók kapcsolása intézményekhez
-router.put('/admin/user/:id/institutions', authenticateToken, async (req, res) => {
+router.put('/admin/user/:id/institution', authenticateToken, async (req, res) => {
     const userId = req.params.id
-    const { institutionIds } = req.body
+    const { institutionId } = req.body
     if (req.user.role !== 'admin') {
         return res.status(403).json({ message: "Nincs jogosultságod hozzá" })
     }
@@ -105,17 +105,21 @@ router.put('/admin/user/:id/institutions', authenticateToken, async (req, res) =
         if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található' })
         }
-        const validInstitutions = await institutions.findAll({
-            where: { id: institutionIds }
-        })
+        // Leválasztás engedése az intézményről
+        if (institutionId === null || institutionId === undefined || institutionId === "") {
+            await user.update({ institutionId: null });
+            return res.status(200).json({ message: "Intézmény leválasztva a felhasználóról." });
+        }
 
-        if (validInstitutions.length !== institutionIds.length) {
+        const institution = await institutions.findByPk(institutionId)
+
+        if (!institution) {
             return res.status(400).json({ message: "Érvénytelen institution ID található a kérésben." })
         }
-        await user.setInstitutions(institutionIds)
-        const updated = await user.getInstitutions();
 
-        return res.status(200).json({ message: "Intézmények sikeresen frisítve a felhasználóhoz." })
+        await user.update({ institutionId })
+
+        return res.status(200).json({ message: "Intézmény sikeresen frisítve a felhasználóhoz." })
 
     } catch (error) {
         console.error("Hiba az intézmények adatainak lekérdezések.", error)
