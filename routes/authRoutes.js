@@ -273,6 +273,7 @@ router.delete('/delete/:email', authenticateToken, async (req, res) => {
             return res.status(500).json({ message: "Szerverhiba az kategória törlésekor." })
         }
     }
+    res.status(401).json({ message: "Nem vagyok Teszt üzemmódban." })
 });
 
 
