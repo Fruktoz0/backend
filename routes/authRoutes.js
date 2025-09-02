@@ -267,13 +267,13 @@ router.delete('/delete/:email', authenticateToken, async (req, res) => {
                 return res.status(402).json({ message: 'Felhasználó nem található.' });
             }
             await user.destroy();
-            res.status(201).json({ message: "Felhasználó törölve" })
+            return res.status(201).json({ message: "Felhasználó törölve" })
         } catch (err) {
             console.error("Hiba az kategória törlésekor.", err)
-            res.status(500).json({ message: "Szerverhiba az kategória törlésekor." })
+            return res.status(500).json({ message: "Szerverhiba az kategória törlésekor." })
         }
     }
-
+    res.status(401).json({ message: "Nem vagyok Teszt üzemmódban." })
 });
 
 

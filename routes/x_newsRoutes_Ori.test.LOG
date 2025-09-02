@@ -1,0 +1,63 @@
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>npm test
+
+> backend@1.0.0 test
+> jest --detectOpenHandles
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged Admin:  {
+      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      role: 'admin',
+      institutionId: null,
+      iat: 1756799651,
+      exp: 1772351651
+    }
+
+      at Object.log (routes/newsRoutes_Ori.test.js:25:17)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged User:  {
+      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
+      role: 'worker',
+      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+      iat: 1756799652,
+      exp: 1772351652
+    }
+
+      at Object.log (routes/newsRoutes_Ori.test.js:35:17)
+
+  console.log
+    Executing (default): SELECT `institutionNews`.`id`, `institutionNews`.`institutionId`, `institutionNews`.`slug`, `institutionNews`.`title`, `institutionNews`.`content`, `institutionNews`.`imageUrl`, `institutionNews`.`createdAt`, `institutionNews`.`createdBy`, `institutionNews`.`updatedAt`, `institutionNews`.`status`, `institution`.`id` AS `institution.id`, `institution`.`name` AS `institution.name`, `institution`.`logoUrl` AS `institution.logoUrl`, `author`.`id` AS `author.id`, `author`.`username` AS `author.username` FROM `institutionNews` AS `institutionNews` LEFT OUTER JOIN `institutions` AS `institution` ON `institutionNews`.`institutionId` = `institution`.`id` LEFT OUTER JOIN `users` AS `author` ON `institutionNews`.`createdBy` = `author`.`id` ORDER BY `institutionNews`.`createdAt` DESC;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `institutionNews`.`id`, `institutionNews`.`institutionId`, `institutionNews`.`slug`, `institutionNews`.`title`, `institutionNews`.`content`, `institutionNews`.`imageUrl`, `institutionNews`.`createdAt`, `institutionNews`.`createdBy`, `institutionNews`.`updatedAt`, `institutionNews`.`status`, `institution`.`id` AS `institution.id`, `institution`.`name` AS `institution.name`, `institution`.`logoUrl` AS `institution.logoUrl`, `author`.`id` AS `author.id`, `author`.`username` AS `author.username` FROM `institutionNews` AS `institutionNews` LEFT OUTER JOIN `institutions` AS `institution` ON `institutionNews`.`institutionId` = `institution`.`id` LEFT OUTER JOIN `users` AS `author` ON `institutionNews`.`createdBy` = `author`.`id` ORDER BY `institutionNews`.`createdAt` DESC;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+ PASS  routes/newsRoutes_Ori.test.js
+  test for "Login" route
+    √ Login as Admin    s11 [200] (223 ms)
+    √ Login as User     s11 [200] (81 ms)
+  GetList of "News" route :
+    √ Get All News List by Admin [200] (19 ms)
+    √ Get All News List by User [200] (16 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        1.531 s
+Ran all test suites.
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>

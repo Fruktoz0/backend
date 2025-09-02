@@ -112,9 +112,10 @@ router.put('/admin/user/:id/institution', authenticateToken, async (req, res) =>
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: "Nincs jogosultságod hozzá" })
         }        
-        if (test_y != '') { console.log("User.ID: ", userId) }
 
         const userId = req.params.id
+        if (test_y != '') { console.log("User.ID: ", userId) }
+
         const  user = await users.findByPk(userId)
         if (! user) {
             return res.status(404).json({ message: 'Felhasználó nem található' })

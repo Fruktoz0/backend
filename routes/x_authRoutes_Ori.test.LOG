@@ -1,0 +1,247 @@
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>npm test
+
+> backend@1.0.0 test
+> jest --detectOpenHandles
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.huH';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged Admin:  {
+      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      role: 'admin',
+      institutionId: null,
+      iat: 1756799446,
+      exp: 1772351446
+    }
+
+      at Object.log (routes/authRoutes_Ori.test.js:54:17)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `email`, `points`, `role`, `isActive`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` LIKE '%pepe2@smd.hu%';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    {
+      id: '7046495d-4c2c-487c-a153-4ab4dd1c42de',
+      username: 'Meki Admin',
+      email: 'pepe2@smd.hu',
+      points: 0,
+      role: 'institution',
+      isActive: 'active',
+      createdAt: '2025-08-28T21:27:32.000Z',
+      updatedAt: '2025-09-02T06:24:51.000Z'
+    }
+
+      at Object.log (routes/authRoutes_Ori.test.js:65:17)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = '7046495d-4c2c-487c-a153-4ab4dd1c42de';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged User:  {
+      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
+      role: 'worker',
+      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+      iat: 1756799446,
+      exp: 1772351446
+    }
+
+      at Object.log (routes/authRoutes_Ori.test.js:84:17)
+
+  console.log
+    Executing (default): SELECT `user`.`id`, `user`.`username`, `user`.`email`, `user`.`points`, `user`.`role`, `user`.`isActive`, `user`.`createdAt`, `user`.`updatedAt`, `user`.`institutionId`, `user`.`zipCode`, `user`.`city`, `user`.`address`, `user`.`avatarSeed`, `user`.`avatarStyle`, `user`.`avatarChangesToday`, `user`.`lastAvatarChangeDate`, `institution`.`id` AS `institution.id`, `institution`.`name` AS `institution.name`, `institution`.`email` AS `institution.email`, `institution`.`description` AS `institution.description`, `institution`.`contactInfo` AS `institution.contactInfo`, `institution`.`logoUrl` AS `institution.logoUrl`, `institution`.`createdAt` AS `institution.createdAt`, `institution`.`updatedAt` AS `institution.updatedAt` FROM `users` AS `user` LEFT OUTER JOIN `institutions` AS `institution` ON `user`.`institutionId` = `institution`.`id` WHERE `user`.`id` = 'c18f964e-9ea0-41ed-b859-96979320b9e2';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT count(*) AS `count` FROM `reports` AS `report` WHERE `report`.`userId` = 'c18f964e-9ea0-41ed-b859-96979320b9e2';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    {
+      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      username: 'Admin Józsi',
+      email: 'admin@admin.hu',
+      points: 0,
+      role: 'admin',
+      isActive: 'active',
+      createdAt: '2025-08-20T18:51:52.000Z',
+      updatedAt: '2025-08-20T18:51:52.000Z',
+      institutionId: null,
+      zipCode: null,
+      city: null,
+      address: null,
+      avatarSeed: null,
+      avatarStyle: null,
+      avatarChangesToday: 0,
+      lastAvatarChangeDate: null,
+      institution: null,
+      reportCount: 0
+    }
+
+      at Object.log (routes/authRoutes_Ori.test.js:93:17)
+
+  console.log
+    Executing (default): SELECT `user`.`id`, `user`.`username`, `user`.`email`, `user`.`points`, `user`.`role`, `user`.`isActive`, `user`.`createdAt`, `user`.`updatedAt`, `user`.`institutionId`, `user`.`zipCode`, `user`.`city`, `user`.`address`, `user`.`avatarSeed`, `user`.`avatarStyle`, `user`.`avatarChangesToday`, `user`.`lastAvatarChangeDate`, `institution`.`id` AS `institution.id`, `institution`.`name` AS `institution.name`, `institution`.`email` AS `institution.email`, `institution`.`description` AS `institution.description`, `institution`.`contactInfo` AS `institution.contactInfo`, `institution`.`logoUrl` AS `institution.logoUrl`, `institution`.`createdAt` AS `institution.createdAt`, `institution`.`updatedAt` AS `institution.updatedAt` FROM `users` AS `user` LEFT OUTER JOIN `institutions` AS `institution` ON `user`.`institutionId` = `institution`.`id` WHERE `user`.`id` = '0855dcd3-cf33-4d75-9ce9-1248fb2979a0';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT count(*) AS `count` FROM `reports` AS `report` WHERE `report`.`userId` = '0855dcd3-cf33-4d75-9ce9-1248fb2979a0';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    {
+      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
+      username: 'Akárki Zoárd',
+      email: 'zoardakarki@gmail.com',
+      points: 0,
+      role: 'worker',
+      isActive: 'active',
+      createdAt: '2025-08-20T18:50:56.000Z',
+      updatedAt: '2025-08-20T18:50:56.000Z',
+      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+      zipCode: null,
+      city: null,
+      address: null,
+      avatarSeed: null,
+      avatarStyle: null,
+      avatarChangesToday: 0,
+      lastAvatarChangeDate: null,
+      institution: {
+        id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+        name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified',
+        email: 'ugyfelszolgalat@bkk.hu',
+        description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
+        contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255',
+        logoUrl: null,
+        createdAt: '2025-08-18T21:53:04.000Z',
+        updatedAt: '2025-09-01T14:26:00.000Z'
+      },
+      reportCount: 0
+    }
+
+      at Object.log (routes/authRoutes_Ori.test.js:102:17)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'mindent_is_tudok@gmail.com';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+ FAIL  routes/authRoutes_Ori.test.js (6.591 s)
+  Login of "auth" route:
+    √ Login Admin Hiányzó adat s00 - 400 [400] (92 ms)
+    √ Login Admin Hiányzó adat s01 - 400 [400] (11 ms)
+    √ Login Admin Hiányzó adat s10 - 400 [400] (10 ms)
+    √ Login Admin Wrong Password - 401 [401] (152 ms)
+    √ Login Admin Wrong Email - 404 [404] (15 ms)
+    √ Login as Admin     s11 [200] (78 ms)
+    √ Login as User     s11 [200] (78 ms)
+  Admin activity in "User" route
+    √ Admin Get User Data by Email [200] (20 ms)
+    √ Admin modify User to Active [200] (16 ms)
+  User Data of "auth" route:
+    √ GetUser Data with token_admin [200] (29 ms)
+    √ GetUser Data with token_user [200] (25 ms)
+  Register of "auth" route All data:
+    √ Register User Hiányzó adat s0000 Mekk Elek [400] (10 ms)
+    √ Register User Hiányzó adat s0001 Mekk Elek [400] (9 ms)
+    √ Register User Hiányzó adat s0010 Mekk Elek [400] (8 ms)
+    √ Register User Hiányzó adat s0011 Mekk Elek [400] (9 ms)
+    √ Register User Hiányzó adat s0100 Mekk Elek [400] (8 ms)
+    √ Register User Hiányzó adat s0101 Mekk Elek [400] (8 ms)
+    √ Register User Hiányzó adat s0110 Mekk Elek [400] (8 ms)
+    √ Register User Hiányzó adat s0111 Mekk Elek [400] (9 ms)
+    √ Register User Hiányzó adat s1000 Mekk Elek [400] (9 ms)
+    √ Register User Hiányzó adat s1001 Mekk Elek [400] (8 ms)
+    √ Register User Hiányzó adat s1010 Mekk Elek [400] (9 ms)
+    √ Register User Hiányzó adat s1011 Mekk Elek [400] (9 ms)
+    √ Register User Hiányzó adat s1100 Mekk Elek [400] (8 ms)
+    √ Register User Hiányzó adat s1101 Mekk Elek [400] (8 ms)
+    √ Register User Hiányzó adat s1110 Mekk Elek [400] (10 ms)
+    × Delete IF EXIST New Registered User: "Mekk Elek" [402] [201] (5011 ms)
+    × Register User adat s111 Mekk Elek [201] (15 ms)
+
+  ● Register of "auth" route All data: › Delete IF EXIST New Registered User: "Mekk Elek" [402] [201]
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      168 |
+      169 | describe('Register of "auth" route All data:', () => {
+    > 170 |     test('Delete IF EXIST New Registered User: "Mekk Elek" [402] [201]', async () => {
+          |     ^
+      171 |         const response = await supertest(server).delete('/api/auth/delete/mindent_is_tudok@gmail.com')
+      172 |         .set('Authorization', 'bearer ' + token_admin)
+      173 |         if (response.statusCode == 402) {
+
+      at test (routes/authRoutes_Ori.test.js:170:5)
+      at Object.describe (routes/authRoutes_Ori.test.js:169:1)
+
+  ● Register of "auth" route All data: › Register User adat s111 Mekk Elek [201]
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 201
+    Received: 409
+
+      182 |     test('Register User adat s111 Mekk Elek [201]', async () => {
+      183 |         const response = await supertest(server).post('/api/auth/register').send({ username: 'Mekk Elek', email: 'mindent_is_tudok@gmail.com', password: 'Meki#012345', confirmPassword: 'Meki#012345' })
+    > 184 |         expect(response.statusCode).toBe(201)
+          |                                     ^
+      185 |     })
+      186 | })
+      187 |
+
+      at Object.toBe (routes/authRoutes_Ori.test.js:184:37)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 26 passed, 28 total
+Snapshots:   0 total
+Time:        6.692 s, estimated 7 s
+Ran all test suites.
+
+Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  TCPSERVERWRAP
+
+      169 | describe('Register of "auth" route All data:', () => {
+      170 |     test('Delete IF EXIST New Registered User: "Mekk Elek" [402] [201]', async () => {
+    > 171 |         const response = await supertest(server).delete('/api/auth/delete/mindent_is_tudok@gmail.com')
+          |                                                        ^
+      172 |         .set('Authorization', 'bearer ' + token_admin)
+      173 |         if (response.statusCode == 402) {
+      174 |             expect(response.statusCode).toBe(402)
+
+      at Test.serverAddress (node_modules/supertest/lib/test.js:63:35)
+      at new Test (node_modules/supertest/lib/test.js:49:14)
+      at Object.obj.<computed> (node_modules/supertest/index.js:39:18)
+      at Object.<anonymous> (routes/authRoutes_Ori.test.js:171:56)
+
+Terminate batch job (Y/N)? y
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>
