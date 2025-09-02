@@ -8,7 +8,7 @@ const usersRoutes = require('./usersRoutes')
 const server = express()
 server.use(express.json())
 server.use('/api/auth', authRoutes);
-server.use('/api', usersRoutes);
+server.use('/', usersRoutes);
 
 var token_admin = {};
 var token_user = {};
@@ -33,14 +33,14 @@ describe('Login of "auth" route:', () => {
 
 describe('Login of "auth" route:', () => {
     test('Login Admin Wrong Password - 401 [401]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123@' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123X' })
         expect(response.statusCode).toBe(401)
     })
 })
 
 describe('Login of "auth" route:', () => {
     test('Login Admin Wrong Email - 404 [404]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.huT', password: 'admin123' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.huV', password: 'admin123' })
         expect(response.statusCode).toBe(404)
     })
 })
@@ -57,7 +57,7 @@ describe('Login of "auth" route:', () => {
 
 describe('test for "Login" route', () => {
     test('Admin Get User Data by Email [200]', async () => {
-        const response = await supertest(server).post('/api/admin/user_en')
+        const response = await supertest(server).post('/admin/user_en')
         .send({ email: 'pepe2@smd.hu' })
         .set('Authorization', 'bearer ' + token_admin)
         expect(response.statusCode).toBe(200)
@@ -68,7 +68,7 @@ describe('test for "Login" route', () => {
 
 describe('test for "Login" route', () => {
     test('Admin modify User to Active [200]', async () => {
-        const response = await supertest(server).put('/api/admin/user/' + sel_user.id)
+        const response = await supertest(server).put('/admin/user/' + sel_user.id)
         .send({ isActive: 'active' })
         .set('Authorization', 'bearer ' + token_admin)
         expect(response.statusCode).toBe(200)

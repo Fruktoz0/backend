@@ -1,0 +1,191 @@
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>npm test
+
+> backend@1.0.0 test
+> jest --detectOpenHandles
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged Admin:  {
+      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      role: 'admin',
+      institutionId: null,
+      iat: 1756799576,
+      exp: 1772351576
+    }
+
+      at Object.log (routes/categoriesRoutes_Ori.test.js:28:17)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged User:  {
+      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
+      role: 'worker',
+      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+      iat: 1756799576,
+      exp: 1772351576
+    }
+
+      at Object.log (routes/categoriesRoutes_Ori.test.js:38:17)
+
+  console.log
+    Executing (default): SELECT `category`.`id`, `category`.`categoryName`, `category`.`createdAt`, `category`.`updatedAt`, `institution`.`id` AS `institution.id`, `institution`.`name` AS `institution.name`, `institution`.`email` AS `institution.email`, `institution`.`description` AS `institution.description`, `institution`.`contactInfo` AS `institution.contactInfo` FROM `categories` AS `category` LEFT OUTER JOIN `institutions` AS `institution` ON `category`.`defaultInstitutionId` = `institution`.`id`;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Cat. All:  3 [
+      {
+        id: '15ae7f10-33c2-4930-8057-5cd33e029d4d',
+        categoryName: 'Tömegközlekedési probléma',
+        createdAt: '2025-08-18T21:30:44.000Z',
+        updatedAt: '2025-08-18T21:30:44.000Z',
+        institution: {
+          id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+          name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified',
+          email: 'ugyfelszolgalat@bkk.hu',
+          description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
+          contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255'
+        }
+      },
+      {
+        id: '18ac9cf8-6fad-4623-b965-cf0950c10b2f',
+        categoryName: 'Aladin Kategória',
+        createdAt: '2025-09-01T13:52:57.000Z',
+        updatedAt: '2025-09-01T13:52:57.000Z',
+        institution: {
+          id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+          name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified',
+          email: 'ugyfelszolgalat@bkk.hu',
+          description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
+          contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255'
+        }
+      },
+      {
+        id: 'e52720e2-7c6c-11f0-9b55-2cf05dad8c1f',
+        categoryName: 'Illegális szemétlerakás',
+        createdAt: '2025-08-18T21:52:25.000Z',
+        updatedAt: '2025-08-18T21:52:25.000Z',
+        institution: {
+          id: 'a1040145-7c6c-11f0-9b55-2cf05dad8c1f',
+          name: 'FKF Zrt.',
+          email: 'info@fkf.hu',
+          description: 'Fővárosi hulladékgazdálkodási szolgáltató.',
+          contactInfo: 'Cím: 1081 Budapest, Alföldi u. 7. | Tel: +36 1 459 6700'
+        }
+      }
+    ]
+
+      at Object.log (routes/categoriesRoutes_Ori.test.js:47:17)
+
+  console.log
+    Del. Cat.:  18ac9cf8-6fad-4623-b965-cf0950c10b2f
+
+      at Object.log (routes/categoriesRoutes_Ori.test.js:51:17)
+
+  console.log
+    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`id` = '18ac9cf8-6fad-4623-b965-cf0950c10b2f';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Törlésre érkezett kérés: 18ac9cf8-6fad-4623-b965-cf0950c10b2f
+
+      at log (routes/categoriesRoutes.js:75:17)
+
+  console.log
+    Executing (default): DELETE FROM `categories` WHERE `id` = '18ac9cf8-6fad-4623-b965-cf0950c10b2f'
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`categoryName` = 'Tömegközlekedési probléma' LIMIT 1;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`categoryName` = 'Aladin Kategória' LIMIT 1;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): INSERT INTO `categories` (`id`,`categoryName`,`defaultInstitutionId`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?);
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+
+    new_cat.id: b29d5681-2369-4da3-844e-386c1abe833b
+
+      at Object.log (routes/categoriesRoutes_Ori.test.js:105:17)
+
+  console.log
+    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`id` = '123456789';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Törlésre érkezett kérés: 123456789
+
+      at log (routes/categoriesRoutes.js:75:17)
+
+  console.log
+    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`id` = 'b29d5681-2369-4da3-844e-386c1abe833b';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Törlésre érkezett kérés: b29d5681-2369-4da3-844e-386c1abe833b
+
+      at log (routes/categoriesRoutes.js:75:17)
+
+  console.log
+    Executing (default): DELETE FROM `categories` WHERE `id` = 'b29d5681-2369-4da3-844e-386c1abe833b'
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`categoryName` = 'Aladin Kategória' LIMIT 1;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): INSERT INTO `categories` (`id`,`categoryName`,`defaultInstitutionId`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?);
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+ PASS  routes/categoriesRoutes_Ori.test.js
+  test for "Login" route
+    √ Login as Admin    s11 [200] (244 ms)
+    √ Login as User     s11 [200] (82 ms)
+  test for "Categories" route
+    √ Get Categories List by any User [200] (28 ms)
+    √ Delete Category IF EXIST by Admin { Aladin Kategória } [404] [200] (27 ms)
+    √ Create Category by User - FORBIDDEN [403] (12 ms)
+    √ Create an Existing Category by Admin - FORBIDDEN [409] [Már létezik ilyen nevű kategória.] (17 ms)
+    √ Create a New Category by Admin - Hiányzó adatok s00 [400] (11 ms)
+    √ Create a New Category by Admin - Hiányzó adatok s01 [400] (11 ms)
+    √ Create a New Category by Admin - Hiányzó adatok s10 [400] (12 ms)
+    √ Create a New Category by Admin - s11 { Aladin Kategória } [201] (32 ms)
+  test for "Categories" route 2
+    √ Delete Category by User Wrong Id - FORBIDDEN [403] (11 ms)
+    √ Delete Category by User - FORBIDDEN [403] (11 ms)
+    √ Delete Category by Admin - Wrong Id [404] (16 ms)
+    √ Delete Category by Admin - Good Id [200] (29 ms)
+    √ ReCreate Category by Admin - s11 { Aladin Kategória } [201] (20 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       15 passed, 15 total
+Snapshots:   0 total
+Time:        1.842 s
+Ran all test suites.
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>

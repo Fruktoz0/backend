@@ -1,0 +1,245 @@
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>npm test
+
+> backend@1.0.0 test
+> jest --detectOpenHandles
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged Admin:  {
+      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      role: 'admin',
+      institutionId: null,
+      iat: 1756799623,
+      exp: 1772351623
+    }
+
+      at Object.log (routes/institutionsRoutes_Ori.test.js:31:17)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged Worker:  {
+      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
+      role: 'worker',
+      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+      iat: 1756799624,
+      exp: 1772351624
+    }
+
+      at Object.log (routes/institutionsRoutes_Ori.test.js:41:17)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'tesztelget2000@gmail.com';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged User:  {
+      id: '379f8a2e-c223-4e2b-8008-ec5144474007',
+      role: 'user',
+      institutionId: null,
+      iat: 1756799624,
+      exp: 1772351624
+    }
+
+      at Object.log (routes/institutionsRoutes_Ori.test.js:51:17)
+
+  console.log
+    Executing (default): SELECT `institution`.`id`, `institution`.`name`, `institution`.`email`, `institution`.`description`, `institution`.`contactInfo`, `institution`.`logoUrl`, `institution`.`createdAt`, `institution`.`updatedAt`, `users`.`id` AS `users.id`, `users`.`username` AS `users.username`, `users`.`email` AS `users.email` FROM `institutions` AS `institution` LEFT OUTER JOIN `users` AS `users` ON `institution`.`id` = `users`.`institutionId`;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    4
+
+      at Object.log (routes/institutionsRoutes_Ori.test.js:60:17)
+
+  console.log
+    Del. Inst.ID:  271cea68-4ea6-4b9d-93b3-98ddef3b8b3f
+
+      at Object.log (routes/institutionsRoutes_Ori.test.js:65:17)
+
+  console.log
+    Mod. Inst:  {
+      id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+      name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified',
+      email: 'ugyfelszolgalat@bkk.hu',
+      description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
+      contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255',
+      logoUrl: null,
+      createdAt: '2025-08-18T21:53:04.000Z',
+      updatedAt: '2025-09-01T14:26:00.000Z',
+      users: [
+        {
+          id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
+          username: 'Akárki Zoárd',
+          email: 'zoardakarki@gmail.com'
+        },
+        {
+          id: '7046495d-4c2c-487c-a153-4ab4dd1c42de',
+          username: 'Meki Admin',
+          email: 'pepe2@smd.hu'
+        }
+      ]
+    }
+
+      at Object.log (routes/institutionsRoutes_Ori.test.js:66:17)
+
+  console.log
+    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '271cea68-4ea6-4b9d-93b3-98ddef3b8b3f';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): DELETE FROM `institutions` WHERE `id` = '271cea68-4ea6-4b9d-93b3-98ddef3b8b3f'
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `institution`.`id`, `institution`.`name`, `institution`.`email`, `institution`.`description`, `institution`.`contactInfo`, `institution`.`logoUrl`, `institution`.`createdAt`, `institution`.`updatedAt`, `users`.`id` AS `users.id`, `users`.`username` AS `users.username`, `users`.`email` AS `users.email` FROM `institutions` AS `institution` LEFT OUTER JOIN `users` AS `users` ON `institution`.`id` = `users`.`institutionId` WHERE `institution`.`id` = '0123456789';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `institution`.`id`, `institution`.`name`, `institution`.`email`, `institution`.`description`, `institution`.`contactInfo`, `institution`.`logoUrl`, `institution`.`createdAt`, `institution`.`updatedAt`, `users`.`id` AS `users.id`, `users`.`username` AS `users.username`, `users`.`email` AS `users.email` FROM `institutions` AS `institution` LEFT OUTER JOIN `users` AS `users` ON `institution`.`id` = `users`.`institutionId` WHERE `institution`.`id` = '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+
+    Exist_Inst.name: BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified
+
+      at Object.log (routes/institutionsRoutes_Ori.test.js:94:17)
+
+  console.log
+    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`name` = 'Álomfejtő Hatóság' LIMIT 1;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): INSERT INTO `institutions` (`id`,`name`,`email`,`description`,`contactInfo`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?);
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    To Modify: {
+      id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+      name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified',
+      email: 'ugyfelszolgalat@bkk.hu',
+      description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
+      contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255',
+      logoUrl: null,
+      createdAt: '2025-08-18T21:53:04.000Z',
+      updatedAt: '2025-09-01T14:26:00.000Z',
+      users: [
+        {
+          id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
+          username: 'Akárki Zoárd',
+          email: 'zoardakarki@gmail.com'
+        },
+        {
+          id: '7046495d-4c2c-487c-a153-4ab4dd1c42de',
+          username: 'Meki Admin',
+          email: 'pepe2@smd.hu'
+        }
+      ]
+    }
+
+      at Object.log (routes/institutionsRoutes_Ori.test.js:194:17)
+
+  console.log
+    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = 'c18f964e-9ea0-41ed-b859-96979320b9e2';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): UPDATE `institutions` SET `name`=?,`updatedAt`=? WHERE `id` = ?
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = '0855dcd3-cf33-4d75-9ce9-1248fb2979a0';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): UPDATE `institutions` SET `name`=?,`updatedAt`=? WHERE `id` = ?
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = '379f8a2e-c223-4e2b-8008-ec5144474007';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    403:  user
+
+      at log (routes/institutionsRoutes.js:83:21)
+
+ PASS  routes/institutionsRoutes_Ori.test.js
+  test for "Login" route
+    √ Login as Admin    s11 [200] (229 ms)
+    √ Login as Worker     s11 [200] (77 ms)
+    √ Login as User     s11 [200] (81 ms)
+  GetList of "Institutions" route :
+    √ Get Institutions List [200] (28 ms)
+  DeleteOne of "Institutions" route:
+    √ Delete Institution IF EXIST by Admin { Álomfejtő Hatóság } [404] [200] (37 ms)
+  GetOne of "Institutions" route:
+    √ Get One Institution by Wrong id: 0123456789 [404] (14 ms)
+    √ Get One Institution by Existing id [200] (16 ms)
+  CreateOne of "Institutions" route:
+    √ Create Institution by User s1111 - FORBIDDEN 403 [403] (13 ms)
+    √ Create Institution by Admin - Hiányzó adat s0000 [400] (11 ms)
+    √ Create Institution by Admin - Hiányzó adat s0001 [400] (11 ms)
+    √ Create Institution by Admin - Hiányzó adat s0010 [400] (11 ms)
+    √ Create Institution by Admin - Hiányzó adat s0011 [400] (10 ms)
+    √ Create Institution by Admin - Hiányzó adat s0100 [400] (10 ms)
+    √ Create Institution by Admin - Hiányzó adat s0101 [400] (10 ms)
+    √ Create Institution by Admin - Hiányzó adat s0110 [400] (11 ms)
+    √ Create Institution by Admin - Hiányzó adat s0111 [400] (10 ms)
+    √ Create Institution by Admin - Hiányzó adat s1000 [400] (10 ms)
+    √ Create Institution by Admin - Hiányzó adat s1001 [400] (10 ms)
+    √ Create Institution by Admin - Hiányzó adat s1010 [400] (10 ms)
+    √ Create Institution by Admin - Hiányzó adat s1011 [400] (9 ms)
+    √ Create Institution by Admin - Hiányzó adat s1100 [400] (9 ms)
+    √ Create Institution by Admin - Hiányzó adat s1101 [400] (10 ms)
+    √ Create Institution by Admin - Hiányzó adat s1110 [400] (10 ms)
+  CreateOne of "Institutions" route s1111:
+    √ Create Institution by Amin { Álomfejtő Hatóság } [201] (27 ms)
+  ModifyOne of "Institutions" route:
+    √ Modify Institution by Admin  - Adat Módosítás BKK [200] (28 ms)
+    √ Modify Institution by Worker - Adat Módosítás BKK [200] (21 ms)
+    √ Modify Institution by User   - Adat Módosítás BKK - FORBIDDEN [403] (19 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       27 passed, 27 total
+Snapshots:   0 total
+Time:        1.932 s
+Ran all test suites.
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>

@@ -1,0 +1,102 @@
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>npm test
+
+> backend@1.0.0 test
+> jest --detectOpenHandles
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged Admin:  {
+      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      role: 'admin',
+      institutionId: null,
+      iat: 1756799691,
+      exp: 1772351691
+    }
+
+      at Object.log (routes/summaryRoutes_Ori.test.js:25:17)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Logged User:  {
+      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
+      role: 'worker',
+      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
+      iat: 1756799691,
+      exp: 1772351691
+    }
+
+      at Object.log (routes/summaryRoutes_Ori.test.js:35:17)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Wrong User:  undefined
+
+      at Object.log (routes/summaryRoutes_Ori.test.js:44:17)
+
+  console.log
+    Executing (default): SELECT count(*) AS `count` FROM `users` AS `user`;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+          at async Promise.all (index 0)
+
+  console.log
+    Executing (default): SELECT count(*) AS `count` FROM `reports` AS `report`;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+          at async Promise.all (index 1)
+
+  console.log
+    Executing (default): SELECT count(*) AS `count` FROM `reportVotes` AS `reportVote`;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+          at async Promise.all (index 2)
+
+  console.log
+    Executing (default): SELECT count(*) AS `count` FROM `users` AS `user`;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+          at async Promise.all (index 0)
+
+  console.log
+    Executing (default): SELECT count(*) AS `count` FROM `reports` AS `report`;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+          at async Promise.all (index 1)
+
+  console.log
+    Executing (default): SELECT count(*) AS `count` FROM `reportVotes` AS `reportVote`;
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+          at async Promise.all (index 2)
+
+ PASS  routes/summaryRoutes_Ori.test.js
+  test for "Login" route
+    √ Login as Admin    s11 [200] (230 ms)
+    √ Login as User     s11 [200] (77 ms)
+    √ Try Login as Wrong User - s11+ - FORBIDDEN [401] (77 ms)
+  GetList of "Summary" route :
+    √ Get Summary List by Admin [200] (30 ms)
+    √ Get Summary List by User [200] (20 ms)
+    √ Get Summary List by Wrong User - FORBIDDEN [403] (12 ms)
+    √ Get Summary List by "" User - FORBIDDEN [401] (9 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       7 passed, 7 total
+Snapshots:   0 total
+Time:        1.551 s
+Ran all test suites.
+
+d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>
