@@ -3,6 +3,9 @@ const router = express.Router();
 const { reportVotes } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
 
+const test_y = process.env.TEST_Y;
+
+
 router.post('/vote', authenticateToken, async (req, res) => {
     const { reportId, voteType } = req.body;
     const userId = req.user.id; // Az autentikációs middleware-ből
