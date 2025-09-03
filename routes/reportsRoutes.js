@@ -112,7 +112,7 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
 
 
 //FP Report db szám lekérdezése
-router.get('/getAllReport_db', async (req, res) => {
+router.get('/report_db', async (req, res) => {
     try {
         const allReports = await reports.findAll()
         res.status(200).json({ found_db: allReports.length });
