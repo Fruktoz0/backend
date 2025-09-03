@@ -25,6 +25,20 @@ router.get('/admin/users', authenticateToken, async (req, res) => {
 })
 
 
+// Admin_FP / Felhasználók db számának listázása
+router.get('/admin/user_db', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Nincs jogosultság!' });
+        }
+        const a_db = await users.findAll().length
+        res.status(200).json(a_db);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
+    }
+})
+
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
     if (test_y != '') { console.log("Email:", req.body.email, "- Name:", req.body.name) }
