@@ -1,259 +1,235 @@
-const express = require('express');
-const router = express.Router();
-const { users, institutions } = require('../dbHandler');
-const authenticateToken = require('../middleware/authMiddleware');
-const { v4: uuidv4 } = require('uuid');
+// Auto Generated Test.js file
 
-const test_y = process.env.TEST_Y;
-const { Op } = require('sequelize');
+const express = require('express')
+const supertest = require('supertest')
+const authRoutes = require('./authRoutes');
+const usersRoutes = require('./usersRoutes')
+const institutionsRoutes = require('./institutionsRoutes')
 
+const server = express()
+server.use(express.json())
+server.use('/api/auth', authRoutes);
+server.use('/api/institutions', institutionsRoutes);
+server.use('/', usersRoutes);
 
-// Admin / Felhasználók adatainak listázása
-router.get('/admin/users', authenticateToken, async (req, res) => {
-    try {
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Nincs jogosultság!' });
-        }
-        const allUsers = await users.findAll({
-            attributes: ['id', 'username', 'email', 'isActive', 'role', 'institutionId', 'points', 'createdAt', 'updatedAt']
-        });
-        res.status(200).json(allUsers);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
-    }
+var token_admin = {};
+var logged_admin = {};
+var token_worker = {};
+var logged_worker = {};
+var token_user = {};
+var logged_user = {};
+
+var user_all = {};
+var validRoles = ["user", "worker", "inspector", "institution"]
+var validStatus = ["active", "inactive"]
+var new_role = '';
+var inst_all = {};
+var sel_inst = {};
+
+describe('test for "Login" route', () => {
+    test('Login as Admin    s11 [200]', async () => {
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123' })
+        expect(response.statusCode).toBe(200)
+        token_admin = response.body.token;
+        logged_admin = JSON.parse(atob(token_admin.split('.')[1]));
+        console.log("Logged Admin: ", logged_admin);
+    })
 })
 
-
-// Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
-router.post('/admin/user_en', authenticateToken, async (req, res) => {
-    if (test_y != '') { console.log("Email:", req.body.email, "- Name:", req.body.name) }
-    var allUser = []
-    try {
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Nincs jogosultság!' });
-        }
-        var do_name = req.body.name != '' && req.body.name != undefined
-        var do_email = req.body.email != '' && req.body.email != undefined
-        if (test_y != '') { console.log("Email:", do_email, "- Name:", do_name) }
-        var s_name = '%' + req.body.name + '%'
-        var s_email = '%' + req.body.email + '%'
-
-        if (!do_name && !do_email) {
-            return res._construct(404).json({ message: 'Hülye, legalább egy paramétert adj meg!' });
-        } else if (!do_name && do_email) {
-            allUser = await users.findAll({
-                where: { email: { [Op.like]: s_email } },
-                attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
-            })
-        } else if (do_name && !do_email) {
-            allUser = await users.findAll({
-                where: { username: { [Op.like]: s_name } },
-                attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
-            });
-        } else if (do_name && do_email) {
-            allUser = await users.findAll({
-                where: { username: { [Op.like]: s_name }, email: { [Op.like]: s_email } },
-                attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
-            });
-        }
-        return res.status(200).json(allUser);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
-    }
+describe('test for "Login" route', () => {
+    test('Admin Get User Data by Email [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ email: 'pepe2@smd.hu' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        sel_user = response.body[0]
+        console.log(sel_user);
+    })
 })
 
-
-// Admin / Felhasználó szerepkörének és active/inactive/archived beállítás szerkesztése
-router.put('/admin/user/:id', authenticateToken, async (req, res) => {
-    if (req.user.role !== 'admin') {
-        return res.status(403).json({ message: "Nincs jogosultságod hozzá" })
-    }
-
-    const userId = req.params.id
-    const { role, isActive } = req.body
-    if (test_y != '') { console.log("Role, Status: ", role, isActive) }
-
-    const validRoles = ["user", "admin", "worker", "inspector", "institution"]
-    const validStatuses = ["active", "inactive", "archived"]
-
-    if (role && !validRoles.includes(role)) {
-        return res.status(400).json({ message: "Érvénytelen szerepkör" })
-    }
-
-    if (isActive && !validStatuses.includes(isActive)) {
-        return res.status(400).json({ message: "Érvénytelen státusz." })
-    }
-    try {
-        const user = await users.findByPk(userId)
-        if (!user) {
-            return res.status(404).json({ message: "Felhasználó nem található" })
-        }
-        if (role) user.role = role
-        if (isActive) user.isActive = isActive
-
-        await user.save()
-        return res.status(200).json({ message: "Felhasználó sikeresen frissítve", user })
-    } catch (error) {
-        console.error("Hiba a felhasználó frissítésekor", error)
-        res.status(500).json({ message: "Szerverhiba a felhasználó frissítésekor" })
-    }
+describe('test for "Login" route', () => {
+    test('Admin modify User to Active [200]', async () => {
+        const response = await supertest(server).put('/admin/user/' + sel_user.id)
+        .send({ isActive: 'active' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+    })
 })
 
-
-//ADMIN / Felhasználók kapcsolása intézményekhez
-router.put('/admin/user/:id/institution', authenticateToken, async (req, res) => {
-    try {
-        if (req.body === undefined) {
-            return res.status(400).json({ message: "Érvénytelen institution ID található a kérésben." })
-        }
-
-        if (req.user.role !== 'admin') {
-            return res.status(403).json({ message: "Nincs jogosultságod hozzá" })
-        }        
-
-        const userId = req.params.id
-        if (test_y != '') { console.log("User.ID: ", userId) }
-
-        const  user = await users.findByPk(userId)
-        if (! user) {
-            return res.status(404).json({ message: 'Felhasználó nem található' })
-        }
-
-        const { institutionId } = req.body 
-    // Leválasztás engedése az intézményről
-        if (institutionId === null || institutionId === "") {
-            await user.update({ institutionId: null });
-            return res.status(201).json({ message: "Intézmény leválasztva a felhasználóról." });
-        }
-
-        if (test_y != '') { console.log("Sel. Inst.ID: ", institutionId) }        
-        const institution = await institutions.findByPk(institutionId)
-        if (test_y != '') { console.log("Institution: ", institution) }
-        if (!institution) {
-            return res.status(400).json({ message: "Érvénytelen institution ID található a kérésben." })
-        }
-
-        //user.institutionId = institutionId;
-        //await user.save();
-
-        await user.update({ institutionId })
-        return res.status(200).json({ message: "Intézmény sikeresen frisítve a felhasználóhoz." })
-
-    } catch (error) {
-        console.error("Hiba az intézmények adatainak lekérdezések.", error)
-        return res.status(500).json({ message: "Szerverhiba az intézmények lekérdezésekor" })
-    }
+describe('test for "Login" route', () => {
+    test('Login as User     s11 [200]', async () => {
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe2@smd.hu', password: 'Meki#012345' })
+        expect(response.statusCode).toBe(200)
+        token_user = response.body.token;
+        logged_user = JSON.parse(atob(token_user.split('.')[1]));
+        console.log("Logged user: ", logged_user);
+    })
 })
 
-
-//Avatar csere
-router.post('/users/changeAvatar', authenticateToken, async (req, res) => {
-    // Dicebear stílusok listája
-    const dicebearStyles = [
-        "adventurer",
-        "adventurer-neutral",
-        "avataaars",
-        "avataaars-neutral",
-        "big-ears",
-        "big-ears-neutral",
-        "big-smile",
-        "bottts",
-        "croodles",
-        "croodles-neutral",
-        "fun-emoji",
-        "icons",
-        "identicon",
-        "initials",
-        "lorelei",
-        "lorelei-neutral",
-        "notionists",
-        "micah",
-        "miniavs",
-        "open-peeps",
-        "personas",
-        "pixel-art",
-        "pixel-art-neutral"
-    ];
-
-    try {
-        const user = await users.findByPk(req.user.id);
-        if (!user) {
-            return res.status(404).json({ message: 'Felhasználó nem található.' });
-        }
-        const today = new Date().toDateString();
-        const lastChange = user.lastAvatarChangeDate ? new Date(user.lastAvatarChangeDate).toDateString() : null;
-
-        if (today !== lastChange) {
-            user.avatarChangesToday = 0;
-            user.lastAvatarChangeDate = new Date();
-        }
-
-        if (user.avatarChangesToday >= 5) {
-            return res.status(400).json({ message: 'Már elhasználtad a napi 5 avatar cserédet.' });
-        }
-
-        //Ellnőrzöm a felhasználónak van-e elég pontja a vásárláshoz
-        if (user.points < 50) {
-            return res.status(400).json({ message: 'Nincs elég pontod az avatar cseréjéhez' });
-        }
-
-        //Ha van elég pontja, pontlevonás
-        user.points -= 50;
-        //új random style + seed beállítása avatarnak
-        const randomStyle = dicebearStyles[Math.floor(Math.random() * dicebearStyles.length)];
-        const randomSeed = uuidv4();
-
-        user.avatarStyle = randomStyle;
-        user.avatarSeed = randomSeed;
-        user.avatarChangesToday += 1;
-
-        await user.save();
-
-        const avatarUrl = `https://api.dicebear.com/9.x/${randomStyle}/svg?seed=${randomSeed}`;
-        res.status(200).json({
-            message: 'Avatar sikeresen frissítve.', avatarStyle: randomStyle,
-            avatarSeed: randomSeed,
-            avatarUrl,
-            points: user.points,
-            avatarChangesToday: user.avatarChangesToday
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Hiba az avatar frissítésekor.' });
-    }
+describe('test for "Login" route', () => {
+    test('Login as Worker   s11 [200]', async () => {
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'zoardakarki@gmail.com', password: '123456789' })
+        expect(response.statusCode).toBe(200)
+        token_worker = response.body.token;
+        logged_worker = JSON.parse(atob(token_worker.split('.')[1]));
+        console.log("Logged Worker: ", logged_worker);
+    })
 })
 
-
-//Felhasználó saját adataink szerkesztése
-router.put('/users/:id', authenticateToken, async (req, res) => {
-    try {
-        const userId = req.params.id
-        if (test_y != '') { console.log("User.ID: ", userId) }
-
-        if (req.user.id !== userId && req.user.role !== "admin") {
-            return res.status(403).json({ message: "Nincs jogosultságod a felhasználó adatainak frissítéséhez." });
+describe('User Data of "users" route:', () => {
+    test('GetUser Data with token_user FORBIDDEN [403]', async () => {
+        const response = await supertest(server).get('/admin/users')
+        .set('Authorization', 'bearer ' + token_worker)
+        expect(response.statusCode).toBe(403)
+        console.log(response.body);
+    })
+    test('GetUser Data with token_admin [200]', async () => {
+        const response = await supertest(server).get('/admin/users')
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        const user_all = response.body
+        console.log("User All: ", user_all.length, user_all)
+        for (const item of user_all) {
+            if (item.username.indexOf("Meki Admin") == 0) { sel_user = item }
         }
-
-        const userRecord = await users.findByPk(userId)
-        if (!userRecord) {
-            return res.status(404).json({ message: "Felhasználó nem található." });
-        }
-
-        const { username, zipCode, city, address } = req.body;
-        userRecord.username = username ?? userRecord.username;
-        userRecord.zipCode = zipCode ?? userRecord.zipCode;
-        userRecord.city = city ?? userRecord.city;
-        userRecord.address = address ?? userRecord.address;
-
-        await userRecord.save();
-        res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user: userRecord });
-    } catch (error) {
-        console.error("Hiba a felhasználó adatainak frissítésekor", error);
-        res.status(500).json({ message: "Szerverhiba a felhasználó adatainak frissítésekor", error: error.message });
-    }
+        console.log("Sel. User: ", sel_user)
+    })
 })
 
+describe('User Data of "users" route:', () => {
+    test('Admin mod. Selected User to another Role/Status [200]', async () => {
+        new_role = validRoles[(validRoles.indexOf(sel_user.role) + 1) % validRoles.length]
+        const response = await supertest(server).put('/admin/user/' + sel_user.id)
+        .send({ role: new_role })
+        .set('Authorization', 'bearer ' + token_admin)
+        console.log(sel_user.username, ":", new_role)
+        expect(response.statusCode).toBe(200)
+    })
+    test('Worker mod. Selected User to another Role/Status - FORBIDDEN [403]', async () => {
+        new_role = validRoles[(validRoles.indexOf(sel_user.role) + 2) % validRoles.length]
+        const response = await supertest(server).put('/admin/user/' + sel_user.id)
+        .send({ role: new_role })
+        .set('Authorization', 'bearer ' + token_worker)
+        console.log(sel_user.username, ":", new_role)
+        expect(response.statusCode).toBe(403)
+    })
+    test('User mod. Own Role/Status to another Role/Status - FORBIDDEN [403]', async () => {
+        new_role = validRoles[(validRoles.indexOf(sel_user.role) + 2) % validRoles.length]
+        const response = await supertest(server).put('/admin/user/' + sel_user.id)
+        .send({ role: new_role })
+        .set('Authorization', 'bearer ' + token_user)
+        console.log(sel_user.username, ":", new_role)
+        expect(response.statusCode).toBe(403)
+    })
+})
 
-module.exports = router;
+describe('GetList of "Institutions" route:', () => {
+    test('Get Institutions List [200]', async () => {
+        const response = await supertest(server).get('/api/institutions/')
+        expect(response.statusCode).toBe(200)
+        const inst_all = response.body
+        sel_inst=inst_all[Math.floor(Math.random() * inst_all.length)]
+        console.log("Sel. Inst: ", sel_inst)
+    })
+})
+
+describe('User Data of "users" route 2:', () => {
+    test('User modify own Institution Random - FORBIDDEN [403]', async () => {
+        console.log("Mod. Sel. Inst: ", sel_inst)
+        console.log("Mod. Sel. Inst.ID: ", sel_inst.id)
+        const response = await supertest(server).put('/admin/user/' + logged_user.id + '/institution')
+        .send({ institutionId: sel_inst.id })
+        .set('Authorization', 'bearer ' + token_user)
+        expect(response.statusCode).toBe(403)
+    })
+    test('Admin modify User Institution Random [200]', async () => {
+        const response = await supertest(server).put('/admin/user/' + logged_user.id + '/institution')
+        .send({ institutionId: sel_inst.id })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+    })
+    test('Admin modify User Institution with Wrong User.ID [404]', async () => {
+        const response = await supertest(server).put('/admin/user/123456789/institution')
+        .send({ institutionId: sel_inst.id })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(404)
+    })
+    test('Admin modify User Institution with Wrong Inst.ID [400]', async () => {
+        const response = await supertest(server).put('/admin/user/' + logged_user.id + '/institution')
+        .send({ institutionId: '0123456789' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(400)
+    })
+    test('Admin clear User Institution with NOT send Inst.ID (undefined) [400]', async () => {
+        const response = await supertest(server).put('/admin/user/' + logged_user.id + '/institution')
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(400)
+    })
+})
+
+describe('User Data of "users" route 3:', () => {
+    test('User mod. Own Data [200]', async () => {
+        const response = await supertest(server).put('/users/' + logged_user.id).send({ username: 'Meki Admin', zipCode: '1045', city: 'Budapest', address: 'Józsika utca 73.' })
+        .set('Authorization', 'bearer ' + token_user)
+        expect(response.statusCode).toBe(200)
+    })
+    test('Admin modify User to Inactive [200]', async () => {
+        const response = await supertest(server).put('/admin/user/' + sel_user.id)
+        .send({ isActive: 'inactive' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+    })
+})
+
+describe('User Data of "users" route 3:', () => {
+    test('Login as inActive User     s11 - Fodbidden [403]', async () => {
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe2@smd.hu', password: 'Meki#012345' })
+        expect(response.statusCode).toBe(403)
+    })
+})
+
+describe('User Data of "users" route 3:', () => {
+    test('Login as inActive User     s11 - Fodbidden [403]', async () => {
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe2@smd.hu', password: 'Meki#012345' })
+        expect(response.statusCode).toBe(403)
+    })
+})
+
+describe('User Data of "users" route 4:', () => {
+    test('Admin Get Users Data by partial Email "smd.hu/Mek" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ email: 'smd.hu', name: 'Mek' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
+    test('Admin Get Users Data by partial Email "smd.hu/" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ email: 'smd.hu' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
+    test('Admin Get Users Data by partial Email "smd.hu/Admin" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ email: 'smd.hu', name: 'Admin' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
+    test('Admin Get Users Data by partial Email "/Elek" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ name: 'Elek' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
+    test('Admin Get Users Data by partial Email "smd.hu/" [200]', async () => {
+        const response = await supertest(server).post('/admin/user_en')
+        .send({ email: 'smd.hu', name: '' })
+        .set('Authorization', 'bearer ' + token_admin)
+        expect(response.statusCode).toBe(200)
+        console.log("User List: ", response.body);
+    })
+})
+
