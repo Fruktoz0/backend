@@ -110,6 +110,43 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
     }
 });
 
+
+//FP Report db szám lekérdezése
+router.get('/getAllReports', async (req, res) => {
+    try {
+        const allReports = await reports.findAll({
+            include: [{
+                model: reportImages,
+                attributes: ['imageUrl']
+            },
+            {
+                model: users,
+                attributes: ['username', 'avatarStyle', 'avatarSeed'],
+            },
+            {
+                model: categories,
+                attributes: ['categoryName'],
+            },
+            {
+                model: reportVotes,
+                attributes: ['voteType', 'userId']
+            },
+            {
+                model: institutions,
+                attributes: ['name']
+            }
+            ],
+            order: [['createdAt', 'DESC']], // Legutóbb létrehozott jelentések előre
+        });
+
+        res.status(200).json(allReports);
+    } catch (error) {
+        console.error('Hiba a bejelentések lekérésekor:', error);
+        res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
+    }
+});
+
+
 //Összes reports lekérdezése
 router.get('/getAllReports', async (req, res) => {
     try {
