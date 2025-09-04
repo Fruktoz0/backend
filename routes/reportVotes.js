@@ -35,4 +35,19 @@ router.post('/vote', authenticateToken, async (req, res) => {
     }
 })
 
+// FP Get Report db szám
+router.get('/vote_db', authenticateToken, async (req, res) => {
+try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Nincs jogosultság!' });
+        }
+        const a_db = await reportVotes.findAll()
+        res.status(200).json({ found_db: a_db.length });
+        if (test_y != '') { console.log("\nFound_db:", a_db.length)};
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
+    }    
+})
+
 module.exports = router;
