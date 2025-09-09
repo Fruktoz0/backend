@@ -268,14 +268,14 @@ router.put('/admin/user_all', authenticateToken, async (req, res) => {
         }
 
         const { id, username, email, zipCode, city, address, isActive, role, institutionId } = req.body;
-        userRecord.username = username ?? userRecord.username;
-        userRecord.email = email ?? userRecord.email;
-        userRecord.zipCode = zipCode ?? userRecord.zipCode;
-        userRecord.city = city ?? userRecord.city;
-        userRecord.address = address ?? userRecord.address;
-        userRecord.isActive = isActive ?? userRecord.isActive;
-        userRecord.role = role ?? userRecord.role;
-        userRecord.institutionId = institutionId ?? userRecord.institutionId;
+        userRecord.username = username;
+        userRecord.email = email;
+        userRecord.zipCode = zipCode;
+        userRecord.city = city;
+        userRecord.address = address;
+        userRecord.isActive = isActive;
+        userRecord.role = role;
+        userRecord.institutionId = institutionId;
 
         await userRecord.save();
         res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user: userRecord });
