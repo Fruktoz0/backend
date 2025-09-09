@@ -49,11 +49,8 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
-        if (test_y != '') { console.log("Email:", do_email, "- Name:", do_name) }
-        var s_name = '%' + req.body.name + '%'
-        var s_email = '%' + req.body.email + '%'
         allUser = await users.findAll({
-            where: { username: { [Op.like]: s_name }, email: { [Op.like]: s_email } },
+            where: { username: { [Op.like]: '%' + req.body.name + '%' }, email: { [Op.like]: '%' + req.body.email + '%' } },
             attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt', 'zipCode', 'city', 'address', 'institutionId'],
         });
         return res.status(200).json(allUser);
