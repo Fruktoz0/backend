@@ -43,42 +43,23 @@ router.get('/admin/user_db', authenticateToken, async (req, res) => {
 
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
-    if (test_y != '') { console.log("Email:", req.body.email, "- Name:", req.body.name) }
+    console.log("\nGet USer Name/Email:", '%' + req.body.name + '%', '%' + req.body.email + '%')
     var allUser = []
     try {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
-        var do_name = req.body.name != '' && req.body.name != undefined
-        var do_email = req.body.email != '' && req.body.email != undefined
-        if (test_y != '') { console.log("Email:", do_email, "- Name:", do_name) }
-        var s_name = '%' + req.body.name + '%'
-        var s_email = '%' + req.body.email + '%'
-
-        if (!do_name && !do_email) {
-            return res._construct(404).json({ message: 'Hülye, legalább egy paramétert adj meg!' });
-        } else if (!do_name && do_email) {
-            allUser = await users.findAll({
-                where: { email: { [Op.like]: s_email } },
-                attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
-            })
-        } else if (do_name && !do_email) {
-            allUser = await users.findAll({
-                where: { username: { [Op.like]: s_name } },
-                attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
-            });
-        } else if (do_name && do_email) {
-            allUser = await users.findAll({
-                where: { username: { [Op.like]: s_name }, email: { [Op.like]: s_email } },
-                attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
-            });
-        }
+        allUser = await users.findAll({
+            where: { username: { [Op.like]: '%' + req.body.name + '%' }, email: { [Op.like]: '%' + req.body.email + '%' } },
+            attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt', 'zipCode', 'city', 'address', 'institutionId']
+        });
         return res.status(200).json(allUser);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
     }
 })
+
 
 
 // Admin / Felhasználó szerepkörének és active/inactive/archived beállítás szerkesztése
