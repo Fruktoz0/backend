@@ -10,10 +10,10 @@ router.get("/", async (req, res) => {
         const institutionsList = await institutions.findAll({
 
             //Meghívom a hozzákapcsolt tábla adatait is a későbbi lekérdezéshez
-            include: {
+            /*include: {
                 model: users,
                 attributes: ['id', "username", "email",]
-            }
+            }*/
         });
         res.json(institutionsList)
 

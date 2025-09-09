@@ -33,7 +33,7 @@ router.get('/admin/user_db', authenticateToken, async (req, res) => {
         }
         const a_db = await users.findAll()
         res.status(200).json({ found_db: a_db.length });
-        if (test_y != '') { console.log("\nFound_db:", a_db.length)};
+        if (test_y != '') { console.log("\nFound_db:", a_db.length) };
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
@@ -43,36 +43,20 @@ router.get('/admin/user_db', authenticateToken, async (req, res) => {
 
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
+    console.log("\nGet USer Name/Email:")
     if (test_y != '') { console.log("Email:", req.body.email, "- Name:", req.body.name) }
     var allUser = []
     try {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
-        var do_name = req.body.name != '' && req.body.name != undefined
-        var do_email = req.body.email != '' && req.body.email != undefined
         if (test_y != '') { console.log("Email:", do_email, "- Name:", do_name) }
         var s_name = '%' + req.body.name + '%'
         var s_email = '%' + req.body.email + '%'
-
-        if (!do_name && !do_email) {
-            return res._construct(404).json({ message: 'Hülye, legalább egy paramétert adj meg!' });
-        } else if (!do_name && do_email) {
-            allUser = await users.findAll({
-                where: { email: { [Op.like]: s_email } },
-                attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
-            })
-        } else if (do_name && !do_email) {
-            allUser = await users.findAll({
-                where: { username: { [Op.like]: s_name } },
-                attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
-            });
-        } else if (do_name && do_email) {
-            allUser = await users.findAll({
-                where: { username: { [Op.like]: s_name }, email: { [Op.like]: s_email } },
-                attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt']
-            });
-        }
+        allUser = await users.findAll({
+            where: { username: { [Op.like]: s_name }, email: { [Op.like]: s_email } },
+            attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt', 'zipCode', 'city', 'address', 'institutionId'],
+        });
         return res.status(200).json(allUser);
     } catch (error) {
         console.error(error);
@@ -127,24 +111,24 @@ router.put('/admin/user/:id/institution', authenticateToken, async (req, res) =>
 
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: "Nincs jogosultságod hozzá" })
-        }        
+        }
 
         const userId = req.params.id
         if (test_y != '') { console.log("User.ID: ", userId) }
 
-        const  user = await users.findByPk(userId)
-        if (! user) {
+        const user = await users.findByPk(userId)
+        if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található' })
         }
 
-        const { institutionId } = req.body 
-    // Leválasztás engedése az intézményről
+        const { institutionId } = req.body
+        // Leválasztás engedése az intézményről
         if (institutionId === null || institutionId === "") {
             await user.update({ institutionId: null });
             return res.status(201).json({ message: "Intézmény leválasztva a felhasználóról." });
         }
 
-        if (test_y != '') { console.log("Sel. Inst.ID: ", institutionId) }        
+        if (test_y != '') { console.log("Sel. Inst.ID: ", institutionId) }
         const institution = await institutions.findByPk(institutionId)
         if (test_y != '') { console.log("Institution: ", institution) }
         if (!institution) {
