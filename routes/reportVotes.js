@@ -43,7 +43,7 @@ try {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
-        const a_db = await reportVotes.findAll()
+        const a_db = await reportVotes.findAll();
         res.status(200).json({ found_db: a_db.length });
         if (test_y != '') { console.log("\nFound_db:", a_db.length)};
     } catch (error) {
