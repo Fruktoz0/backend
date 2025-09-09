@@ -43,7 +43,7 @@ router.get('/admin/user_db', authenticateToken, async (req, res) => {
 
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
-    console.log("\nGet USer Name/Email:", req.body.name, req.body.email)
+    console.log("\nGet USer Name/Email:", '%' + req.body.name + '%', '%' + req.body.email + '%')
     var allUser = []
     try {
         if (req.user.role !== 'admin') {
