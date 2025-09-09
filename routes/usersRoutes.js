@@ -253,4 +253,38 @@ router.put('/users/:id', authenticateToken, async (req, res) => {
 })
 
 
+//Admin_FP Felhasználó összes adatának frissítése
+router.put('/admin/user_all', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.params.id
+        if (test_y != '') { console.log("User.ID: ", req.body.id) }
+
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Nincs jogosultságod a felhasználó összes adatának a frissítéséhez." });
+        }
+
+        const userRecord = await users.findByPk(req.body.id)
+        if (!userRecord) {
+            return res.status(404).json({ message: "Felhasználó nem található." });
+        }
+
+        const { id, username, email, zipCode, city, address, isActive, role, institutionId } = req.body;
+        userRecord.username = username ?? userRecord.username;
+        userRecord.email = email ?? userRecord.email;
+        userRecord.zipCode = zipCode ?? userRecord.zipCode;
+        userRecord.city = city ?? userRecord.city;
+        userRecord.address = address ?? userRecord.address;
+        userRecord.isActive = isActive ?? userRecord.isActive;
+        userRecord.role = role ?? userRecord.role;
+        userRecord.institutionId = institutionId ?? userRecord.institutionId;
+
+        await userRecord.save();
+        res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user: userRecord });
+    } catch (error) {
+        console.error("Hiba a felhasználó adatainak frissítésekor", error);
+        res.status(500).json({ message: "Szerverhiba a felhasználó adatainak frissítésekor", error: error.message });
+    }
+})
+
+
 module.exports = router;
