@@ -252,7 +252,7 @@ router.put('/users/:id', authenticateToken, async (req, res) => {
 })
 
 
-//Admin_FP Felhasználó összes adatának szerkesztése
+//Admin_FP Felhasználó összes adatának frissítése
 router.put('/admin/user_all', authenticateToken, async (req, res) => {
     try {
         const userId = req.params.id
