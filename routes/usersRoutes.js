@@ -61,7 +61,7 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
 })
 
 
-// Admin_FP / Felhasználók db számának listázása
+// Admin_FP / Foglalt Felhasználói UserName és Email ellenőrzés
 router.post('/admin/user_chk', authenticateToken, async (req, res) => {
     if (test_y != '') { console.log("\nGet User Name/Email:", '"' + req.body.username + '"', '"' + req.body.email + '"') }
     try {
