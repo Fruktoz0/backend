@@ -41,6 +41,23 @@ router.get('/admin/user_db', authenticateToken, async (req, res) => {
 })
 
 
+// Admin_FP / Adott Hivatal munkatársainak listázása
+router.get('/admin/user_inst/:id', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Nincs jogosultság!' });
+        }
+        const inst_users = await users.findAll({
+            where: { institutionId: req.params.id }
+        })
+        res.status(200).json(inst_users);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
+    }
+})
+
+
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
     console.log("\nGet USer Name/Email:", '%' + req.body.name + '%', '%' + req.body.email + '%')
