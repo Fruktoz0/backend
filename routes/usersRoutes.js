@@ -61,6 +61,29 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
 })
 
 
+// Admin_FP / Foglalt Felhasználói UserName és Email ellenőrzés
+router.post('/admin/user_chk', authenticateToken, async (req, res) => {
+    if (test_y != '') { console.log("\nGet User Name/Email:", '"' + req.body.username + '"', '"' + req.body.email + '"') }
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Nincs jogosultság!' });
+        }
+        foundUserName = await users.findOne({
+            where: { username: req.body.username },
+        });
+        foundUserEmail = await users.findOne({
+            where: { email: req.body.email },
+        });
+        msg = foundUserName == null ? "0" : "1"
+        msg += foundUserEmail == null ? "0" : "1"
+        console.log(msg)
+        return res.status(200).json({ message: msg });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
+    }
+})
+
 
 // Admin / Felhasználó szerepkörének és active/inactive/archived beállítás szerkesztése
 router.put('/admin/user/:id', authenticateToken, async (req, res) => {
