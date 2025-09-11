@@ -97,7 +97,7 @@ describe('GetOne of "Institutions" route:', () => {
 
 describe('CreateOne of "Institutions" route:', () => {
     test('Create Institution by User s1111 - FORBIDDEN 403 [403]', async () => {
-        const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', email: 'a_dream@dream_all.hu', description: 'Rosz Álmokat Elűző Központi hatóság', contactInfo: '2201 Budapest, Áloműzők utca 1.' })
+        const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', email: 'a_dream@dream_all.hu', description: 'Rosz Álmokat Elűző Központi hatóság', contactInfo: 'Cím: 2201 Budapest, Áloműzők utca 1.' })
         .set('Authorization', 'bearer ' + token_user)
         expect(response.statusCode).toBe(403)
         del_inst = response.body

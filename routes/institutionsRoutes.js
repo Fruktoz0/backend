@@ -48,6 +48,7 @@ router.post("/create", authenticateToken, async (req, res) => {
     }
 
     const { name, email, description, contactInfo } = req.body
+    console.log("Inst Name:", name)
     if (!name || !email || !description || !contactInfo)
         return res.status(400).json({ message: "Hiányzó adat." })
     try {

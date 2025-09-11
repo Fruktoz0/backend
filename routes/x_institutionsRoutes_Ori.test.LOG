@@ -70,7 +70,7 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
   console.log
     Mod. Inst:  {
       id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
-      name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified',
+      name: 'BKK Zrt. - Admin Modified - Worker Modified',
       email: 'ugyfelszolgalat@bkk.hu',
       description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
       contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255',
