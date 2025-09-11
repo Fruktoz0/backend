@@ -48,7 +48,7 @@ const users = dbConnection.define('user', {
         defaultValue: 0
     },
     'role': {
-        type: DataTypes.ENUM('user', 'admin', 'institution', 'compliance'),
+        type: DataTypes.ENUM('user', 'admin', 'institution', 'inspector', 'compliance'),
         defaultValue: 'user'
     },
     'isActive': {
