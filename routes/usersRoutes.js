@@ -40,6 +40,22 @@ router.get('/admin/user_db', authenticateToken, async (req, res) => {
     }
 })
 
+// Admin_FP / Adott Hivatal munkatársainak listázása
+router.get('/admin/user_inst/:id', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Nincs jogosultság!' });
+        }
+        const inst_users = await users.findAll({
+            where: { institutionId: req.params.id }
+        })
+        res.status(200).json(inst_users);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
+    }
+})
+
 
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
@@ -78,10 +94,33 @@ router.post('/admin/user_chk', authenticateToken, async (req, res) => {
         msg += foundUserEmail == null ? "0" : "1"
         console.log(msg)
         return res.status(200).json({ message: msg });
-} catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
-}
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
+    }
+})
+
+// Admin_FP / Foglalt Intézmény Name és Email ellenőrzés
+router.post('/admin/inst_chk', authenticateToken, async (req, res) => {
+    if (test_y != '') { console.log("\nGet Institution Name/Email:", '"' + req.body.name + '"', '"' + req.body.email + '"') }
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Nincs jogosultság!' });
+        }
+        foundInstName = await institutions.findOne({
+            where: { name: req.body.name },
+        });
+        foundInstEmail = await institutions.findOne({
+            where: { email: req.body.email },
+        });
+        msg = foundInstName == null ? "0" : "1"
+        msg += foundInstEmail == null ? "0" : "1"
+        console.log(msg)
+        return res.status(200).json({ message: msg });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
+    }
 })
 
 
@@ -303,6 +342,36 @@ router.put('/admin/user_all', authenticateToken, async (req, res) => {
 
         await userRecord.save();
         res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user: userRecord });
+    } catch (error) {
+        console.error("Hiba a felhasználó adatainak frissítésekor", error);
+        res.status(500).json({ message: "Szerverhiba a felhasználó adatainak frissítésekor", error: error.message });
+    }
+})
+
+
+//Admin_FP Intézmény összes adatának frissítése
+router.put('/admin/inst_all', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.params.id
+        if (test_y != '') { console.log("Inst.ID: ", req.body.id) }
+
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Nincs jogosultságod a felhasználó összes adatának a frissítéséhez." });
+        }
+
+        const instRecord = await users.findByPk(req.body.id)
+        if (!instRecord) {
+            return res.status(404).json({ message: "Intézmény nem található." });
+        }
+
+        const { id, name, email, description, contactInfo, logoUrl}= req.body;
+        instRecord.name = name;
+        instRecord.email = email;
+        instRecord.description = description;
+        instRecord.contactInfo = contactInfo;
+
+        await instRecord.save();
+        res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user: instRecord });
     } catch (error) {
         console.error("Hiba a felhasználó adatainak frissítésekor", error);
         res.status(500).json({ message: "Szerverhiba a felhasználó adatainak frissítésekor", error: error.message });
