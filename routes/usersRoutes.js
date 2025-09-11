@@ -102,6 +102,30 @@ router.post('/admin/user_chk', authenticateToken, async (req, res) => {
 })
 
 
+// Admin_FP / Foglalt Intézmény Name és Email ellenőrzés
+router.post('/admin/inst_chk', authenticateToken, async (req, res) => {
+    if (test_y != '') { console.log("\nGet Institution Name/Email:", '"' + req.body.name + '"', '"' + req.body.email + '"') }
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Nincs jogosultság!' });
+        }
+        foundInstName = await institutions.findOne({
+            where: { name: req.body.name },
+        });
+        foundInstEmail = await institutions.findOne({
+            where: { email: req.body.email },
+        });
+        msg = foundInstName == null ? "0" : "1"
+        msg += foundInstEmail == null ? "0" : "1"
+        console.log(msg)
+        return res.status(200).json({ message: msg });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
+    }
+})
+
+
 // Admin / Felhasználó szerepkörének és active/inactive/archived beállítás szerkesztése
 router.put('/admin/user/:id', authenticateToken, async (req, res) => {
     if (req.user.role !== 'admin') {
