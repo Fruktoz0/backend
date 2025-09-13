@@ -4,15 +4,12 @@ const { users, institutions } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
 const { v4: uuidv4 } = require('uuid');
 const admin = require("firebase-admin");
-const fs = require('fs');
 
 const test_y = process.env.TEST_Y;
 const { Op } = require('sequelize');
 
 // 1. Service Account betöltése
-const serviceAccount = JSON.parse(
-    fs.readFileSync("./fcm-service-account.json", "utf8")
-);
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 // 2. Firebase Admin SDK inicializálása
 if (!admin.apps.length) {
