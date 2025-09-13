@@ -121,7 +121,6 @@ router.get('/report_db',authenticateToken , async (req, res) => {
     }
 });
 
-
 //Összes reports lekérdezése
 router.get('/getAllReports', async (req, res) => {
     try {
