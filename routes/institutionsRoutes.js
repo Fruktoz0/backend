@@ -43,14 +43,15 @@ router.get("/:id", async (req, res) => {
 
 //Új intézmény létrehozása
 router.post("/create", authenticateToken, async (req, res) => {
+    console.log(req.body)
     if (req.user.role !== "admin") {
         return res.status(403).json({ message: "Nincs jogosultságod intézmény létrehozására" })
     }
 
-    const { name, email, description, contactInfo } = req.body
+    const { name, email, description, contactInfo, logoUrl } = req.body
     console.log("Inst Name:", name)
-    if (!name || !email || !description || !contactInfo)
-        return res.status(400).json({ message: "Hiányzó adat." })
+    if (!name || !email || !description || !contactInfo || !logoUrl)
+        return res.status(401).json({ message: "Hiányzó adat." })
     try {
         const existingInstitution = await institutions.findOne({ where: { name } })
         if (existingInstitution)
@@ -59,7 +60,8 @@ router.post("/create", authenticateToken, async (req, res) => {
             name,
             email,
             description,
-            contactInfo
+            contactInfo,
+            logoUrl
         })
         res.status(201).json(newInstitution)
     } catch (err) {
@@ -72,25 +74,25 @@ router.post("/create", authenticateToken, async (req, res) => {
 router.put("/update/:id", authenticateToken, async (req, res) => {
 
     const { id } = req.params
-    const { name, email, description, contactInfo } = req.body
+    const { name, email, description, contactInfo, logoUrl } = req.body
     try {
         const institution = await institutions.findByPk(id)
         if (!institution)
             return res.status(404).json({ message: "Intézmény nem található" })
 
-    //Jogosultságellenőrzés
+        //Jogosultságellenőrzés
         const user = await users.findByPk(req.user.id)
         if (req.user.role !== "admin" && req.user.role !== "Institution" && user.institutionId !== institution.id) {
             console.log("403: ", user.role);
             return res.status(403).json({ message: "Nincs jogosultságod az intézmény szerkesztésére" });
         }
-            //Adatok frissítése
-            institution.name = name,
-            institution.email = email,
-            institution.description = description,
-            institution.contactInfo = contactInfo,
-
-            await institution.save()
+        //Adatok frissítése
+        institution.name = name
+        institution.email = email
+        institution.description = description
+        institution.contactInfo = contactInfo
+        institution.logoUrl = logoUrl
+        await institution.save()
         res.status(200).json({ message: "Intézmény sikeresen frissítve", institution })
 
     } catch (err) {
@@ -99,6 +101,7 @@ router.put("/update/:id", authenticateToken, async (req, res) => {
     }
 })
 
+
 //Intézmény törlése
 router.delete("/delete/:id", authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
@@ -106,8 +109,18 @@ router.delete("/delete/:id", authenticateToken, async (req, res) => {
     }
     try {
         const institution = await institutions.findByPk(req.params.id)
-        if (!institution)
+        if (!institution){
             return res.status(404).json({ message: "Intézmény nem található" })
+        }
+
+        const inst_users = await users.findAll({
+            where: { institutionId: req.params.id }
+        })
+
+        if(inst_users){
+            return res.status(403).json({ message: "Intézmény Használatban van!" })            
+        }
+
         await institution.destroy();
         res.json({ message: "Intézmény törölve" })
     } catch (err) {
@@ -115,5 +128,6 @@ router.delete("/delete/:id", authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba az intézmény törlésekor" })
     }
 })
+
 
 module.exports = router;
