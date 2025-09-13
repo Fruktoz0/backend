@@ -352,7 +352,7 @@ router.put('/admin/user_all', authenticateToken, async (req, res) => {
     }
 })
 
-router.post('/registerPushToken', authenticateToken, async (req, res) => {
+router.post('/users/registerPushToken', authenticateToken, async (req, res) => {
     try {
         const user = await users.findByPk(req.user.id);
         if (!user) {
@@ -372,7 +372,7 @@ router.post('/registerPushToken', authenticateToken, async (req, res) => {
 
 
 //Értesítés küldése 1 felhasználónak
-router.post('/sendNotification', authenticateToken, async (req, res) => {
+router.post('/users/sendNotification', authenticateToken, async (req, res) => {
     try {
         if(req.user.role !== 'admin'){
             return res.status(403).json({message: 'Nincs jogosultságod az értesítés küldéséhez.'});
