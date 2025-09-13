@@ -4,3 +4,6 @@
 
 # Feltöltött fájlok
 uploads/
+
+# Firebase szolgáltatás fiók kulcs fájl
+fcm-service-account.json

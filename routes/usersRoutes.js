@@ -3,12 +3,23 @@ const router = express.Router();
 const { users, institutions } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
 const { v4: uuidv4 } = require('uuid');
-const { Expo } = require("expo-server-sdk");
+import admin from "firebase-admin";
+import fs from "fs";
 
-const expo = new Expo();
 const test_y = process.env.TEST_Y;
 const { Op } = require('sequelize');
 
+// 1. Service Account betöltése
+const serviceAccount = JSON.parse(
+    fs.readFileSync("./fcm-service-account.json", "utf8")
+);
+
+// 2. Firebase Admin SDK inicializálása
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+    });
+}
 
 // Admin / Felhasználók adatainak listázása
 router.get('/admin/users', authenticateToken, async (req, res) => {
@@ -360,6 +371,9 @@ router.post('/users/registerPushToken', authenticateToken, async (req, res) => {
         }
 
         const { pushToken } = req.body;
+        if (!pushToken) {
+            return res.status(400).json({ message: 'Hiányzik a push token.' });
+        }
         user.pushToken = pushToken;
 
         await user.save();
@@ -370,12 +384,11 @@ router.post('/users/registerPushToken', authenticateToken, async (req, res) => {
     }
 })
 
-
 //Értesítés küldése 1 felhasználónak
 router.post('/users/sendNotification', authenticateToken, async (req, res) => {
     try {
-        if(req.user.role !== 'admin'){
-            return res.status(403).json({message: 'Nincs jogosultságod az értesítés küldéséhez.'});
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Nincs jogosultságod az értesítés küldéséhez.' });
         }
         const { userId, title, body } = req.body;
         const user = await users.findByPk(userId);
@@ -388,16 +401,19 @@ router.post('/users/sendNotification', authenticateToken, async (req, res) => {
             return res.status(400).json({ message: 'Érvénytelen push token.' });
         }
 
-        const messages = [{
-            to: pushToken,
-            sound: 'default',
-            title: title,
-            body: body,
-            data: { userId }
-        }];
-        const ticketChunk = await expo.sendPushNotificationsAsync(messages);
-        console.log("Ticket:", ticketChunk);
-        res.status(200).json({ message: 'Értesítés sikeresen elküldve.', ticketChunk });
+        const message = {
+            token: user.pushToken,
+            notification: {
+                title,
+                body,
+            },
+            data: {
+                userId: String(user.id)
+            }
+        };
+        const response = await admin.messaging().send(message);
+        console.log('Push értesítés elküldve:', response);
+        res.status(200).json({ message: 'Értesítés sikeresen elküldve.', response });
     } catch (error) {
         console.error('Push küldés hiba', error);
         res.status(500).json({ message: 'Hiba az értesítés küldésekor.' });
