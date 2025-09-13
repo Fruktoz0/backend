@@ -123,6 +123,21 @@ router.get('/report_db',authenticateToken , async (req, res) => {
 });
 
 
+//FP Report db szám lekérdezése Intézményenként
+router.post('/report_Inst_db',authenticateToken , async (req, res) => {
+    try {
+        const { institutionId } = req.body
+        const allReports = await reports.findAll({
+            where: { institutionId }         
+        })
+        res.status(200).json({ found_db: allReports.length });
+    } catch (error) {
+        console.error('Hiba a bejelentések lekérésekor:', error);
+        res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
+    }
+});
+
+
 //Összes reports lekérdezése
 router.get('/getAllReports', async (req, res) => {
     try {
