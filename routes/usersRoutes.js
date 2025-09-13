@@ -3,7 +3,9 @@ const router = express.Router();
 const { users, institutions } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
 const { v4: uuidv4 } = require('uuid');
+const { Expo } = require("expo-server-sdk");
 
+const expo = new Expo();
 const test_y = process.env.TEST_Y;
 const { Op } = require('sequelize');
 
@@ -33,7 +35,7 @@ router.get('/admin/user_db', authenticateToken, async (req, res) => {
         }
         const a_db = await users.findAll()
         res.status(200).json({ found_db: a_db.length });
-        if (test_y != '') { console.log("\nFound_db:", a_db.length)};
+        if (test_y != '') { console.log("\nFound_db:", a_db.length) };
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
@@ -172,24 +174,24 @@ router.put('/admin/user/:id/institution', authenticateToken, async (req, res) =>
 
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: "Nincs jogosultságod hozzá" })
-        }        
+        }
 
         const userId = req.params.id
         if (test_y != '') { console.log("User.ID: ", userId) }
 
-        const  user = await users.findByPk(userId)
-        if (! user) {
+        const user = await users.findByPk(userId)
+        if (!user) {
             return res.status(404).json({ message: 'Felhasználó nem található' })
         }
 
-        const { institutionId } = req.body 
-    // Leválasztás engedése az intézményről
+        const { institutionId } = req.body
+        // Leválasztás engedése az intézményről
         if (institutionId === null || institutionId === "") {
             await user.update({ institutionId: null });
             return res.status(201).json({ message: "Intézmény leválasztva a felhasználóról." });
         }
 
-        if (test_y != '') { console.log("Sel. Inst.ID: ", institutionId) }        
+        if (test_y != '') { console.log("Sel. Inst.ID: ", institutionId) }
         const institution = await institutions.findByPk(institutionId)
         if (test_y != '') { console.log("Institution: ", institution) }
         if (!institution) {
@@ -350,5 +352,56 @@ router.put('/admin/user_all', authenticateToken, async (req, res) => {
     }
 })
 
+router.post('/registerPushToken', authenticateToken, async (req, res) => {
+    try {
+        const user = await users.findByPk(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'Felhasználó nem található.' });
+        }
+
+        const { pushToken } = req.body;
+        user.pushToken = pushToken;
+
+        await user.save();
+        res.status(200).json({ message: 'Push token sikeresen regisztrálva.', pushToken: user.pushToken });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Hiba a push token regisztrálásakor.' });
+    }
+})
+
+
+//Értesítés küldése 1 felhasználónak
+router.post('/sendNotification', authenticateToken, async (req, res) => {
+    try {
+        if(req.user.role !== 'admin'){
+            return res.status(403).json({message: 'Nincs jogosultságod az értesítés küldéséhez.'});
+        }
+        const { userId, title, body } = req.body;
+        const user = await users.findByPk(userId);
+        if (!user || !user.pushToken) {
+            return res.status(404).json({ message: 'Felhasználó nem található vagy nincs push token regisztrálva.' });
+        }
+
+        const pushToken = user.pushToken;
+        if (!Expo.isExpoPushToken(pushToken)) {
+            return res.status(400).json({ message: 'Érvénytelen push token.' });
+        }
+
+        const messages = [{
+            to: pushToken,
+            sound: 'default',
+            title: title,
+            body: body,
+            data: { userId }
+        }];
+        const ticketChunk = await expo.sendPushNotificationsAsync(messages);
+        console.log("Ticket:", ticketChunk);
+        res.status(200).json({ message: 'Értesítés sikeresen elküldve.', ticketChunk });
+    } catch (error) {
+        console.error('Push küldés hiba', error);
+        res.status(500).json({ message: 'Hiba az értesítés küldésekor.' });
+    }
+})
 
 module.exports = router;

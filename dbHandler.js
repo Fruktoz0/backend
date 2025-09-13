@@ -82,6 +82,10 @@ const users = dbConnection.define('user', {
     'activationExpires': {
         type: DataTypes.DATE,
         allowNull: true
+    },
+    'pushToken':{
+        type: DataTypes.STRING,
+        allowNull: true
     }
 })
 
