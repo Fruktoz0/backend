@@ -36,6 +36,22 @@ const upload = multer({
     limits: { fileSize: 6 * 1024 * 1024 }
 }).single('image');
 
+
+//FP News db szám lekérdezése Intézményenként
+router.post('/news_Inst_db',authenticateToken , async (req, res) => {
+    try {
+        const { institutionId } = req.body
+        const allNews = await institutionNews.findAll({
+            where: { institutionId }         
+        })
+        res.status(200).json({ found_db: allNews.length });
+    } catch (error) {
+        console.error('Hiba a bejelentések lekérésekor:', error);
+        res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
+    }
+});
+
+
 //  Új hír létrehozása 
 router.post('/add', authenticateToken, (req, res) => {
     upload(req, res, async (err) => {
@@ -106,6 +122,7 @@ router.post('/add', authenticateToken, (req, res) => {
     });
 });
 
+
 // Összes hír lekérdezése 
 router.get('/allNews', async (req, res) => {
     try {
@@ -122,6 +139,7 @@ router.get('/allNews', async (req, res) => {
         return res.status(500).json({ message: 'Hiba történt a hírek lekérésekor.' });
     }
 });
+
 
 // Hír frissítése 
 router.put('/update/:id', authenticateToken, (req, res) => {
@@ -179,6 +197,7 @@ router.put('/update/:id', authenticateToken, (req, res) => {
     });
 });
 
+
 // Hír törlése 
 router.delete('/:id', authenticateToken, async (req, res) => {
     try {
@@ -207,6 +226,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
         res.status(500).json({ message: 'Szerver hiba a hír törlésekor.' });
     }
 });
+
 
 // Kiválasztott hír lekérése 
 router.get('/:id', async (req, res) => {
