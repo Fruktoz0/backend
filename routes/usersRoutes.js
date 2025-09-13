@@ -393,16 +393,15 @@ router.post('/users/sendNotification', authenticateToken, async (req, res) => {
             return res.status(403).json({ message: 'Nincs jogosultságod az értesítés küldéséhez.' });
         }
         const { userId, title, body } = req.body;
+
+        // Ellenőrzöm, hogy a felhasználó létezik-e és van-e push tokenje
         const user = await users.findByPk(userId);
         if (!user || !user.pushToken) {
             return res.status(404).json({ message: 'Felhasználó nem található vagy nincs push token regisztrálva.' });
         }
 
-        const pushToken = user.pushToken;
-        if (!Expo.isExpoPushToken(pushToken)) {
-            return res.status(400).json({ message: 'Érvénytelen push token.' });
-        }
-
+        // Push értesítés küldése Firebase segítségével
+  
         const message = {
             token: user.pushToken,
             notification: {
