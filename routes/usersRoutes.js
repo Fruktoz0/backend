@@ -3,8 +3,8 @@ const router = express.Router();
 const { users, institutions } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
 const { v4: uuidv4 } = require('uuid');
-import admin from "firebase-admin";
-import fs from "fs";
+const admin = require("firebase-admin");
+const fs = require('fs');
 
 const test_y = process.env.TEST_Y;
 const { Op } = require('sequelize');
