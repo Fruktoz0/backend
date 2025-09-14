@@ -151,7 +151,7 @@ const reports = dbConnection.define('report', {
     },
     'status': {
         type: DataTypes.ENUM,
-        values: ['open', 'rejected', 'in_progress', 'resolved'],
+        values: ['open', 'accepted', 'forwarded', 'in_progress', 'rejected', 'resolved', 'reopened' ]
         defaultValue: 'open'
     },
     'institutionId': {
