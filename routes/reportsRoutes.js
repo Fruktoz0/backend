@@ -251,6 +251,14 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
         const { statusId, comment } = req.body
         const report = await reports.findByPk(req.params.id)
         const validatedStatuses = ['open', 'in_progress', 'forwarded', 'resolved', 'reopened', 'rejected']
+        const statusTransitions = {
+            open: "Nyitott",
+            in_progress: "Folyamatban",
+            forwarded: "Továbbítva",
+            resolved: "Megoldva",
+            reopened: "Újranyitva",
+            rejected: "Elutasítva"
+        }
         //Státusz ellenőrzése
         if (!validatedStatuses.includes(statusId)) {
             return res.status(400).json({ message: 'Érvénytelen státusz' })
@@ -283,6 +291,7 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
         const user = await users.findByPk(report.userId)
         //Rövidített cím a push értesítéshez
         const shortTitle = report.title.length > 50 ? report.title.substring(0, 47) + "..." : report.title
+        const statusHu = statusTransitions[statusId] || statusId
 
         //Értesítés a státusz változásról
         //Ha a user leiratkozott az értesítésekről, akkor nem küldünk
@@ -291,7 +300,7 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
                 token: user.pushToken,
                 notification: {
                     title: 'Bejelentés státusz változás',
-                    body: `A ${shortTitle} bejelentésed státusza megváltozott: ${statusId}.`,
+                    body: `A ${shortTitle} nevű bejelentésed státusza megváltozott: ${statusHu}.`,
                 },
                 data: {
                     target: "report",
