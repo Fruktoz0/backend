@@ -25,6 +25,7 @@ if (!admin.apps.length) {
     });
 }
 
+
 // Admin / Felhasználók adatainak listázása
 router.get('/admin/users', authenticateToken, async (req, res) => {
     try {
@@ -77,7 +78,7 @@ router.get('/admin/user_inst/:id', authenticateToken, async (req, res) => {
 
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
-    console.log("\nGet USer Name/Email:", '%' + req.body.name + '%', '%' + req.body.email + '%')
+    if (test_y != '') { console.log("\nGet User Name/Email:", '%' + req.body.name + '%', '%' + req.body.email + '%') }
     var allUser = []
     try {
         if (req.user.role !== 'admin') {
@@ -367,6 +368,8 @@ router.put('/admin/user_all', authenticateToken, async (req, res) => {
     }
 })
 
+
+// Na ez micsoda?
 router.post('/users/registerPushToken', authenticateToken, async (req, res) => {
     try {
         const user = await users.findByPk(req.user.id);
@@ -387,6 +390,7 @@ router.post('/users/registerPushToken', authenticateToken, async (req, res) => {
         res.status(500).json({ message: 'Hiba a push token regisztrálásakor.' });
     }
 })
+
 
 //Értesítés küldése 1 felhasználónak
 router.post('/users/sendNotification', authenticateToken, async (req, res) => {
