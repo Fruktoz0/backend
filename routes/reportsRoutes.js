@@ -112,7 +112,7 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
 
 
 //FP Report db szám lekérdezése
-router.get('/report_db',authenticateToken , async (req, res) => {
+router.get('/report_db', authenticateToken, async (req, res) => {
     try {
         const allReports = await reports.findAll()
         res.status(200).json({ found_db: allReports.length });
@@ -124,11 +124,11 @@ router.get('/report_db',authenticateToken , async (req, res) => {
 
 
 //FP Report db szám lekérdezése Intézményenként
-router.post('/report_Inst_db',authenticateToken , async (req, res) => {
+router.post('/report_Inst_db', authenticateToken, async (req, res) => {
     try {
         const { institutionId } = req.body
         const allReports = await reports.findAll({
-            where: { institutionId }         
+            where: { institutionId }
         })
         res.status(200).json({ found_db: allReports.length });
     } catch (error) {
@@ -206,6 +206,7 @@ router.get('/assignedReports', authenticateToken, async (req, res) => {
         }
         const user = await users.findByPk(req.user.id)
 
+        //Intézményhez tartozó bejelentések lekérdezése
         const assignedReports = await reports.findAll({
             where: { institutionId: user.institutionId },
             include: [
@@ -247,11 +248,21 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
     try {
         const { statusId, comment } = req.body
         const report = await reports.findByPk(req.params.id)
+        const validatedStatuses = ['open', 'in_progress', 'forwarded', 'resolved', 'reopened', 'rejected']
+        //Státusz ellenőrzése
+        if (!validatedStatuses.includes(statusId)) {
+            return res.status(400).json({ message: 'Érvénytelen státusz' })
+        }
+        //Report ellenőrzése
         if (!report)
             return res.status(404).json({ message: 'Bejelentés nem található' })
         //Jogosultság ellenőrzése
         if (req.user.role !== 'admin' && req.user.institutionId !== report.institutionId) {
             return res.status(403).json({ message: 'Nincs jogosultságod a státusz váltzáshoz.' })
+        }
+        //Ugyanaz a státusz nem állítható be
+        if (report.status === statusId) {
+            return res.status(400).json({ message: 'Ugyanaz a státusz nem állítható be!' })
         }
         //Komment megadása, kivéve open-> in_progressnél
         if (!(report.status === 'open' && statusId === 'in_progress') && !comment) {
@@ -259,7 +270,7 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
         }
         report.status = statusId
         await report.save()
-
+        //Státusz történet mentése
         await statusHistories.create({
             reportId: report.id,
             statusId,
@@ -287,7 +298,7 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
         if (req.user.role !== 'admin' && req.user.institutionId !== report.institutionId) {
             return res.status(403).json({ message: 'Nincs jogosultságod a státusz történet megtekintéséhez.' });
         }
-
+        // Státusz történet lekérdezése
         const history = await statusHistories.findAll({
             where: { reportId: report.id },
             include: [
@@ -299,7 +310,7 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
             ],
             order: [['changedAt', 'ASC']]
         });
-
+        // Formázás a kívánt struktúrára
         const formatted = history.map(entry => ({
             status: entry.statusId,
             changedAt: entry.changedAt,
