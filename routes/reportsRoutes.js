@@ -294,6 +294,7 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
                     body: `A ${shortTitle} bejelentésed státusza megváltozott: ${statusId}.`,
                 },
                 data: {
+                    type: 'status_update',
                     reportId: report.id.toString()
                 }
             }
