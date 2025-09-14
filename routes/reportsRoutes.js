@@ -3,6 +3,7 @@ const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs, badges, userBadges } = require('../dbHandler');
+const admin = require("firebase-admin");
 
 // Multer storage beállítás kiterjesztéssel
 const storage = multer.diskStorage({
@@ -279,6 +280,36 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
             comment: comment || null,
             changedAt: new Date()
         })
+        const user = await users.findByPk(report.userId)
+        //Rövidített cím a push értesítéshez
+        const shortTitle = report.title.length > 50 ? report.title.substring(0, 47) + "..." : report.title
+
+        //Értesítés a státusz változásról
+        //Ha a user leiratkozott az értesítésekről, akkor nem küldünk
+        if (user?.pushToken) {
+            const message = {
+                token: user.pushToken,
+                notification: {
+                    title: 'Bejelentés státusz változás',
+                    body: `A ${shortTitle} bejelentésed státusza megváltozott: ${statusId}.`,
+                },
+                data: {
+                    reportId: report.id.toString()
+                }
+            }
+            try {
+                const response = await admin.messaging().send(message)
+                console.log("Push értesítés elküldve státuszváltáskor:", response)
+
+            } catch (error) {
+                console.error("Push küldés hiba státuszváltáskor", error)
+                if (error.code === 'messaging/invalid-registration-token' || error.code === 'messaging/registration-token-not-registered') {
+                    user.pushToken = null
+                    await user.save()
+                    console.log(`A felhasználó (${user.id}) push tokenje érvénytelen, eltávolítva az adatbázisból.`)
+                }
+            }
+        }
         res.json({ message: 'Státusz frissítve' })
 
     } catch (error) {
@@ -538,7 +569,6 @@ router.get("/status-duration/:id", authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba történt a státusz idők lekérdezésekor" })
     }
 })
-
 
 //Adott bejelentés lekérdezése ID alapján
 router.get('/:id', authenticateToken, async (req, res) => {
