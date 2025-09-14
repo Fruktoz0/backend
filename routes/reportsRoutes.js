@@ -15,6 +15,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage }); // storage használata itt
 const authenticateToken = require('../middleware/authMiddleware'); // Az autentikáció middleware – ez olvassa ki a JWT-t a headerből, és req.user-be teszi a user adatokat
+const { auth } = require('firebase-admin');
 
 
 // Új bejelentés létrehozása képfeltöltéssel
@@ -535,6 +536,29 @@ router.get("/status-duration/:id", authenticateToken, async (req, res) => {
     } catch {
         console.error("Hiba történt a státusz idők lekérdezésekor", error)
         res.status(500).json({ message: "Szerverhiba történt a státusz idők lekérdezésekor" })
+    }
+})
+
+
+//Adott bejelentés lekérdezése ID alapján
+router.get('/:id', authenticateToken, async (req, res) => {
+    try {
+        const report = await reports.findByPk(req.params.id, {
+            include: [
+                { model: users, attributes: ['id', 'username', 'avatarStyle', 'avatarSeed', 'email', 'points', 'role', 'institutionId'] },
+                { model: categories },
+                { model: institutions },
+                { model: reportImages },
+                { model: reportVotes, include: [{ model: users, attributes: ['id', 'username'] }] }
+            ]
+        });
+        if (!report) {
+            return res.status(404).json({ message: "Bejelentés nem található." });
+        }
+        res.json(report);
+    } catch (error) {
+        console.error("Hiba történt a bejelentés lekérdezésekor", error)
+        res.status(500).json({ message: "Szerverhiba történt a bejelentés lekérdezésekor" })
     }
 })
 
