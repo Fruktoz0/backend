@@ -116,8 +116,8 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
 //FP Report db szám lekérdezése
 router.get('/report_db', authenticateToken, async (req, res) => {
     try {
-        const allReports = await reports.findAll()
-        res.status(200).json({ found_db: allReports.length });
+        const report_db = await reports.count()
+        res.status(200).json({ found_db: report_db });
     } catch (error) {
         console.error('Hiba a bejelentések lekérésekor:', error);
         res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
@@ -129,10 +129,10 @@ router.get('/report_db', authenticateToken, async (req, res) => {
 router.post('/report_Inst_db', authenticateToken, async (req, res) => {
     try {
         const { institutionId } = req.body
-        const allReports = await reports.findAll({
+        const report_db = await reports.count({
             where: { institutionId }
         })
-        res.status(200).json({ found_db: allReports.length });
+        res.status(200).json({ found_db: report_db });
     } catch (error) {
         console.error('Hiba a bejelentések lekérésekor:', error);
         res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
