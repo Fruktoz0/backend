@@ -20,6 +20,7 @@ router.get('/list', async (req, res) => {
     }
 })
 
+
 //Kategóriák lekérdezése intézmény alapján
 router.get('/byInstitution/:institutionId', async (req, res) => {
     try {
@@ -35,6 +36,7 @@ router.get('/byInstitution/:institutionId', async (req, res) => {
 });
 
 
+//Kategória Létrehozása
 router.post('/create', authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
         return res.status(403).json({ message: "Nincs jogosultságod kategória létrehozására." })
@@ -64,6 +66,37 @@ router.post('/create', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Hiba az új kategória létrehozásakor!" })
     }
 })
+
+
+//Kategória Módosítása
+router.post('/modify', authenticateToken, async (req, res) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Nincs jogosultságod kategória létrehozására." })
+    }
+    const { categoryName, defaultInstitutionId } = req.body
+    if (!categoryName || !defaultInstitutionId) {
+        return res.status(400).json({ message: "Hiányzó mezők: 'categoryName' vagy 'defaultInstitutionId'" })
+    }
+    try {
+        //Megnézem létezik-e már ilyen kategória
+        const existingCategory = await categories.findOne({
+            where: { categoryName }
+        })
+        //Ha nincs akkor hibát dobok
+        if (!existingCategory) {
+            return res.status(409).json({ message: "Nem létezik ilyen nevű kategória." })
+        }
+        //Ha van, akkor módosítom
+        existingCategory.defaultInstitutionId = defaultInstitutionId;
+        await instRecord.save();
+        res.status(201).json(existingCategory)
+
+    } catch (error) {
+        console.error("Hiba a kategoria létrehozásokar:", error)
+        res.status(500).json({ message: "Hiba az új kategória létrehozásakor!" })
+    }
+})
+
 
 //Kategória törlése
 router.delete("/delete/:id", authenticateToken, async (req, res) => {
