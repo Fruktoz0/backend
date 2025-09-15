@@ -10,10 +10,10 @@ router.get("/", async (req, res) => {
         const institutionsList = await institutions.findAll({
 
             //Meghívom a hozzákapcsolt tábla adatait is a későbbi lekérdezéshez
-            /*include: {
+            include: {
                 model: users,
                 attributes: ['id', "username", "email",]
-            }*/
+            }
         });
         res.json(institutionsList)
 
@@ -22,6 +22,7 @@ router.get("/", async (req, res) => {
         res.status(500).json({ message: "Szerverhiba az intézmények lekérdezésekor" })
     }
 })
+
 
 //Intézmények lekérdezése ID alapján
 router.get("/:id", async (req, res) => {
@@ -69,6 +70,7 @@ router.post("/create", authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba az intézmény létrehozásakor." })
     }
 })
+
 
 //Intézmény módosítása
 router.put("/update/:id", authenticateToken, async (req, res) => {

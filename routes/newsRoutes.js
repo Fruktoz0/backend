@@ -227,6 +227,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 });
 
+
 // Kiválasztott hír lekérése 
 router.get('/:id', async (req, res) => {
     try {

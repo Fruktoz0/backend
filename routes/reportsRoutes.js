@@ -138,6 +138,21 @@ router.post('/report_Inst_db',authenticateToken , async (req, res) => {
 });
 
 
+//FP Report db szám lekérdezése Kategóriánként
+router.post('/report_Cat_db',authenticateToken , async (req, res) => {
+    try {
+        const { categoryId } = req.body
+        const allReports = await reports.findAll({
+            where: { categoryId }         
+        })
+        res.status(200).json({ found_db: allReports.length });
+    } catch (error) {
+        console.error('Hiba a bejelentések lekérésekor:', error);
+        res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
+    }
+});
+
+
 //Összes reports lekérdezése
 router.get('/getAllReports', async (req, res) => {
     try {
@@ -173,6 +188,7 @@ router.get('/getAllReports', async (req, res) => {
     }
 });
 
+
 //Bejelentkezett felhasználó reportjainak lekérdezése
 router.get('/userReports', authenticateToken, async (req, res) => {
     try {
@@ -195,6 +211,7 @@ router.get('/userReports', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a felhasználó bejelentéseinek lekérdezésekor" })
     }
 })
+
 
 //Adott intézményhez tartozó bejelentések lekérdezése
 router.get('/assignedReports', authenticateToken, async (req, res) => {
@@ -223,6 +240,7 @@ router.get('/assignedReports', authenticateToken, async (req, res) => {
     }
 })
 
+
 //Bejelentkezett felhasználó bejelentéseinek száma
 router.get('/userReportCount', authenticateToken, async (req, res) => {
     try {
@@ -237,6 +255,7 @@ router.get('/userReportCount', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a felhasználó bejelentéseinek száma lekérdezésekor" })
     }
 })
+
 
 //Report státusz váltás (admin vagy saját intézmény)
 router.post('/:id/status', authenticateToken, async (req, res) => {
@@ -270,6 +289,7 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
         return res.status(500).json({ message: "Szerverhiba történt státuszváltáskor" })
     }
 })
+
 
 // Státusz történet lekérdezése
 router.get('/:id/status-history', authenticateToken, async (req, res) => {
@@ -312,6 +332,8 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a státusz történet lekérdezésekor" });
     }
 });
+
+
 //Adott bejelentés továbbításainak lekérdezése
 router.get("/:id/forwardLogs", authenticateToken, async (req, res) => {
     const { id } = req.params
@@ -349,6 +371,7 @@ router.get("/:id/forwardLogs", authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a logok lekérdezése során." })
     }
 })
+
 
 //Adott bejelentés hozzárendelése más intézményhez Admin/Intézményi felhasználó
 router.put("/forward/:id", authenticateToken, async (req, res) => {
@@ -400,6 +423,7 @@ router.put("/forward/:id", authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba történt a bejelentés továbbítása során" });
     }
 });
+
 
 //Összes bejelentés státuszaiban töltött idejének megjelenítése
 router.get("/status-duration/average", authenticateToken, async (req, res) => {
@@ -460,6 +484,7 @@ router.get("/status-duration/average", authenticateToken, async (req, res) => {
     }
 });
 
+
 //Bejelentések státuszainak darabszáma
 router.get("/stats", authenticateToken, async (req, res) => {
     try {
@@ -476,6 +501,7 @@ router.get("/stats", authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a statok lekérdezése során." })
     }
 })
+
 
 //Adott bejelentés státuszban töltött idejének megjelenítése  // Ez legyen mindig az utolsó vagy rosszul fut el!!!
 router.get("/status-duration/:id", authenticateToken, async (req, res) => {
