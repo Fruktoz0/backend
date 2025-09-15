@@ -129,10 +129,10 @@ router.get('/report_db', authenticateToken, async (req, res) => {
 router.post('/report_Inst_db', authenticateToken, async (req, res) => {
     try {
         const { institutionId } = req.body
-        const report_db = await reports.count({
+        const a_db = await reports.count({
             where: { institutionId }
         })
-        res.status(200).json({ found_db: report_db });
+        res.status(200).json({ found_db: a_db });
     } catch (error) {
         console.error('Hiba a bejelentések lekérésekor:', error);
         res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
