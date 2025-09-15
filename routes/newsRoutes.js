@@ -52,6 +52,21 @@ router.post('/news_Inst_db',authenticateToken , async (req, res) => {
 });
 
 
+//FP Report db szám lekérdezése Kategóriánként
+router.post('/report_Cat_db',authenticateToken , async (req, res) => {
+    try {
+        const { categoryId } = req.body
+        const allReports = await reports.findAll({
+            where: { categoryId }         
+        })
+        res.status(200).json({ found_db: allReports.length });
+    } catch (error) {
+        console.error('Hiba a bejelentések lekérésekor:', error);
+        res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
+    }
+});
+
+
 //  Új hír létrehozása 
 router.post('/add', authenticateToken, (req, res) => {
     upload(req, res, async (err) => {
