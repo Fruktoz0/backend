@@ -49,9 +49,9 @@ router.get('/admin/user_db', authenticateToken, async (req, res) => {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
-        const a_db = await users.findAll()
-        res.status(200).json({ found_db: a_db.length });
-        if (test_y != '') { console.log("\nFound_db:", a_db.length) };
+        const a_db = await users.count()
+        res.status(200).json({ found_db: a_db });
+        if (test_y != '') { console.log("\nFound_db:", a_db) };
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
