@@ -194,6 +194,25 @@ router.get('/all', authenticateToken, async (req, res) => {
     }
 })
 
+//Adott intézményhez rendelt kihívások lekérése
+router.get('/assigned-challenges', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
+            return res.status(403).json({ message: "Nincs jogosultásga más intézmény kihívásáinak megtekintéséhez" })
+        }
+        const userInstitution = req.user.institutionId
+        const assignedChallengesList = await challenges.findAll({
+            where: {
+                institutionId: userInstitution
+            }
+        })
+        res.json(assignedChallengesList)
+    } catch (err) {
+        console.error("Hiba az intézményhez kapcsolt kihívások lekérdezésekor", err)
+        res.status(500).json({ message: "Szerverhiba az intézményhez kapcsolt kihívások lekérdeésekor" })
+    }
+})
+
 //Felhasználó teljesített kihívásainak lekérése
 router.get('/completed', authenticateToken, async (req, res) => {
     try {
