@@ -247,33 +247,40 @@ router.get('/user', authenticateToken, async (req, res) => {
 });
 
 
-//FP: Felhasználó törlése csak teszt üzemmódban működik.
+//FP: Felhasználó törlése nemcsak teszt üzemmódban működik.
 router.delete('/delete/:email', authenticateToken, async (req, res) => {
-    if (test_y != '') {
-        console.log(req.params.email)
-        if (req.user.role !== "admin") {
-            return res.status(403).json({ message: "Nincs jogosultságod felhasználó törlésére." })
-        }
-        try {
-            //Megnézem létezik-e a felhasználó
-            const user = await users.findOne({
-                where: {
-                    email: req.params.email
-                }
-            })
-            console.log("Deleting User:", user);
-
-            if (!user) {
-                return res.status(402).json({ message: 'Felhasználó nem található.' });
+    console.log(req.params.email)
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Nincs jogosultságod felhasználó törlésére." })
+    }
+    try {
+        //Megnézem létezik-e a felhasználó
+        const user = await users.findOne({
+            where: {
+                email: req.params.email
             }
+        })
+        console.log("Deleting User:", user);
+
+        if (!user) {
+            return res.status(402).json({ message: 'Felhasználó nem található.' });
+        }
+
+        // felhasználó létezik
+        if (test_y != '') {
+            //Teszt üzemmódban törlöm,
             await user.destroy();
             return res.status(201).json({ message: "Felhasználó törölve" })
-        } catch (err) {
-            console.error("Hiba az kategória törlésekor.", err)
-            return res.status(500).json({ message: "Szerverhiba az kategória törlésekor." })
+        } else {
+            //Egyébként archíválom.
+            res.status(401).json({ message: "Nem vagyok Teszt üzemmódban, User is archived!" })
+            user.isActive = "archived"
+            await user.save()
         }
+    } catch (err) {
+        console.error("Hiba az kategória törlésekor.", err)
+        return res.status(500).json({ message: "Szerverhiba az kategória törlésekor." })
     }
-    res.status(401).json({ message: "Nem vagyok Teszt üzemmódban." })
 });
 
 
