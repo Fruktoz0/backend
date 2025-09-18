@@ -5,18 +5,51 @@ const multer = require('multer');
 const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs, badges, userBadges } = require('../dbHandler');
 const admin = require("firebase-admin");
 
+let new_name = "";
+
 // Multer storage beállítás kiterjesztéssel
 const storage = multer.diskStorage({
     destination: 'uploads/',
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname); // eredeti fájl kiterjesztése
-        cb(null, Date.now() + ext); // pl.: 1689087900000.jpg
+        new_name = Date.now() + ext;
+        cb(null, new_name); // pl.: 1689087900000.jpg
     },
 });
 
 const upload = multer({ storage }); // storage használata itt
 const authenticateToken = require('../middleware/authMiddleware'); // Az autentikáció middleware – ez olvassa ki a JWT-t a headerből, és req.user-be teszi a user adatokat
 const { auth } = require('firebase-admin');
+
+
+// Admin_FP: Meglévő bejelentéshez 1 kép hozzáadása
+router.post('/addPicture/:id', authenticateToken, upload.single('file'), async (req, res) => {
+    try {
+        console.log("\nReport Id:", req.params.id)
+
+        const already = await reports.findOne({
+            where: { id: req.params.id }
+        })
+
+        if (!already) {
+            return res.status(400).json({ message: "Nincs Ilyen Report!" })
+        }
+
+        reportImages.create({
+            reportId: req.params.id,
+            imageUrl: `/uploads/${new_name}`, // a fájl relatív URL-je
+        })
+
+        // A válasz a frontendnek
+        res.status(200).json({
+            message: 'Reporthoz sikeresen hozzáadva a kép',
+            reportId: req.params.id
+        });
+    } catch (error) {
+        console.error('Hiba a report létrehozásakor:', error);
+        res.status(500).json({ message: 'Szerverhiba a report mentésekor' });
+    }
+});
 
 
 // Új bejelentés létrehozása képfeltöltéssel
