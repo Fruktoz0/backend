@@ -284,4 +284,37 @@ router.delete('/delete/:email', authenticateToken, async (req, res) => {
 });
 
 
+//FP: Felhasználónak új jelszó adása admin által.
+router.post('/nemzet/', authenticateToken, async (req, res) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Nincs jogosultságod felhasználó törlésére." }).end()
+    }
+    console.log("\n\nOK:", req.body.email)
+    try {
+        //Megnézem létezik-e a felhasználó
+        const user = await users.findOne({
+            where: {
+                email: req.body.email
+            }
+        })
+        if (!user) { return res.status(402).json({ message: 'Felhasználó nem található.' }); }
+
+        if (test_y != '') {
+            console.log("Giving New Password:", req.body.password);
+        //Jelszó hash-elése
+            const hashedPassword = await bcrypt.hash(req.body.password, 10);
+            user.password = hashedPassword
+            await user.save()
+            return res.status(201).json({ message: "A felhasználó jelszava megváltozott!" }).end()
+        }
+        else {
+            return res.status(403).json({ message: "Nem vagyok Teszt üzemmódban, User password can not changed!" }).end()
+        }
+    } catch (err) {
+        console.error("Hiba az kategória törlésekor.", err)
+        return res.status(500).json({ message: "Szerverhiba a Password megváltoztatásakor." }).end()
+    }
+});
+
+
 module.exports = router;
