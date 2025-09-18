@@ -98,6 +98,14 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
             }
         }
 
+        await statusHistories.create({
+            reportId: newReport.id,
+            statusId: "open",
+            setByUserId: req.user.id,
+            comment: "X Akta megnyitva",
+            changedAt: newReport.createdAt
+        })
+
         // A válasz a frontendnek
         res.status(201).json({
             message: 'Report sikeresen létrehozva',
