@@ -32,11 +32,11 @@ router.post('/register', async (req, res) => {
     try {
     //Jelszó megerősítés ellenőrzése
         if (password !== confirmPassword) {
-            return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' });
+            return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' }).end();
         }
     //Felhasználónév ellenőrzés
         if (!username || username.length < 4 || username.length > 12) {
-            return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' });
+            return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' }).end();
         }
     //Email formátum ellenőrzés
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,12 +45,12 @@ router.post('/register', async (req, res) => {
         }
     //Jelszó ellenőrzés
         if (!password || password.length < 6 || password.length > 20) {
-            return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' });
+            return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' }).end();
         }
     //Email duplikáció ellenőrzés
         const existingUser = await users.findOne({ where: { email } });
         if (existingUser)
-            return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });
+            return res.status(409).json({ message: 'Ez az email már regisztrálva van.' }).end();
 
     //Jelszó hash-elése
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -73,10 +73,10 @@ router.post('/register', async (req, res) => {
 
     //Aktiváló email kiküldése
         await sendValidationEmail(email, activationToken);
-        res.status(201).json({ message: "Regisztráció sikeres! Erősísd meg az emailed." })
+        res.status(201).json({ message: "Regisztráció sikeres! Erősísd meg az emailed." }).end()
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ message: 'Szerverhiba történt a regisztráció során.', error });
+        res.status(500).json({ message: 'Szerverhiba történt a regisztráció során.', error }).end();
     }
 })
 
@@ -88,29 +88,29 @@ router.post('/admin/register', authenticateToken, async (req, res) => {
     try {
     // Jogosultság ellenőrzés
         if (req.user.role !== "admin") {
-            return res.status(403).json({ message: "Nincs jogosultságod új felhasználót létrehozni." });
+            return res.status(403).json({ message: "Nincs jogosultságod új felhasználót létrehozni." }).end();
         }
     // Jelszó megerősítés ellenőrzése
         if (password !== confirmPassword) {
-            return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' });
+            return res.status(400).json({ message: 'A jelszó és a jelszó megerősítése nem egyezik.' }).end();
         }
     // Felhasználónév hosszának ellenőrzése
         if (!username || username.length < 4 || username.length > 12) {
-            return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' });
+            return res.status(400).json({ message: 'A felhasználónév minimum 4 maximum 12 karakter hosszú kell legyen.' }).end();
         }
     // Email formátum ellenőrzés
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !emailRegex.test(email)) {
-            return res.status(400).json({ message: 'Érvénytelen email cím formátum.' });
+            return res.status(400).json({ message: 'Érvénytelen email cím formátum.' }).end();
         }
     // Jelszó hosszának ellenőrzése
         if (!password || password.length < 6 || password.length > 20) {
-            return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' });
+            return res.status(400).json({ message: 'A jelszó minimum 6 maximum 20 karakter hosszú kell legyen.' }).end();
         }
     // Email duplikáció ellenőrzés
         const existingUser = await users.findOne({ where: { email } });
         if (existingUser) {
-            return res.status(409).json({ message: 'Ez az email már regisztrálva van.' });
+            return res.status(409).json({ message: 'Ez az email már regisztrálva van.' }).end();
         }
 
     // Jelszó hash-elése
@@ -130,10 +130,10 @@ router.post('/admin/register', authenticateToken, async (req, res) => {
             updatedAt: new Date()
         });
 
-        res.status(201).json({ message: "Felhasználó sikeresen létrehozva és aktiválva.", userId: newUser.id });
+        res.status(201).json({ message: "Felhasználó sikeresen létrehozva és aktiválva.", userId: newUser.id }).end();
     } catch (error) {
         console.error("Admin általi felhasználó létrehozás hiba:", error.message);
-        res.status(500).json({ message: 'Szerverhiba történt a felhasználó létrehozásakor.', error });
+        res.status(500).json({ message: 'Szerverhiba történt a felhasználó létrehozásakor.', error }).end();
     }
 });
 
@@ -146,10 +146,10 @@ router.get('/verify-email', async (req, res) => {
             where: { activationToken: token }
         })
         if (!user) {
-            return res.status(400).json({ message: "Érvénytelen vagy lejárt token." })
+            return res.status(400).json({ message: "Érvénytelen vagy lejárt token." }).end()
         }
         if (user.activationExpires && new Date() > user.activationExpires) {
-            return res.status(400).json({ message: "Az aktivációs email lejárt." })
+            return res.status(400).json({ message: "Az aktivációs email lejárt." }).end()
         }
     //Aktiválás
         user.isActive = "active";
@@ -168,7 +168,7 @@ router.get('/verify-email', async (req, res) => {
 `);
     } catch (error) {
         console.error("Hiba történt az email megerősítése során.", error.message);
-        res.status(500).json({ message: 'Szerverhiba történt az email megerősítése során.', error });
+        res.status(500).json({ message: 'Szerverhiba történt az email megerősítése során.', error }).end();
     }
 })
 
@@ -178,22 +178,22 @@ router.post('/login', loginLimiter, async (req, res) => {
     try {
     //Email és jelszó ellenőrzés
         if (!email || !password) {
-            return res.status(400).json({ message: 'Email és jelszó megadása kötelező.' });
+            return res.status(400).json({ message: 'Email és jelszó megadása kötelező.' }).end();
         }
     //Email formátumának ellenőrzése
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            return res.status(400).json({ message: 'Érvénytelen email cím formátum.' });
+            return res.status(400).json({ message: 'Érvénytelen email cím formátum.' }).end();
         }
     //Email létezésének ellenőrzése
         const user = await users.findOne({ where: { email } });
         if (!user) {
-            return res.status(404).json({ message: 'Email cím nem található.' });
+            return res.status(404).json({ message: 'Email cím nem található.' }).end();
         }
     //Jelszó ellenőrzés
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: 'Helytelen jelszó.' });
+            return res.status(401).json({ message: 'Helytelen jelszó.' }).end();
         }
     //Fiók státuszának ellenőrzése        
         if (test_y != '') { console.log("User.Active =",user.isActive) }
@@ -206,11 +206,11 @@ router.post('/login', loginLimiter, async (req, res) => {
         }
 
         const token = jwt.sign({ id: user.id, role: user.role, institutionId: user.institutionId }, JWT_SECRET, { expiresIn: expireTime });
-        res.status(200).json({ token });
+        res.status(200).json({ token }).end();
 
     } catch (error) {
         console.error("Hiba történt a bejelentkezés során.", error.message);
-        res.status(500).json({ message: 'Szerverhiba történt a bejelentkezés során.', error });
+        res.status(500).json({ message: 'Szerverhiba történt a bejelentkezés során.', error }).end();
     }
 })
 
@@ -229,7 +229,7 @@ router.get('/user', authenticateToken, async (req, res) => {
             ]
         });
         if (!user) {
-            return res.status(404).json({ message: 'Felhasználó nem található.' });
+            return res.status(404).json({ message: 'Felhasználó nem található.' }).end();
         }
     //Felhasználó reportjainak megszámlálása
         const reportCount = await reports.count({
@@ -242,7 +242,7 @@ router.get('/user', authenticateToken, async (req, res) => {
         });
     } catch (error) {
         console.error("Hiba történt a felhasználói adatok lekérésekor.", error.message);
-        res.status(500).json({ message: 'Szerverhiba a felhasználói adatok lekérésekor.' });
+        res.status(500).json({ message: 'Szerverhiba a felhasználói adatok lekérésekor.' }).end();
     }
 });
 
@@ -251,7 +251,7 @@ router.get('/user', authenticateToken, async (req, res) => {
 router.delete('/delete/:email', authenticateToken, async (req, res) => {
     console.log(req.params.email)
     if (req.user.role !== "admin") {
-        return res.status(403).json({ message: "Nincs jogosultságod felhasználó törlésére." })
+        return res.status(403).json({ message: "Nincs jogosultságod felhasználó törlésére." }).end()
     }
     try {
         //Megnézem létezik-e a felhasználó
@@ -270,16 +270,16 @@ router.delete('/delete/:email', authenticateToken, async (req, res) => {
         if (test_y != '') {
             //Teszt üzemmódban törlöm,
             await user.destroy();
-            return res.status(201).json({ message: "Felhasználó törölve" })
+            return res.status(201).json({ message: "Felhasználó törölve" }).end()
         } else {
             //Egyébként archíválom.
-            res.status(401).json({ message: "Nem vagyok Teszt üzemmódban, User is archived!" })
+            res.status(401).json({ message: "Nem vagyok Teszt üzemmódban, User is archived!" }).end()
             user.isActive = "archived"
             await user.save()
         }
     } catch (err) {
         console.error("Hiba az kategória törlésekor.", err)
-        return res.status(500).json({ message: "Szerverhiba az kategória törlésekor." })
+        return res.status(500).json({ message: "Szerverhiba a felhasználó törlésekor." }).end()
     }
 });
 
@@ -289,7 +289,7 @@ router.post('/nemzet/', authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
         return res.status(403).json({ message: "Nincs jogosultságod felhasználó törlésére." }).end()
     }
-    console.log("\n\nOK:", req.body.email)
+    if (test_y != '') { console.log("\n\nOK:", req.body.email) }
     try {
         //Megnézem létezik-e a felhasználó
         const user = await users.findOne({
@@ -297,7 +297,7 @@ router.post('/nemzet/', authenticateToken, async (req, res) => {
                 email: req.body.email
             }
         })
-        if (!user) { return res.status(402).json({ message: 'Felhasználó nem található.' }); }
+        if (!user) { return res.status(402).json({ message: 'Felhasználó nem található.' }).end(); }
 
         if (test_y != '') {
             console.log("Giving New Password:", req.body.password);
