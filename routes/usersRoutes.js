@@ -369,6 +369,36 @@ router.put('/admin/user_all', authenticateToken, async (req, res) => {
 })
 
 
+//Admin_FP Intézmény összes adatának frissítése
+router.put('/admin/inst_all', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.params.id
+        if (test_y != '') { console.log("Inst.ID: ", req.body.id) }
+
+        if (req.user.role !== "admin") {
+            return res.status(403).json({ message: "Nincs jogosultságod a felhasználó összes adatának a frissítéséhez." });
+        }
+
+        const instRecord = await users.findByPk(req.body.id)
+        if (!instRecord) {
+            return res.status(404).json({ message: "Intézmény nem található." });
+        }
+
+        const { id, name, email, description, contactInfo, logoUrl}= req.body;
+        instRecord.name = name;
+        instRecord.email = email;
+        instRecord.description = description;
+        instRecord.contactInfo = contactInfo;
+
+        await instRecord.save();
+        res.status(200).json({ message: "Felhasználó adatai sikeresen frissítve.", user: instRecord });
+    } catch (error) {
+        console.error("Hiba a felhasználó adatainak frissítésekor", error);
+        res.status(500).json({ message: "Szerverhiba a felhasználó adatainak frissítésekor", error: error.message });
+    }
+})
+
+
 // Na ez micsoda?
 router.post('/users/registerPushToken', authenticateToken, async (req, res) => {
     try {
