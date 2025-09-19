@@ -7,6 +7,7 @@ const admin = require("firebase-admin");
 
 const test_y = process.env.TEST_Y;
 const { Op } = require('sequelize');
+
 let new_name = "";
 
 // Multer storage beállítás kiterjesztéssel
@@ -33,8 +34,7 @@ router.post('/getAllReportsFromDate', authenticateToken, async (req, res) => {
         }
         const allReports = await reports.findAll({
             where: {
-                createdAt: {
-                    [Op.and]: [
+                createdAt: { [Op.and]: [
                         { [Op.lte]: new Date(req.body.v_date) },
                         { [Op.gte]: new Date(req.body.k_date) }
                     ]
