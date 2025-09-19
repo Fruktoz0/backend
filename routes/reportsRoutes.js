@@ -187,7 +187,7 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
             reportId: newReport.id,
             statusId: "open",
             setByUserId: req.user.id,
-            comment: "X Akta megnyitva",
+            comment: "A bejelentés létrehozva",
             changedAt: newReport.createdAt
         })
 
