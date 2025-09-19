@@ -63,7 +63,6 @@ router.post("/create", authenticateToken, async (req, res) => {
             email,
             description,
             contactInfo,
-            logoUrl
         })
         res.status(201).json(newInstitution)
     } catch (err) {
