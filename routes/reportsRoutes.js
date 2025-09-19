@@ -5,6 +5,8 @@ const multer = require('multer');
 const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs, badges, userBadges } = require('../dbHandler');
 const admin = require("firebase-admin");
 
+const test_y = process.env.TEST_Y;
+const { Op } = require('sequelize');
 let new_name = "";
 
 // Multer storage beállítás kiterjesztéssel
@@ -20,6 +22,55 @@ const storage = multer.diskStorage({
 const upload = multer({ storage }); // storage használata itt
 const authenticateToken = require('../middleware/authMiddleware'); // Az autentikáció middleware – ez olvassa ki a JWT-t a headerből, és req.user-be teszi a user adatokat
 const { auth } = require('firebase-admin');
+
+
+//Admin+Inspector+Institution FP Összes reports lekérdezése Dátumtól Dátumig
+router.post('/getAllReportsFromDate', authenticateToken, async (req, res) => {
+    try {
+
+        if (req.user.role !== 'admin' && req.user.role !== 'institution' && req.user.role !== 'inspector') {
+            return res.status(403).json({ message: 'Nincs jogosultságod ehhez a lekérdezéshez!.' })
+        }
+        const allReports = await reports.findAll({
+            where: {
+                createdAt: {
+                    [Op.and]: [
+                        { [Op.gte]: Date(req.body.v_date) },
+                        { [Op.lte]: Date(req.body.k_date) }
+                    ]
+                }
+            },
+            include: [{
+                model: reportImages,
+                attributes: ['imageUrl']
+            },
+            {
+                model: users,
+                attributes: ['username', 'avatarStyle', 'avatarSeed'],
+            },
+            {
+                model: categories,
+                attributes: ['categoryName'],
+            },
+            {
+                model: reportVotes,
+                attributes: ['voteType', 'userId']
+            },
+            {
+                model: institutions,
+                attributes: ['name']
+            }
+            ],
+            order: [['createdAt', 'DESC']], // Legutóbb létrehozott jelentések előre
+        });
+        console.log("\n\nDarabszám: " + allReports.length)
+
+        res.status(200).json(allReports);
+    } catch (error) {
+        console.error('Hiba a bejelentések lekérésekor:', error);
+        res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
+    }
+});
 
 
 // Admin_FP: Meglévő bejelentéshez 1 kép hozzáadása
