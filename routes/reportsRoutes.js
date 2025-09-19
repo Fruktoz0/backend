@@ -35,8 +35,8 @@ router.post('/getAllReportsFromDate', authenticateToken, async (req, res) => {
             where: {
                 createdAt: {
                     [Op.and]: [
-                        { [Op.gte]: Date(req.body.v_date) },
-                        { [Op.lte]: Date(req.body.k_date) }
+                        { [Op.lte]: new Date(req.body.v_date) },
+                        { [Op.gte]: new Date(req.body.k_date) }
                     ]
                 }
             },
