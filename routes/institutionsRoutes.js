@@ -45,13 +45,13 @@ router.get("/:id", async (req, res) => {
 
 //Új intézmény létrehozása
 router.post("/create", authenticateToken, async (req, res) => {
-    console.log(req.body)
+    if (test_y != '') { console.log(req.body) }
     if (req.user.role !== "admin") {
         return res.status(403).json({ message: "Nincs jogosultságod intézmény létrehozására" })
     }
 
     const { name, email, description, contactInfo, logoUrl } = req.body
-    console.log("Inst Name:", name)
+    if (test_y != '') { console.log("Inst Name:", name) }
     if (!name || !email || !description || !contactInfo )
         return res.status(401).json({ message: "Hiányzó adat." })
     try {
