@@ -357,9 +357,10 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
     try {
         const { statusId, comment } = req.body
         const report = await reports.findByPk(req.params.id)
-        const validatedStatuses = ['open', 'in_progress', 'forwarded', 'resolved', 'reopened', 'rejected']
+        const validatedStatuses = ['open','accepted', 'in_progress', 'forwarded', 'resolved', 'reopened', 'rejected']
         const statusTransitions = {
             open: "Nyitott",
+            accepted: 'Befogadva',
             in_progress: "Folyamatban",
             forwarded: "Továbbítva",
             resolved: "Megoldva",
@@ -376,10 +377,6 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
         //Jogosultság ellenőrzése
         if (req.user.role !== 'admin' && req.user.institutionId !== report.institutionId) {
             return res.status(403).json({ message: 'Nincs jogosultságod a státusz váltzáshoz.' })
-        }
-        //Ugyanaz a státusz nem állítható be
-        if (report.status === statusId) {
-            return res.status(400).json({ message: 'Ugyanaz a státusz nem állítható be!' })
         }
         //Komment megadása, kivéve open-> in_progressnél
         if (!(report.status === 'open' && statusId === 'in_progress') && !comment) {
