@@ -249,7 +249,7 @@ router.get('/user', authenticateToken, async (req, res) => {
 
 //FP: Felhasználó törlése nemcsak teszt üzemmódban működik.
 router.delete('/delete/:email', authenticateToken, async (req, res) => {
-    console.log(req.params.email)
+    if (test_y != '') { console.log("Deleting User Email:", req.params.email) };
     if (req.user.role !== "admin") {
         return res.status(403).json({ message: "Nincs jogosultságod felhasználó törlésére." }).end()
     }
