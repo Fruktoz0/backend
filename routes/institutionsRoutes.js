@@ -116,7 +116,7 @@ router.delete("/delete/:id", authenticateToken, async (req, res) => {
             return res.status(404).json({ message: "Intézmény nem található" })
         
         const inst_users = await users.findAll({ where: { institutionId: req.params.id } })
-        if(inst_users){ return res.status(403).json({ message: "Intézmény Használatban van!" }) }
+        if(!inst_users){ return res.status(403).json({ message: "Intézmény Használatban van!" }) }
         
         await institution.destroy();
         res.json({ message: "Intézmény törölve" })
