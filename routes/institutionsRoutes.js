@@ -52,7 +52,7 @@ router.post("/create", authenticateToken, async (req, res) => {
 
     const { name, email, description, contactInfo, logoUrl } = req.body
     console.log("Inst Name:", name)
-    if (!name || !email || !description || !contactInfo || !logoUrl)
+    if (!name || !email || !description || !contactInfo )
         return res.status(401).json({ message: "Hiányzó adat." })
     try {
         const existingInstitution = await institutions.findOne({ where: { name } })
