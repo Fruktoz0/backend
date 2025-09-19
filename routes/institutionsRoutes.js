@@ -3,6 +3,7 @@ const router = express.Router()
 const { institutions, users } = require('../dbHandler');
 const authenticateToken = require("../middleware/authMiddleware");
 
+const test_y = process.env.TEST_Y;
 
 //Összes intézmény lekérdezése
 router.get("/", async (req, res) => {
