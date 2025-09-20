@@ -44,21 +44,14 @@ server.use('/api', userRoutes);
         await dbHandler.badges.sync({ alter: true });
         await dbHandler.challenges.sync({ alter: true });
         await dbHandler.categories.sync({ alter: true });
-
-
         await dbHandler.reports.sync({ alter: true });
         await dbHandler.reportImages.sync({ alter: true });
         await dbHandler.reportVotes.sync({ alter: true });
+        await dbHandler.reportConfirmations.sync({ alter: true })
         await dbHandler.statusHistories.sync({ alter: true });
         await dbHandler.forwardingLogs.sync({ alter: true });
-
-
-      //  await dbHandler.petitions.sync({ alter: true }); // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
-      //  await dbHandler.petitionVotes.sync({ alter: true }); // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
-
         await dbHandler.userBadges.sync({ alter: true });
         await dbHandler.userChallenges.sync({ alter: true });
-
         await dbHandler.institutionNews.sync({ alter: true });
 
         server.listen(PORT, () => {
