@@ -34,11 +34,12 @@ router.post('/getAllReportsFromDate', authenticateToken, async (req, res) => {
         }
         const allReports = await reports.findAll({
             where: {
-                createdAt: { [Op.and]: 
-                    [
-                        { [Op.lte]: new Date(req.body.v_date) },
-                        { [Op.gte]: new Date(req.body.k_date) }
-                    ]
+                createdAt: {
+                    [Op.and]:
+                        [
+                            { [Op.lte]: new Date(req.body.v_date) },
+                            { [Op.gte]: new Date(req.body.k_date) }
+                        ]
                 }
             },
             include: [{
@@ -234,11 +235,11 @@ router.post('/report_Inst_db', authenticateToken, async (req, res) => {
 
 
 //FP Report db szám lekérdezése Kategóriánként
-router.post('/report_Cat_db',authenticateToken , async (req, res) => {
+router.post('/report_Cat_db', authenticateToken, async (req, res) => {
     try {
         const { categoryId } = req.body
         const allReports = await reports.findAll({
-            where: { categoryId }         
+            where: { categoryId }
         })
         res.status(200).json({ found_db: allReports.length });
     } catch (error) {
@@ -358,7 +359,7 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
     try {
         const { statusId, comment } = req.body
         const report = await reports.findByPk(req.params.id)
-        const validatedStatuses = ['open','accepted', 'in_progress', 'forwarded', 'resolved', 'reopened', 'rejected']
+        const validatedStatuses = ['open', 'accepted', 'in_progress', 'forwarded', 'resolved', 'reopened', 'rejected']
         const statusTransitions = {
             open: "Nyitott",
             accepted: 'Befogadva',
@@ -627,7 +628,6 @@ router.get("/status-duration/average", authenticateToken, async (req, res) => {
     }
 });
 
-
 //Bejelentések státuszainak darabszáma
 router.get("/stats", authenticateToken, async (req, res) => {
     try {
@@ -682,6 +682,36 @@ router.get("/status-duration/:id", authenticateToken, async (req, res) => {
     } catch {
         console.error("Hiba történt a státusz idők lekérdezésekor", error)
         res.status(500).json({ message: "Szerverhiba történt a státusz idők lekérdezésekor" })
+    }
+})
+
+//Adott bejelentés megerősítése
+router.put("/:id/confirm", authenticateToken, async (req, res) => {
+    try {
+        const reportId = req.params.id
+        const userId = req.user.id
+  
+        const report = await reports.findByPk(reportId)
+        if (!report) {
+            res.status(403).json({ message: "A megadott bejelentés nem található" })
+        }
+        //User nem-e erősítette már meg
+        const existing = await reportConfirmations.findOne({
+            where: { reportId, userId }
+        })
+        if (existing) {
+            res.status(400).json({ message: "Ezt a bejelentést már megerősítetted." })
+        }
+        //Létrehozás
+        await reportConfirmations.create({ reportId, userId })
+        //Növeljük a comfirmed számát
+        const confirmed = report.confirmed = report.confirmed + 1
+        await report.save()
+
+        res.json(confirmed)
+    } catch (err) {
+        console.error("Hiba történt a bejelentés megerősítése során", err)
+        res.status(500).json({ message: "Szerverhiba történt a bejelentés megerőesítése során" })
     }
 })
 
