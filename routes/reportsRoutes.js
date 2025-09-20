@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs, badges, userBadges } = require('../dbHandler');
+const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs, badges, userBadges, reportConfirmations } = require('../dbHandler');
 const admin = require("firebase-admin");
 
 const test_y = process.env.TEST_Y;
@@ -690,7 +690,7 @@ router.put("/:id/confirm", authenticateToken, async (req, res) => {
     try {
         const reportId = req.params.id
         const userId = req.user.id
-  
+
         const report = await reports.findByPk(reportId)
         if (!report) {
             res.status(403).json({ message: "A megadott bejelentés nem található" })
@@ -705,10 +705,13 @@ router.put("/:id/confirm", authenticateToken, async (req, res) => {
         //Létrehozás
         await reportConfirmations.create({ reportId, userId })
         //Növeljük a comfirmed számát
-        const confirmed = report.confirmed = report.confirmed + 1
+        const confirmed = report.confirmed = ((report.confirmed || 0) + 1)
         await report.save()
 
-        res.json(confirmed)
+        res.json({
+            confirmed,
+            hasConfirmed: true
+        })
     } catch (err) {
         console.error("Hiba történt a bejelentés megerősítése során", err)
         res.status(500).json({ message: "Szerverhiba történt a bejelentés megerőesítése során" })
@@ -718,6 +721,7 @@ router.put("/:id/confirm", authenticateToken, async (req, res) => {
 //Adott bejelentés lekérdezése ID alapján
 router.get('/:id', authenticateToken, async (req, res) => {
     try {
+        const userId = req.user.id
         const report = await reports.findByPk(req.params.id, {
             include: [
                 { model: users, attributes: ['id', 'username', 'avatarStyle', 'avatarSeed', 'email', 'points', 'role', 'institutionId'] },
@@ -730,7 +734,18 @@ router.get('/:id', authenticateToken, async (req, res) => {
         if (!report) {
             return res.status(404).json({ message: "Bejelentés nem található." });
         }
-        res.json(report);
+
+        //Adott felhasználló megerősítette-e már
+        const existing = await reportConfirmations.findOne({
+            where: { reportId: report.id, userId }
+        })
+
+        const hasConfirmed = !!existing
+
+        res.json({
+            ...report.toJSON(),
+            hasConfirmed
+        });
     } catch (error) {
         console.error("Hiba történt a bejelentés lekérdezésekor", error)
         res.status(500).json({ message: "Szerverhiba történt a bejelentés lekérdezésekor" })
