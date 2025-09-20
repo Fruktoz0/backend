@@ -149,6 +149,10 @@ const reports = dbConnection.define('report', {
         type: DataTypes.FLOAT,
         allowNull: false
     },
+    'confirmed': {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     'status': {
         type: DataTypes.ENUM,
         values: ['open', 'accepted', 'forwarded', 'in_progress', 'rejected', 'resolved', 'reopened'],
