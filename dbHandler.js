@@ -83,7 +83,7 @@ const users = dbConnection.define('user', {
         type: DataTypes.DATE,
         allowNull: true
     },
-    'pushToken':{
+    'pushToken': {
         type: DataTypes.STRING,
         allowNull: true
     }
@@ -151,7 +151,7 @@ const reports = dbConnection.define('report', {
     },
     'status': {
         type: DataTypes.ENUM,
-        values: ['open', 'accepted', 'forwarded', 'in_progress', 'rejected', 'resolved', 'reopened' ],
+        values: ['open', 'accepted', 'forwarded', 'in_progress', 'rejected', 'resolved', 'reopened'],
         defaultValue: 'open'
     },
     'institutionId': {
@@ -159,6 +159,31 @@ const reports = dbConnection.define('report', {
         allowNull: false
     }
 })
+
+const reportConfirmations = dbConnection.define("reportConfirmation", {
+    'id': {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+    },
+    'reportId': {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    'userId': {
+        type: DataTypes.UUID,
+        allowNull: false,
+    },
+    'createdAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    'updatedAt': {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    }
+})
+
 
 const reportImages = dbConnection.define('reportImage', {
     'id': {
@@ -578,18 +603,6 @@ const institutionNews = dbConnection.define('institutionNews', {
     }
 })
 
-const userInstitutions = dbConnection.define("userInstitution", {
-    userId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        primaryKey: true
-    },
-    institutionId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        primaryKey: true
-    }
-})
 
 //Összekapcsolások
 
@@ -601,20 +614,6 @@ reports.belongsTo(users, { foreignKey: 'userId' });
 users.hasMany(reportVotes, { foreignKey: 'userId' });
 reportVotes.belongsTo(users, { foreignKey: 'userId' });
 
-/*   //EGYENLŐRE NEM KERÜL LEFEJLESZTÉSRE//
-// USER -> PETITIONS
-users.hasMany(petitions, { foreignKey: 'userId' });
-petitions.belongsTo(users, { foreignKey: 'userId' });
-
-// USER -> PETITION VOTES
-users.hasMany(petitionVotes, { foreignKey: 'userId' });
-petitionVotes.belongsTo(users, { foreignKey: 'userId' });
-
-// PETITION -> PETITION VOTES
-petitions.hasMany(petitionVotes, { foreignKey: 'petitionId' });
-petitionVotes.belongsTo(petitions, { foreignKey: 'petitionId' });
-*/   //EGYENLŐRE NEM KERÜL LEFEJLESZTÉSRE//
-
 // USER -> USER BADGES
 users.hasMany(userBadges, { foreignKey: 'userId' });
 userBadges.belongsTo(users, { foreignKey: 'userId' });
@@ -622,8 +621,6 @@ userBadges.belongsTo(users, { foreignKey: 'userId' });
 // USER -> USER CHALLENGES
 users.hasMany(userChallenges, { foreignKey: 'userId' });
 userChallenges.belongsTo(users, { foreignKey: 'userId' });
-
-
 
 // USER -> FORWARDINGLOGS (ki továbbította)
 users.hasMany(forwardingLogs, { foreignKey: 'forwardedByUserId' });
@@ -675,6 +672,13 @@ institutions.hasMany(reports, { foreignKey: 'institutionId' })
 reports.hasMany(statusHistories, { foreignKey: 'reportId' });
 statusHistories.belongsTo(reports, { foreignKey: 'reportId' });
 
+//REPORT -> REPORTCONFIRMATIONS
+users.hasMany(reportConfirmations, { foreignKey: 'userId' })
+reports.hasMany(reportConfirmations, { foreignKey: 'reportId' })
+reportConfirmations.belongsTo(users, { foreignKey: 'userId' })
+reportConfirmations.belongsTo(reports, { foreignKey: 'reportId' })
+
+
 //STATUSHISTORIES -> USER
 statusHistories.belongsTo(users, { foreignKey: 'setByUserId', as: 'setByUser' });
 users.hasMany(statusHistories, { foreignKey: 'setByUserId' });
@@ -692,9 +696,7 @@ module.exports = {
     categories,
     reports,
     reportVotes,
-    // petitions, // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
     challenges,
-    // petitionVotes, // EGYENLŐRE NEM KERÜL FELHASZNÁLÁSRA
     badges,
     userBadges,
     userChallenges,
@@ -702,6 +704,7 @@ module.exports = {
     forwardingLogs,
     institutions,
     reportImages,
+    reportConfirmations,
     institutionNews,
 
 };
