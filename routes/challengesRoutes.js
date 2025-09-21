@@ -520,8 +520,8 @@ router.get('/:id', authenticateToken, async (req, res) => {
             return res.status(404).json({ message: "Kihívás nem található" })
         }
         res.json({
-            ...json,
-            userChallnge: json.userChallenges?.[0] || null
+            ...challenge.toJSON(),
+            userChallnge: challenge.userChallenges?.[0] || null
         })
 
     } catch (err) {
