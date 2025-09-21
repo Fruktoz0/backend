@@ -502,6 +502,34 @@ router.delete('/delete', authenticateToken, async (req, res) => {
     }
 })
 
+router.get('/:id', authenticateToken, async (req, res) => {
+    try {
+        const challengeId = req.params.id
+        const userId = req.user.id
+        const challenge = await challenges.findOne({
+            where: { id: challengeId },
+            include: [
+                {
+                    model: userChallenges,
+                    where: { userId },
+                    required: false,
+                }
+            ]
+        })
+        if (!challenge) {
+            return res.status(404).json({ message: "Kihívás nem található" })
+        }
+        res.json({
+            ...json,
+            userChallnge: json.userChallenges?.[0] || null
+        })
+
+    } catch (err) {
+        console.error("Hiba az adott kihívás lekérdezésekor", err)
+        res.status(500).json({ message: "Szerverhiba az adott kihívás lekérdezésekor" })
+    }
+})
+
 
 module.exports = router
 
