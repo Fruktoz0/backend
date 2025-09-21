@@ -550,7 +550,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
         }
         res.json({
             ...challenge.toJSON(),
-            userChallnge: challenge.userChallenges?.[0] || null
+            userChallenge: challenge.userChallenges?.[0] || null
         })
 
     } catch (err) {
