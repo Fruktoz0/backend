@@ -263,6 +263,34 @@ router.get('/pending', authenticateToken, async (req, res) => {
     }
 })
 
+//Intézményhez tarotzó összes beküldött kihívás listázása(bármilyen státuszban)
+router.get('/institution-submissions', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
+            return res.status(403).json({ message: "Nincs jogosultsága a megtekintéshez" })
+        }
+        const institutionId = req.user.institutionId
+        const submissions = await userChallenges.findAll({
+            include: [
+                {
+                    model: challenges,
+                    where: { institutionId }
+                },
+                {
+                    model: users,
+                    attributes: ['id', 'username', 'email']
+
+                }
+            ],
+            order: [['unlockDate', 'DESC']]
+        })
+        res.json(submissions)
+    } catch (err) {
+        console.error("Hiba az intézményi beküldések lekérdezésekor:", err)
+        res.status(500).json({ message: "Szerverhiba az intézményi beküldések lekérdezésekor" })
+    }
+})
+
 // Felhasználó saját kihívásainak lekérése
 router.get('/myChallenges', authenticateToken, async (req, res) => {
     try {
@@ -284,6 +312,7 @@ router.get('/myChallenges', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a felhasználó saját kihívásainak lekérésekor." })
     }
 })
+
 
 // Kihívás feloldása 
 router.post('/:id/unlock', authenticateToken, async (req, res) => {
