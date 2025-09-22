@@ -424,7 +424,7 @@ router.post('/:id/submit', authenticateToken, upload.array('images', 3), async (
 router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
     try {
         //Jogosultságellenőrzés
-        if (!req.user.role !== 'admin' && req.user.role !== 'institution') {
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
             return res.status(403).json({ message: "Nincs jogosultságod a művelet végrehajtásához." });
         }
         const { decision } = req.body; //Elfogadva vagy elutasítva
@@ -447,6 +447,10 @@ router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
         if (new Date(userChallenge.challenge.endDate) < new Date()) {
             return res.status(400).json({ message: "Ez a kihívás már lejárt, nem bírálható el." });
         }
+        //Csak a saját intézményének a kihívásait bírálhassa
+        if (req.user.role === "institution" && userChallenge.challenge.institutionId !== req.user.institutionId) {
+            return res.status(403).json({ message: "Nem a te intézményed kihívása" })
+        }
         if (decision === 'approved') {
             userChallenge.status = 'approved';
             userChallenge.approvedAt = new Date();
@@ -457,7 +461,9 @@ router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
                 user.points += userChallenge.pointsEarned;
                 await user.save();
             } else {
-                return res.status(400).json({ message: "Érvénytelen döntés. Elfogadva vagy elutasítva lehet." })
+                userChallenge.status = "rejected"
+                userChallenge.approvedAt = null
+                userChallenge.pointsEarned = 0
             }
             await userChallenge.save();
 
@@ -465,7 +471,6 @@ router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
                 message: `Kihívás ${decision === 'approved' ? 'jóváhagyva' : 'elutasítva'}.`, userChallenge
             })
         }
-
     } catch (err) {
         console.error("Hiba a kihívás jóváhagyása, elutasítása során:", err)
         res.status(500).json({ message: "Szerverhiba a kihívás jóváhagyása, elutasítása során." })
