@@ -78,14 +78,20 @@ router.get('/admin/user_inst/:id', authenticateToken, async (req, res) => {
 
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
-    if (test_y != '') { console.log("\nGet User Name/Email:", '%' + req.body.name + '%', '%' + req.body.email + '%') }
     var allUser = []
     try {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
+
+        let a_name=""
+        if (req.body.name!=undefined){a_name=req.body.name}
+        let a_emil=""
+        if (req.body.email!=undefined){a_emil=req.body.email}
+
+        if (test_y != '') { console.log("\nGet User Name/Email:", '%' + a_name + '%', '%' + a_emil + '%') }
         allUser = await users.findAll({
-            where: { username: { [Op.like]: '%' + req.body.name + '%' }, email: { [Op.like]: '%' + req.body.email + '%' } },
+            where: { username: { [Op.like]: '%' + a_name + '%' }, email: { [Op.like]: '%' + a_emil + '%' } },
             attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt', 'zipCode', 'city', 'address', 'institutionId']
         });
         return res.status(200).json(allUser);
@@ -94,6 +100,7 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
     }
 })
+
 
 
 // Admin_FP / Foglalt Felhasználói UserName és Email ellenőrzés
