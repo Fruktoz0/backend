@@ -1,4 +1,7 @@
-// Auto Generated Test.js file
+//
+//     summaryRoutes_Ori.test.js
+//
+// Excel+VB6 Program Generated Test.js file, using own mnemonic system
 
 const express = require('express')
 const supertest = require('supertest')
@@ -38,7 +41,7 @@ describe('test for "Login" route', () => {
 
 describe('test for "Login" route', () => {
     test('Try Login as Wrong User - s11+ - FORBIDDEN [401]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'zoardakarki@gmail.com', password: '123456789T' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'zoardakarki@gmail.com', password: '123456789Y' })
         expect(response.statusCode).toBe(401)
         token_wrong = response.body.token;
         console.log("Wrong User: ", token_wrong);
