@@ -84,7 +84,7 @@ FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\\n***\\n-----END PRIVATE KEY--
 FIREBASE_CLIENT_EMAIL=***
 FIREBASE_CLIENT_ID=***
 TEST_Y=1
-
+```
 
 **Adatbázis inicializálás:**
 ```sql
@@ -118,56 +118,6 @@ npm start
 - **Badges**: jelvények listázása, állapot, törlés
 
 ## Fejlesztői workflow
-- Branch kezelés (feature/bugfix branch-ek)
-- Pull Request és code review folyamat
-- Commit üzenet konvenciók
-- Tesztelés (Jest, Supertest)
-- CI/CD pipeline
-- Deployment GitHub Actions-szel (main branch -> VPS deploy)
-
-## Deployment workflow
-A repó GitHub Actions segítségével van bekötve automatikus szerverre telepítéshez.  
-Minden push a `main` branch-re triggereli a buildet és a Docker-compose újraindítást a VPS-en.
-
-
-
-
-**Adatbázis inicializálás:**
-
-```sql
-CREATE DATABASE tisztavaros_db CHARACTER SET utf8mb4 COLLATE utf8mb4_hungarian_ci;
-
-**Szerver indítás:**
-
-```bash
-npm start
-```
-
-## Adatbázis felépítés
-- **users**: felhasználók, szerepkörök, pontok, intézménykapcsolat
-- **institutions**: intézmények adatai
-- **categories**: bejelentés kategóriák
-- **reports**: bejelentések státusszal és képekkel
-- **votes / confirmations**: szavazatok, megerősítések
-- **challenges / userChallenges**: kihívások és részvétel
-- **badges / userBadges**: jelvények
-- **institutionNews**: hírek
-
-## API végpontok
-- **Auth**: regisztráció, e-mail verifikáció, login, user adat, admin user létrehozás/törlés
-- **Users**: listázás, keresés, módosítás, avatar váltás, push token
-- **Reports**: bejelentés létrehozása, státusz, képek, továbbítás, megerősítés, statisztikák
-- **Votes**: szavazás logika
-- **Categories**: kategóriák listázása, létrehozása, módosítása, törlése
-- **Institutions**: intézmények CRUD
-- **News**: hírek CRUD
-- **Challenges**: kihívások CRUD, feloldás, beküldés, elbírálás
-- **Badges**: jelvények listázása, állapot, törlés
-
-## Fejlesztői workflow
-- Branch kezelés (feature/bugfix branch-ek)
-- Pull Request és code review folyamat
-- Commit üzenet konvenciók
 - Tesztelés (Jest, Supertest)
 - CI/CD pipeline
 - Deployment GitHub Actions-szel (main branch -> VPS deploy)
