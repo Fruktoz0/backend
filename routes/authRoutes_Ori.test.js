@@ -22,7 +22,7 @@ describe('Login of "auth" route:', () => {
         expect(response.statusCode).toBe(400)
     })
     test('Login Admin Hiányzó adat s01 - 400 [400]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ password: 'admin123' })
+        const response = await supertest(server).post('/api/auth/login').send({ password: 'admin' })
         expect(response.statusCode).toBe(400)
     })
     test('Login Admin Hiányzó adat s10 - 400 [400]', async () => {
@@ -33,21 +33,21 @@ describe('Login of "auth" route:', () => {
 
 describe('Login of "auth" route:', () => {
     test('Login Admin Wrong Password - 401 [401]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123O' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'adminO' })
         expect(response.statusCode).toBe(401)
     })
 })
 
 describe('Login of "auth" route:', () => {
     test('Login Admin Wrong Email - 404 [404]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.huH', password: 'admin123' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.huH', password: 'admin' })
         expect(response.statusCode).toBe(404)
     })
 })
 
 describe('Login of "auth" route:', () => {
     test('Login as Admin     s11 [200]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin' })
         expect(response.statusCode).toBe(200)
         token_admin = response.body.token;
         logged_admin = JSON.parse(atob(token_admin.split('.')[1]));
@@ -58,11 +58,11 @@ describe('Login of "auth" route:', () => {
 describe('Admin activity in "User" route', () => {
     test('Admin Get User Data by Email [200]', async () => {
         const response = await supertest(server).post('/api/admin/user_en')
-        .send({ email: 'pepe2@smd.hu' })
+        .send({ email: 'pepe@smd.hu' })
         .set('Authorization', 'bearer ' + token_admin)
         expect(response.statusCode).toBe(200)
         sel_user = response.body[0]
-        console.log(sel_user);
+        console.log("SlUser:", sel_user);
     })
 })
 

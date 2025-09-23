@@ -3,9 +3,27 @@ const router = express.Router();
 const { users, institutions } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
 const { v4: uuidv4 } = require('uuid');
+const admin = require("firebase-admin");
 
 const test_y = process.env.TEST_Y;
 const { Op } = require('sequelize');
+
+// 1. Service Account betöltése
+const serviceAccount = {
+    type: "service_account",
+    project_id: process.env.FIREBASE_PROJECT_ID,
+    private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+    private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    client_email: process.env.FIREBASE_CLIENT_EMAIL,
+    client_id: process.env.FIREBASE_CLIENT_ID,
+};
+
+// 2. Firebase Admin SDK inicializálása
+if (!admin.apps.length) {
+    admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount),
+    });
+}
 
 
 // Admin / Felhasználók adatainak listázása
@@ -31,14 +49,15 @@ router.get('/admin/user_db', authenticateToken, async (req, res) => {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
-        const a_db = await users.findAll()
-        res.status(200).json({ found_db: a_db.length });
-        if (test_y != '') { console.log("\nFound_db:", a_db.length) };
+        const a_db = await users.count()
+        res.status(200).json({ found_db: a_db });
+        if (test_y != '') { console.log("\nFound_db:", a_db) };
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
     }
 })
+
 
 // Admin_FP / Adott Hivatal munkatársainak listázása
 router.get('/admin/user_inst/:id', authenticateToken, async (req, res) => {
@@ -59,14 +78,20 @@ router.get('/admin/user_inst/:id', authenticateToken, async (req, res) => {
 
 // Admin_FP / Felhasználók adatainak listázása Usernév/Email cím töredék alapján
 router.post('/admin/user_en', authenticateToken, async (req, res) => {
-    if (test_y != '') { console.log("\nGet User Name/Email:", '%' + req.body.name + '%', '%' + req.body.email + '%') }
     var allUser = []
     try {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
+
+        let a_name = ""
+        if (req.body.name != undefined) { a_name = req.body.name }
+        let a_emil = ""
+        if (req.body.email != undefined) { a_emil = req.body.email }
+
+        if (test_y != '') { console.log("\nGet User Name/Email:", '%' + a_name + '%', '%' + a_emil + '%') }
         allUser = await users.findAll({
-            where: { username: { [Op.like]: '%' + req.body.name + '%' }, email: { [Op.like]: '%' + req.body.email + '%' } },
+            where: { username: { [Op.like]: '%' + a_name + '%' }, email: { [Op.like]: '%' + a_emil + '%' } },
             attributes: ['id', 'username', 'email', 'points', 'role', 'isActive', 'createdAt', 'updatedAt', 'zipCode', 'city', 'address', 'institutionId']
         });
         return res.status(200).json(allUser);
@@ -99,6 +124,7 @@ router.post('/admin/user_chk', authenticateToken, async (req, res) => {
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
     }
 })
+
 
 // Admin_FP / Foglalt Intézmény Name és Email ellenőrzés
 router.post('/admin/inst_chk', authenticateToken, async (req, res) => {
@@ -364,7 +390,7 @@ router.put('/admin/inst_all', authenticateToken, async (req, res) => {
             return res.status(404).json({ message: "Intézmény nem található." });
         }
 
-        const { id, name, email, description, contactInfo, logoUrl}= req.body;
+        const { id, name, email, description, contactInfo, logoUrl } = req.body;
         instRecord.name = name;
         instRecord.email = email;
         instRecord.description = description;
@@ -378,5 +404,63 @@ router.put('/admin/inst_all', authenticateToken, async (req, res) => {
     }
 })
 
+
+// Na ez micsoda?
+router.post('/users/registerPushToken', authenticateToken, async (req, res) => {
+    try {
+        const user = await users.findByPk(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'Felhasználó nem található.' });
+        }
+
+        const { pushToken } = req.body;
+        if (!pushToken) {
+            return res.status(400).json({ message: 'Hiányzik a push token.' });
+        }
+        user.pushToken = pushToken;
+
+        await user.save();
+        res.status(200).json({ message: 'Push token sikeresen regisztrálva.', pushToken: user.pushToken });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Hiba a push token regisztrálásakor.' });
+    }
+})
+
+
+//Értesítés küldése 1 felhasználónak
+router.post('/users/sendNotification', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Nincs jogosultságod az értesítés küldéséhez.' });
+        }
+        const { userId, title, body } = req.body;
+
+        // Ellenőrzöm, hogy a felhasználó létezik-e és van-e push tokenje
+        const user = await users.findByPk(userId);
+        if (!user || !user.pushToken) {
+            return res.status(404).json({ message: 'Felhasználó nem található vagy nincs push token regisztrálva.' });
+        }
+
+        // Push értesítés küldése Firebase segítségével
+
+        const message = {
+            token: user.pushToken,
+            notification: {
+                title,
+                body,
+            },
+            data: {
+                userId: String(user.id)
+            }
+        };
+        const response = await admin.messaging().send(message);
+        console.log('Push értesítés elküldve:', response);
+        res.status(200).json({ message: 'Értesítés sikeresen elküldve.', response });
+    } catch (error) {
+        console.error('Push küldés hiba', error);
+        res.status(500).json({ message: 'Hiba az értesítés küldésekor.' });
+    }
+})
 
 module.exports = router;

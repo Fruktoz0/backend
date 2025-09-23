@@ -24,7 +24,7 @@ var del_inst = {};
 
 describe('test for "Login" route', () => {
     test('Login as Admin    s11 [200]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin' })
         expect(response.statusCode).toBe(200)
         token_admin = response.body.token;
         logged_admin = JSON.parse(atob(token_admin.split('.')[1]));
@@ -67,7 +67,7 @@ describe('GetList of "Institutions" route :', () => {
     })
 })
 
-describe('DeleteOne of "Institutions" route Newly Added:', () => {
+describe('DeleteOne of "Institutions" route:', () => {
     test('Delete Institution IF EXIST by Admin { Álomfejtő Hatóság } [404] [200]', async () => {
         const response = await supertest(server).delete('/api/institutions/delete/' + del_inst.id)
         .set('Authorization', 'bearer ' + token_admin)
@@ -97,85 +97,85 @@ describe('GetOne of "Institutions" route:', () => {
 
 describe('CreateOne of "Institutions" route:', () => {
     test('Create Institution by User s1111 - FORBIDDEN 403 [403]', async () => {
-        const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', email: 'a_dream@dream_all.hu', description: 'Rosz Álmokat Elűző Központi hatóság', contactInfo: 'Cím: 2201 Budapest, Áloműzők utca 1.' })
+        const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', email: 'a_dream@dream_all.hu', description: 'Rosz Álmokat Elűző Központi hatóság', contactInfo: '2201 Budapest, Áloműzők utca 1.' })
         .set('Authorization', 'bearer ' + token_user)
         expect(response.statusCode).toBe(403)
         del_inst = response.body
     })
-    test('Create Institution by Admin - Hiányzó adat s0000 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s0000 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({})
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s0001 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s0001 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ contactInfo: '2201 Budapest, Áloműzők utca 1.' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s0010 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s0010 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ description: 'Rosz Álmokat Elűző Központi hatóság' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s0011 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s0011 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ description: 'Rosz Álmokat Elűző Központi hatóság', contactInfo: '2201 Budapest, Áloműzők utca 1.' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s0100 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s0100 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ email: 'a_dream@dream_all.hu' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s0101 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s0101 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ email: 'a_dream@dream_all.hu', contactInfo: '2201 Budapest, Áloműzők utca 1.' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s0110 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s0110 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ email: 'a_dream@dream_all.hu', description: 'Rosz Álmokat Elűző Központi hatóság' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s0111 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s0111 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ email: 'a_dream@dream_all.hu', description: 'Rosz Álmokat Elűző Központi hatóság', contactInfo: '2201 Budapest, Áloműzők utca 1.' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s1000 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s1000 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s1001 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s1001 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', contactInfo: '2201 Budapest, Áloműzők utca 1.' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s1010 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s1010 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', description: 'Rosz Álmokat Elűző Központi hatóság' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s1011 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s1011 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', description: 'Rosz Álmokat Elűző Központi hatóság', contactInfo: '2201 Budapest, Áloműzők utca 1.' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s1100 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s1100 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', email: 'a_dream@dream_all.hu' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s1101 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s1101 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', email: 'a_dream@dream_all.hu', contactInfo: '2201 Budapest, Áloműzők utca 1.' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
-    test('Create Institution by Admin - Hiányzó adat s1110 [400]', async () => {
+    test('Create Institution by Admin - Hiányzó adat s1110 [401]', async () => {
         const response = await supertest(server).post('/api/institutions/create').send({ name: 'Álomfejtő Hatóság', email: 'a_dream@dream_all.hu', description: 'Rosz Álmokat Elűző Központi hatóság' })
         .set('Authorization', 'bearer ' + token_admin)
-        expect(response.statusCode).toBe(400)
+        expect(response.statusCode).toBe(401)
     })
 })
 

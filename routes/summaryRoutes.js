@@ -4,7 +4,6 @@ const { users, reports, reportVotes } = require('../dbHandler');
 const authenticateToken = require('../middleware/authMiddleware');
 
 
-
 router.get('/allCount', authenticateToken, async (req, res) => {
     try {
         const [userCount, reportCount, voteCount] = await Promise.all([
@@ -19,7 +18,7 @@ router.get('/allCount', authenticateToken, async (req, res) => {
         });
     } catch (err) {
         console.error("Hiba a statisztika lekérdezésénél", err)
-        res.status(500).json({ message: "Szerver hiba történt" })
+        res.status(500).json({ message: "Szerver hiba történt" }).end()
     }
 })
 

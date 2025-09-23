@@ -2,19 +2,107 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs, badges, userBadges } = require('../dbHandler');
+const { reports, reportImages, users, categories, reportVotes, institutions, statusHistories, forwardingLogs, badges, userBadges, reportConfirmations } = require('../dbHandler');
+const admin = require("firebase-admin");
+
+const test_y = process.env.TEST_Y;
+const { Op } = require('sequelize');
+
+let new_name = "";
 
 // Multer storage beállítás kiterjesztéssel
 const storage = multer.diskStorage({
     destination: 'uploads/',
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname); // eredeti fájl kiterjesztése
-        cb(null, Date.now() + ext); // pl.: 1689087900000.jpg
+        new_name = Date.now() + ext;
+        cb(null, new_name); // pl.: 1689087900000.jpg
     },
 });
 
 const upload = multer({ storage }); // storage használata itt
 const authenticateToken = require('../middleware/authMiddleware'); // Az autentikáció middleware – ez olvassa ki a JWT-t a headerből, és req.user-be teszi a user adatokat
+const { auth } = require('firebase-admin');
+
+
+//Admin+Inspector+Institution FP Összes reports lekérdezése Dátumtól Dátumig
+router.post('/getAllReportsFromDate', authenticateToken, async (req, res) => {
+    try {
+
+        if (req.user.role !== 'admin' && req.user.role !== 'institution' && req.user.role !== 'inspector') {
+            return res.status(403).json({ message: 'Nincs jogosultságod ehhez a lekérdezéshez!.' })
+        }
+        const allReports = await reports.findAll({
+            where: {
+                createdAt: {
+                    [Op.and]:
+                        [
+                            { [Op.lte]: new Date(req.body.v_date) },
+                            { [Op.gte]: new Date(req.body.k_date) }
+                        ]
+                }
+            },
+            include: [{
+                model: reportImages,
+                attributes: ['imageUrl']
+            },
+            {
+                model: users,
+                attributes: ['username', 'avatarStyle', 'avatarSeed'],
+            },
+            {
+                model: categories,
+                attributes: ['categoryName'],
+            },
+            {
+                model: reportVotes,
+                attributes: ['voteType', 'userId']
+            },
+            {
+                model: institutions,
+                attributes: ['name']
+            }
+            ],
+            order: [['createdAt', 'DESC']], // Legutóbb létrehozott jelentések előre
+        });
+        console.log("\n\nDarabszám: " + allReports.length)
+
+        res.status(200).json(allReports);
+    } catch (error) {
+        console.error('Hiba a bejelentések lekérésekor:', error);
+        res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
+    }
+});
+
+
+// Admin_FP: Meglévő bejelentéshez 1 kép hozzáadása
+router.post('/addPicture/:id', authenticateToken, upload.single('file'), async (req, res) => {
+    try {
+        console.log("\nReport Id:", req.params.id)
+
+        const already = await reports.findOne({
+            where: { id: req.params.id }
+        })
+
+        if (!already) {
+            return res.status(400).json({ message: "Nincs Ilyen Report!" })
+        }
+
+        reportImages.create({
+            reportId: req.params.id,
+            imageUrl: `/uploads/${new_name}`, // a fájl relatív URL-je
+        })
+
+        // A válasz a frontendnek
+        res.status(200).json({
+            message: 'Reporthoz sikeresen hozzáadva a kép',
+            reportId: req.params.id
+        });
+    } catch (error) {
+        console.error('Hiba a report létrehozásakor:', error);
+        res.status(500).json({ message: 'Szerverhiba a report mentésekor' });
+    }
+});
 
 
 // Új bejelentés létrehozása képfeltöltéssel
@@ -96,6 +184,14 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
             }
         }
 
+        await statusHistories.create({
+            reportId: newReport.id,
+            statusId: "open",
+            setByUserId: req.user.id,
+            comment: "A bejelentés létrehozva",
+            changedAt: newReport.createdAt
+        })
+
         // A válasz a frontendnek
         res.status(201).json({
             message: 'Report sikeresen létrehozva',
@@ -112,10 +208,10 @@ router.post('/sendReport', authenticateToken, upload.array("images", 3), async (
 
 
 //FP Report db szám lekérdezése
-router.get('/report_db',authenticateToken , async (req, res) => {
+router.get('/report_db', authenticateToken, async (req, res) => {
     try {
-        const allReports = await reports.findAll()
-        res.status(200).json({ found_db: allReports.length });
+        const report_db = await reports.count()
+        res.status(200).json({ found_db: report_db });
     } catch (error) {
         console.error('Hiba a bejelentések lekérésekor:', error);
         res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
@@ -124,13 +220,13 @@ router.get('/report_db',authenticateToken , async (req, res) => {
 
 
 //FP Report db szám lekérdezése Intézményenként
-router.post('/report_Inst_db',authenticateToken , async (req, res) => {
+router.post('/report_Inst_db', authenticateToken, async (req, res) => {
     try {
         const { institutionId } = req.body
-        const allReports = await reports.findAll({
-            where: { institutionId }         
+        const a_db = await reports.count({
+            where: { institutionId }
         })
-        res.status(200).json({ found_db: allReports.length });
+        res.status(200).json({ found_db: a_db });
     } catch (error) {
         console.error('Hiba a bejelentések lekérésekor:', error);
         res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
@@ -139,11 +235,11 @@ router.post('/report_Inst_db',authenticateToken , async (req, res) => {
 
 
 //FP Report db szám lekérdezése Kategóriánként
-router.post('/report_Cat_db',authenticateToken , async (req, res) => {
+router.post('/report_Cat_db', authenticateToken, async (req, res) => {
     try {
         const { categoryId } = req.body
         const allReports = await reports.findAll({
-            where: { categoryId }         
+            where: { categoryId }
         })
         res.status(200).json({ found_db: allReports.length });
     } catch (error) {
@@ -221,6 +317,7 @@ router.get('/assignedReports', authenticateToken, async (req, res) => {
         }
         const user = await users.findByPk(req.user.id)
 
+        //Intézményhez tartozó bejelentések lekérdezése
         const assignedReports = await reports.findAll({
             where: { institutionId: user.institutionId },
             include: [
@@ -262,6 +359,21 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
     try {
         const { statusId, comment } = req.body
         const report = await reports.findByPk(req.params.id)
+        const validatedStatuses = ['open', 'accepted', 'in_progress', 'forwarded', 'resolved', 'reopened', 'rejected']
+        const statusTransitions = {
+            open: "Nyitott",
+            accepted: 'Befogadva',
+            in_progress: "Folyamatban",
+            forwarded: "Továbbítva",
+            resolved: "Megoldva",
+            reopened: "Újranyitva",
+            rejected: "Elutasítva"
+        }
+        //Státusz ellenőrzése
+        if (!validatedStatuses.includes(statusId)) {
+            return res.status(400).json({ message: 'Érvénytelen státusz' })
+        }
+        //Report ellenőrzése
         if (!report)
             return res.status(404).json({ message: 'Bejelentés nem található' })
         //Jogosultság ellenőrzése
@@ -274,7 +386,7 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
         }
         report.status = statusId
         await report.save()
-
+        //Státusz történet mentése
         await statusHistories.create({
             reportId: report.id,
             statusId,
@@ -282,6 +394,38 @@ router.post('/:id/status', authenticateToken, async (req, res) => {
             comment: comment || null,
             changedAt: new Date()
         })
+        const user = await users.findByPk(report.userId)
+        //Rövidített cím a push értesítéshez
+        const shortTitle = report.title.length > 50 ? report.title.substring(0, 47) + "..." : report.title
+        const statusHu = statusTransitions[statusId] || statusId
+
+        //Értesítés a státusz változásról
+        //Ha a user leiratkozott az értesítésekről, akkor nem küldünk
+        if (user?.pushToken) {
+            const message = {
+                token: user.pushToken,
+                notification: {
+                    title: 'Bejelentés státusz változás',
+                    body: `A ${shortTitle} nevű bejelentésed státusza megváltozott: ${statusHu}.`,
+                },
+                data: {
+                    target: "report",
+                    reportId: report.id.toString()
+                }
+            }
+            try {
+                const response = await admin.messaging().send(message)
+                console.log("Push értesítés elküldve státuszváltáskor:", response)
+
+            } catch (error) {
+                console.error("Push küldés hiba státuszváltáskor", error)
+                if (error.code === 'messaging/invalid-registration-token' || error.code === 'messaging/registration-token-not-registered') {
+                    user.pushToken = null
+                    await user.save()
+                    console.log(`A felhasználó (${user.id}) push tokenje érvénytelen, eltávolítva az adatbázisból.`)
+                }
+            }
+        }
         res.json({ message: 'Státusz frissítve' })
 
     } catch (error) {
@@ -302,7 +446,7 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
         if (req.user.role !== 'admin' && req.user.institutionId !== report.institutionId) {
             return res.status(403).json({ message: 'Nincs jogosultságod a státusz történet megtekintéséhez.' });
         }
-
+        // Státusz történet lekérdezése
         const history = await statusHistories.findAll({
             where: { reportId: report.id },
             include: [
@@ -314,7 +458,7 @@ router.get('/:id/status-history', authenticateToken, async (req, res) => {
             ],
             order: [['changedAt', 'ASC']]
         });
-
+        // Formázás a kívánt struktúrára
         const formatted = history.map(entry => ({
             status: entry.statusId,
             changedAt: entry.changedAt,
@@ -484,7 +628,6 @@ router.get("/status-duration/average", authenticateToken, async (req, res) => {
     }
 });
 
-
 //Bejelentések státuszainak darabszáma
 router.get("/stats", authenticateToken, async (req, res) => {
     try {
@@ -539,6 +682,73 @@ router.get("/status-duration/:id", authenticateToken, async (req, res) => {
     } catch {
         console.error("Hiba történt a státusz idők lekérdezésekor", error)
         res.status(500).json({ message: "Szerverhiba történt a státusz idők lekérdezésekor" })
+    }
+})
+
+//Adott bejelentés megerősítése
+router.put("/:id/confirm", authenticateToken, async (req, res) => {
+    try {
+        const reportId = req.params.id
+        const userId = req.user.id
+
+        const report = await reports.findByPk(reportId)
+        if (!report) {
+            res.status(403).json({ message: "A megadott bejelentés nem található" })
+        }
+        //User nem-e erősítette már meg
+        const existing = await reportConfirmations.findOne({
+            where: { reportId, userId }
+        })
+        if (existing) {
+            res.status(400).json({ message: "Ezt a bejelentést már megerősítetted." })
+        }
+        //Létrehozás
+        await reportConfirmations.create({ reportId, userId })
+        //Növeljük a comfirmed számát
+        const confirmed = report.confirmed = ((report.confirmed || 0) + 1)
+        await report.save()
+
+        res.json({
+            confirmed,
+            hasConfirmed: true
+        })
+    } catch (err) {
+        console.error("Hiba történt a bejelentés megerősítése során", err)
+        res.status(500).json({ message: "Szerverhiba történt a bejelentés megerőesítése során" })
+    }
+})
+
+//Adott bejelentés lekérdezése ID alapján
+router.get('/:id', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id
+        const report = await reports.findByPk(req.params.id, {
+            include: [
+                { model: users, attributes: ['id', 'username', 'avatarStyle', 'avatarSeed', 'email', 'points', 'role', 'institutionId'] },
+                { model: categories },
+                { model: institutions },
+                { model: reportImages },
+                { model: reportVotes, include: [{ model: users, attributes: ['id', 'username'] }] }
+            ]
+        });
+        if (!report) {
+            return res.status(404).json({ message: "Bejelentés nem található." });
+        }
+
+        //Adott felhasználló megerősítette-e már
+        const existing = await reportConfirmations.findOne({
+            where: { reportId: report.id, userId }
+        })
+
+        const hasConfirmed = !!existing
+
+        res.json({
+            ...report.toJSON(),
+            hasConfirmed
+        });
+    } catch (error) {
+        console.error("Hiba történt a bejelentés lekérdezésekor", error)
+        res.status(500).json({ message: "Szerverhiba történt a bejelentés lekérdezésekor" })
     }
 })
 

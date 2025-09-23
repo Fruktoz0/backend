@@ -28,7 +28,7 @@ var sel_inst = {};
 
 describe('test for "Login" route', () => {
     test('Login as Admin    s11 [200]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin' })
         expect(response.statusCode).toBe(200)
         token_admin = response.body.token;
         logged_admin = JSON.parse(atob(token_admin.split('.')[1]));
@@ -39,7 +39,7 @@ describe('test for "Login" route', () => {
 describe('test for "Login" route', () => {
     test('Admin Get User Data by Email [200]', async () => {
         const response = await supertest(server).post('/admin/user_en')
-        .send({ email: 'pepe2@smd.hu' })
+        .send({ email: 'pepe@smd.hu' })
         .set('Authorization', 'bearer ' + token_admin)
         expect(response.statusCode).toBe(200)
         sel_user = response.body[0]
@@ -58,7 +58,7 @@ describe('test for "Login" route', () => {
 
 describe('test for "Login" route', () => {
     test('Login as User     s11 [200]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe2@smd.hu', password: 'Meki#012345' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe@smd.hu', password: 'Meki#012345' })
         expect(response.statusCode).toBe(200)
         token_user = response.body.token;
         logged_user = JSON.parse(atob(token_user.split('.')[1]));
@@ -183,14 +183,14 @@ describe('User Data of "users" route 3:', () => {
 
 describe('User Data of "users" route 3:', () => {
     test('Login as inActive User     s11 - Fodbidden [403]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe2@smd.hu', password: 'Meki#012345' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe@smd.hu', password: 'Meki#012345' })
         expect(response.statusCode).toBe(403)
     })
 })
 
 describe('User Data of "users" route 3:', () => {
     test('Login as inActive User     s11 - Fodbidden [403]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe2@smd.hu', password: 'Meki#012345' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'pepe@smd.hu', password: 'Meki#012345' })
         expect(response.statusCode).toBe(403)
     })
 })

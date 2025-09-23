@@ -41,10 +41,25 @@ const upload = multer({
 router.post('/news_Inst_db',authenticateToken , async (req, res) => {
     try {
         const { institutionId } = req.body
-        const allNews = await institutionNews.findAll({
+        const a_db = await institutionNews.count({
             where: { institutionId }         
         })
-        res.status(200).json({ found_db: allNews.length });
+        res.status(200).json({ found_db: a_db });
+    } catch (error) {
+        console.error('Hiba a bejelentések lekérésekor:', error);
+        res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });
+    }
+});
+
+
+//FP Report db szám lekérdezése Kategóriánként
+router.post('/report_Cat_db',authenticateToken , async (req, res) => {
+    try {
+        const { categoryId } = req.body
+        const a_db = await reports.count({
+            where: { categoryId }         
+        })
+        res.status(200).json({ found_db: a_db });
     } catch (error) {
         console.error('Hiba a bejelentések lekérésekor:', error);
         res.status(500).json({ message: 'Szerverhiba a bejelentések lekérésekor' });

@@ -5,39 +5,54 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
 > jest --detectOpenHandles
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+    Auth Routes Teszt üzemmódban vagyok!
+
+      at Object.log (routes/authRoutes.js:14:29)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
+    User.Active = active
+
+      at log (routes/authRoutes.js:199:37)
+
+  console.log
     Logged Admin:  {
-      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      id: '4ff65594-cc73-4445-bcdf-885ffaad5e69',
       role: 'admin',
-      institutionId: null,
-      iat: 1756799691,
-      exp: 1772351691
+      institutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      iat: 1758627927,
+      exp: 1774179927
     }
 
       at Object.log (routes/summaryRoutes_Ori.test.js:25:17)
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
+    User.Active = active
+
+      at log (routes/authRoutes.js:199:37)
+
+  console.log
     Logged User:  {
-      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
-      role: 'worker',
-      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
-      iat: 1756799691,
-      exp: 1772351691
+      id: 'b419c367-b6d1-48c0-b095-7a405fa469ad',
+      role: 'user',
+      institutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      iat: 1758627927,
+      exp: 1774179927
     }
 
       at Object.log (routes/summaryRoutes_Ori.test.js:35:17)
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
@@ -84,19 +99,19 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
 
  PASS  routes/summaryRoutes_Ori.test.js
   test for "Login" route
-    √ Login as Admin    s11 [200] (230 ms)
-    √ Login as User     s11 [200] (77 ms)
-    √ Try Login as Wrong User - s11+ - FORBIDDEN [401] (77 ms)
+    √ Login as Admin    s11 [200] (217 ms)
+    √ Login as User     s11 [200] (79 ms)
+    √ Try Login as Wrong User - s11+ - FORBIDDEN [401] (76 ms)
   GetList of "Summary" route :
-    √ Get Summary List by Admin [200] (30 ms)
-    √ Get Summary List by User [200] (20 ms)
+    √ Get Summary List by Admin [200] (32 ms)
+    √ Get Summary List by User [200] (21 ms)
     √ Get Summary List by Wrong User - FORBIDDEN [403] (12 ms)
     √ Get Summary List by "" User - FORBIDDEN [401] (9 ms)
 
 Test Suites: 1 passed, 1 total
 Tests:       7 passed, 7 total
 Snapshots:   0 total
-Time:        1.551 s
+Time:        1.546 s
 Ran all test suites.
 
 d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>

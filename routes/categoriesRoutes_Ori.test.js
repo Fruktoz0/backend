@@ -21,7 +21,7 @@ var new_cat = {};
 
 describe('test for "Login" route', () => {
     test('Login as Admin    s11 [200]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin' })
         expect(response.statusCode).toBe(200)
         token_admin = response.body.token;
         logged_admin = JSON.parse(atob(token_admin.split('.')[1]));
@@ -66,7 +66,7 @@ describe('test for "Categories" route', () => {
 
 describe('test for "Categories" route', () => {
     test('Create Category by User - FORBIDDEN [403]', async () => {
-        const response = await supertest(server).post('/api/categories/create').send({ categoryName: 'Aladin Kategória', defaultInstitutionId: 'a1040145-7c6c-11f0-9b55-2cf05dad8c1f' })
+        const response = await supertest(server).post('/api/categories/create').send({ categoryName: 'Aladin Kategória', defaultInstitutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002' })
         .set('Authorization', 'bearer ' + token_user)
         expect(response.statusCode).toBe(403)
     })
@@ -74,7 +74,7 @@ describe('test for "Categories" route', () => {
 
 describe('test for "Categories" route', () => {
     test('Create an Existing Category by Admin - FORBIDDEN [409] [Már létezik ilyen nevű kategória.]', async () => {
-        const response = await supertest(server).post('/api/categories/create').send({ categoryName: 'Tömegközlekedési probléma', defaultInstitutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f' })
+        const response = await supertest(server).post('/api/categories/create').send({ categoryName: 'Tömegközlekedési probléma', defaultInstitutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002' })
         .set('Authorization', 'bearer ' + token_admin)
         expect(response.statusCode).toBe(409)
         expect(response.body).toHaveProperty('message', 'Már létezik ilyen nevű kategória.')
@@ -88,7 +88,7 @@ describe('test for "Categories" route', () => {
         expect(response.statusCode).toBe(400)
     })
     test('Create a New Category by Admin - Hiányzó adatok s01 [400]', async () => {
-        const response = await supertest(server).post('/api/categories/create').send({ defaultInstitutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f' })
+        const response = await supertest(server).post('/api/categories/create').send({ defaultInstitutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002' })
         .set('Authorization', 'bearer ' + token_admin)
         expect(response.statusCode).toBe(400)
     })
@@ -98,7 +98,7 @@ describe('test for "Categories" route', () => {
         expect(response.statusCode).toBe(400)
     })
     test('Create a New Category by Admin - s11 { Aladin Kategória } [201]', async () => {
-        const response = await supertest(server).post('/api/categories/create').send({ categoryName: 'Aladin Kategória', defaultInstitutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f' })
+        const response = await supertest(server).post('/api/categories/create').send({ categoryName: 'Aladin Kategória', defaultInstitutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002' })
         .set('Authorization', 'bearer ' + token_admin)
         expect(response.statusCode).toBe(201)
         new_cat.id = response.body.id;
@@ -140,7 +140,7 @@ describe('test for "Categories" route 2', () => {
 
 describe('test for "Categories" route 2', () => {
     test('ReCreate Category by Admin - s11 { Aladin Kategória } [201]', async () => {
-        const response = await supertest(server).post('/api/categories/create').send({ categoryName: 'Aladin Kategória', defaultInstitutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f' })
+        const response = await supertest(server).post('/api/categories/create').send({ categoryName: 'Aladin Kategória', defaultInstitutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002' })
         .set('Authorization', 'bearer ' + token_admin)
         expect(response.statusCode).toBe(201)
     })

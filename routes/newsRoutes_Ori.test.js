@@ -18,7 +18,7 @@ var token_wrong = {};
 
 describe('test for "Login" route', () => {
     test('Login as Admin    s11 [200]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin' })
         expect(response.statusCode).toBe(200)
         token_admin = response.body.token;
         logged_admin = JSON.parse(atob(token_admin.split('.')[1]));

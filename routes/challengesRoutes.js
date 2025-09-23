@@ -120,7 +120,7 @@ router.get('/active', authenticateToken, async (req, res) => {
             include: [
                 {
                     model: userChallenges,
-                    where: { userId},
+                    where: { userId },
                     required: false,
                     attributes: ['status']
                 }
@@ -134,7 +134,7 @@ router.get('/active', authenticateToken, async (req, res) => {
         }));
 
         res.json(formatted);
- 
+
     } catch (err) {
         console.error("Hiba az aktív kihívások lekérésekor:", err)
         res.status(500).json({ message: "Szerverhiba az aktív kihívások lekérésekor." })
@@ -180,6 +180,117 @@ router.get('/archived', authenticateToken, async (req, res) => {
     }
 })
 
+//Összes kihívás lekérése (admin/intézményi felhasználó)
+router.get('/all', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
+            return res.status(403).json({ message: "Nincs jogosultsága az összes kihívás megtekintéséhez." })
+        }
+        const allChallengesList = await challenges.findAll({})
+        res.json(allChallengesList)
+    } catch (err) {
+        console.error("Hiba az összes kihívás lekérésekor:", err)
+        res.status(500).json({ message: "Szerverhiba az összes kihívás lekérésekor." })
+    }
+})
+
+//Adott intézményhez rendelt kihívások lekérése
+router.get('/assigned-challenges', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
+            return res.status(403).json({ message: "Nincs jogosultásga más intézmény kihívásáinak megtekintéséhez" })
+        }
+        const userInstitution = req.user.institutionId
+        const assignedChallengesList = await challenges.findAll({
+            where: {
+                institutionId: userInstitution
+            }
+        })
+        res.json(assignedChallengesList)
+    } catch (err) {
+        console.error("Hiba az intézményhez kapcsolt kihívások lekérdezésekor", err)
+        res.status(500).json({ message: "Szerverhiba az intézményhez kapcsolt kihívások lekérdeésekor" })
+    }
+})
+
+//Felhasználó teljesített kihívásainak lekérése
+router.get('/completed', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id
+        const completedChallengesList = await userChallenges.findAll({
+            where: {
+                userId: userId,
+                status: 'approved'
+            },
+            include: [
+                {
+                    model: challenges
+                }
+            ]
+        })
+        res.json(completedChallengesList)
+    } catch (err) {
+        console.error("Hiba a felhasználó teljesített kihívásainak lekérésekor:", err)
+        res.status(500).json({ message: "Szerverhiba a felhasználó teljesített kihívásainak lekérésekor." })
+    }
+})
+
+//Jóváhagyásra váró kihívások lekérése (admin/intézményi felhasználó)
+router.get('/pending', authenticateToken, async (req, res) => {
+    try {
+        //Jogosultság ellenőrzés
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
+            return res.status(403).json({ message: "Nincs jogosultsága a jóváhagyásra váró kihívások megtekintéséhez." })
+        }
+        const pendingChallengesList = await userChallenges.findAll({
+            where: {
+                status: 'pending'
+            },
+            include: [
+                {
+                    model: challenges, where: req.user.role === 'institution'
+                        ? { institutionId: req.user.institutionId }
+                        : {}
+                },
+                { model: users, attributes: ['id', 'username', 'email'] }
+            ]
+        })
+        res.json(pendingChallengesList)
+
+    } catch (err) {
+        console.error("Hiba a jóváhagyásra váró kihívások lekérésekor:", err)
+        res.status(500).json({ message: "Szerverhiba a jóváhagyásra váró kihívások lekérésekor." })
+    }
+})
+
+//Intézményhez tarotzó összes beküldött kihívás listázása(bármilyen státuszban)
+router.get('/institution-submissions', authenticateToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
+            return res.status(403).json({ message: "Nincs jogosultsága a megtekintéshez" })
+        }
+        const institutionId = req.user.institutionId
+        const submissions = await userChallenges.findAll({
+            include: [
+                {
+                    model: challenges,
+                    where: { institutionId }
+                },
+                {
+                    model: users,
+                    attributes: ['id', 'username', 'email']
+
+                }
+            ],
+            order: [['unlockDate', 'DESC']]
+        })
+        res.json(submissions)
+    } catch (err) {
+        console.error("Hiba az intézményi beküldések lekérdezésekor:", err)
+        res.status(500).json({ message: "Szerverhiba az intézményi beküldések lekérdezésekor" })
+    }
+})
+
 // Felhasználó saját kihívásainak lekérése
 router.get('/myChallenges', authenticateToken, async (req, res) => {
     try {
@@ -201,6 +312,7 @@ router.get('/myChallenges', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a felhasználó saját kihívásainak lekérésekor." })
     }
 })
+
 
 // Kihívás feloldása 
 router.post('/:id/unlock', authenticateToken, async (req, res) => {
@@ -312,7 +424,7 @@ router.post('/:id/submit', authenticateToken, upload.array('images', 3), async (
 router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
     try {
         //Jogosultságellenőrzés
-        if (!req.user.role !== 'admin' && req.user.role !== 'institution') {
+        if (req.user.role !== 'admin' && req.user.role !== 'institution') {
             return res.status(403).json({ message: "Nincs jogosultságod a művelet végrehajtásához." });
         }
         const { decision } = req.body; //Elfogadva vagy elutasítva
@@ -335,6 +447,10 @@ router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
         if (new Date(userChallenge.challenge.endDate) < new Date()) {
             return res.status(400).json({ message: "Ez a kihívás már lejárt, nem bírálható el." });
         }
+        //Csak a saját intézményének a kihívásait bírálhassa
+        if (req.user.role === "institution" && userChallenge.challenge.institutionId !== req.user.institutionId) {
+            return res.status(403).json({ message: "Nem a te intézményed kihívása" })
+        }
         if (decision === 'approved') {
             userChallenge.status = 'approved';
             userChallenge.approvedAt = new Date();
@@ -345,7 +461,9 @@ router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
                 user.points += userChallenge.pointsEarned;
                 await user.save();
             } else {
-                return res.status(400).json({ message: "Érvénytelen döntés. Elfogadva vagy elutasítva lehet." })
+                userChallenge.status = "rejected"
+                userChallenge.approvedAt = null
+                userChallenge.pointsEarned = 0
             }
             await userChallenge.save();
 
@@ -353,7 +471,6 @@ router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
                 message: `Kihívás ${decision === 'approved' ? 'jóváhagyva' : 'elutasítva'}.`, userChallenge
             })
         }
-
     } catch (err) {
         console.error("Hiba a kihívás jóváhagyása, elutasítása során:", err)
         res.status(500).json({ message: "Szerverhiba a kihívás jóváhagyása, elutasítása során." })
@@ -416,6 +533,34 @@ router.delete('/delete', authenticateToken, async (req, res) => {
     } catch (err) {
         console.error("Hiba a kihívás törlése során:", err)
         res.status(500).json({ message: "Szerverhiba a kihívás törlése során." })
+    }
+})
+
+router.get('/:id', authenticateToken, async (req, res) => {
+    try {
+        const challengeId = req.params.id
+        const userId = req.user.id
+        const challenge = await challenges.findOne({
+            where: { id: challengeId },
+            include: [
+                {
+                    model: userChallenges,
+                    where: { userId },
+                    required: false,
+                }
+            ]
+        })
+        if (!challenge) {
+            return res.status(404).json({ message: "Kihívás nem található" })
+        }
+        res.json({
+            ...challenge.toJSON(),
+            userChallenge: challenge.userChallenges?.[0] || null
+        })
+
+    } catch (err) {
+        console.error("Hiba az adott kihívás lekérdezésekor", err)
+        res.status(500).json({ message: "Szerverhiba az adott kihívás lekérdezésekor" })
     }
 })
 
