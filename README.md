@@ -30,6 +30,38 @@ cd tisztavaros-backend
 npm install
 ```
 
+![Tiszta Város logó](tisztavaros_logo.png)
+
+# Tiszta Város – Backend
+
+## A projekt célja
+A Tiszta Város egy olyan alkalmazás, amelynek célja, hogy a lakosság és az önkormányzati intézmények együttműködésével tisztábbá tegye a várost. A rendszer lehetővé teszi a felhasználóknak, hogy mobilalkalmazáson vagy weben keresztül bejelentsék a városban tapasztalt problémákat (például illegális hulladéklerakás, graffiti, kátyú stb.). A bejelentéseket a háttérrendszer továbbítja az illetékes városi szerveknek, nyomon követi azok státuszát, és visszajelzést ad a bejelentőknek. Emellett a rendszer gamifikációs elemeket (kihívások, pontok, jelvények) is tartalmaz, hogy ösztönözze a lakosokat az aktív részvételre és a közösség motiválását szolgálja.
+
+## Funkcionalitások
+A Tiszta Város backendje egy **REST API**, amely a következő főbb szolgáltatásokat nyújtja:
+
+- **Felhasználókezelés és autentikáció**
+- **Bejelentés-kezelés**
+- **Visszajelzések (szavazatok, megerősítések)**
+- **Kategóriák és intézmények kezelése**
+- **Hírközlés (városi hírek)**
+- **Gamifikáció (kihívások és jelvények)**
+- **Értesítések**
+- **Összefoglaló statisztikák**
+
+## Telepítés (lokális fejlesztői környezet)
+**Előfeltételek:**
+- Node.js (LTS)
+- MySQL adatbázis
+- npm
+
+**Lépések:**
+```bash
+git clone https://github.com/Fruktoz0/backend.git tisztavaros-backend
+cd tisztavaros-backend
+npm install
+```
+
 **Környezeti változók beállítása:**
 A konfigurációhoz hozz létre egy `.env` fájlt a projekt gyökerében. A `.env` fájl tartalmazza az érzékeny adatokat és beállításokat (adatbázis csatlakozáshoz adatok, JWT titok, külső API kulcsok, stb.). Készíts egy másolatot a példából, és töltsd ki a saját adataiddal:
 
@@ -52,6 +84,53 @@ FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\\n***\\n-----END PRIVATE KEY--
 FIREBASE_CLIENT_EMAIL=***
 FIREBASE_CLIENT_ID=***
 TEST_Y=1
+
+
+**Adatbázis inicializálás:**
+```sql
+CREATE DATABASE tisztavaros_db CHARACTER SET utf8mb4 COLLATE utf8mb4_hungarian_ci;
+```
+
+**Szerver indítás:**
+```bash
+npm start
+```
+
+## Adatbázis felépítés
+- **users**: felhasználók, szerepkörök, pontok, intézménykapcsolat
+- **institutions**: intézmények adatai
+- **categories**: bejelentés kategóriák
+- **reports**: bejelentések státusszal és képekkel
+- **votes / confirmations**: szavazatok, megerősítések
+- **challenges / userChallenges**: kihívások és részvétel
+- **badges / userBadges**: jelvények
+- **institutionNews**: hírek
+
+## API végpontok
+- **Auth**: regisztráció, e-mail verifikáció, login, user adat, admin user létrehozás/törlés
+- **Users**: listázás, keresés, módosítás, avatar váltás, push token
+- **Reports**: bejelentés létrehozása, státusz, képek, továbbítás, megerősítés, statisztikák
+- **Votes**: szavazás logika
+- **Categories**: kategóriák listázása, létrehozása, módosítása, törlése
+- **Institutions**: intézmények CRUD
+- **News**: hírek CRUD
+- **Challenges**: kihívások CRUD, feloldás, beküldés, elbírálás
+- **Badges**: jelvények listázása, állapot, törlés
+
+## Fejlesztői workflow
+- Branch kezelés (feature/bugfix branch-ek)
+- Pull Request és code review folyamat
+- Commit üzenet konvenciók
+- Tesztelés (Jest, Supertest)
+- CI/CD pipeline
+- Deployment GitHub Actions-szel (main branch -> VPS deploy)
+
+## Deployment workflow
+A repó GitHub Actions segítségével van bekötve automatikus szerverre telepítéshez.  
+Minden push a `main` branch-re triggereli a buildet és a Docker-compose újraindítást a VPS-en.
+
+
+
 
 **Adatbázis inicializálás:**
 
