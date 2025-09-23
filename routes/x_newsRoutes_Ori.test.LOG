@@ -1,37 +1,51 @@
-
 d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>npm test
 
 > backend@1.0.0 test
 > jest --detectOpenHandles
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+    Auth Routes Teszt üzemmódban vagyok!
+
+      at Object.log (routes/authRoutes.js:14:29)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
+    User.Active = active
+
+      at log (routes/authRoutes.js:199:37)
+
+  console.log
     Logged Admin:  {
-      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      id: '4ff65594-cc73-4445-bcdf-885ffaad5e69',
       role: 'admin',
-      institutionId: null,
-      iat: 1756799651,
-      exp: 1772351651
+      institutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      iat: 1758627909,
+      exp: 1774179909
     }
 
       at Object.log (routes/newsRoutes_Ori.test.js:25:17)
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
+    User.Active = active
+
+      at log (routes/authRoutes.js:199:37)
+
+  console.log
     Logged User:  {
-      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
-      role: 'worker',
-      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
-      iat: 1756799652,
-      exp: 1772351652
+      id: 'b419c367-b6d1-48c0-b095-7a405fa469ad',
+      role: 'user',
+      institutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      iat: 1758627909,
+      exp: 1774179909
     }
 
       at Object.log (routes/newsRoutes_Ori.test.js:35:17)
@@ -48,16 +62,14 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
 
  PASS  routes/newsRoutes_Ori.test.js
   test for "Login" route
-    √ Login as Admin    s11 [200] (223 ms)
-    √ Login as User     s11 [200] (81 ms)
+    √ Login as Admin    s11 [200] (208 ms)
+    √ Login as User     s11 [200] (83 ms)
   GetList of "News" route :
-    √ Get All News List by Admin [200] (19 ms)
-    √ Get All News List by User [200] (16 ms)
+    √ Get All News List by Admin [200] (24 ms)
+    √ Get All News List by User [200] (18 ms)
 
 Test Suites: 1 passed, 1 total
 Tests:       4 passed, 4 total
 Snapshots:   0 total
-Time:        1.531 s
+Time:        1.777 s
 Ran all test suites.
-
-d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>

@@ -1,37 +1,51 @@
-
 d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>npm test
 
 > backend@1.0.0 test
 > jest --detectOpenHandles
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+    Auth Routes Teszt üzemmódban vagyok!
+
+      at Object.log (routes/authRoutes.js:14:29)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
+    User.Active = active
+
+      at log (routes/authRoutes.js:199:37)
+
+  console.log
     Logged Admin:  {
-      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      id: '4ff65594-cc73-4445-bcdf-885ffaad5e69',
       role: 'admin',
-      institutionId: null,
-      iat: 1756799576,
-      exp: 1772351576
+      institutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      iat: 1758627858,
+      exp: 1774179858
     }
 
       at Object.log (routes/categoriesRoutes_Ori.test.js:28:17)
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
+    User.Active = active
+
+      at log (routes/authRoutes.js:199:37)
+
+  console.log
     Logged User:  {
-      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
-      role: 'worker',
-      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
-      iat: 1756799576,
-      exp: 1772351576
+      id: 'b419c367-b6d1-48c0-b095-7a405fa469ad',
+      role: 'user',
+      institutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      iat: 1758627858,
+      exp: 1774179858
     }
 
       at Object.log (routes/categoriesRoutes_Ori.test.js:38:17)
@@ -42,44 +56,330 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
-    Cat. All:  3 [
+    Cat. All:  25 [
       {
-        id: '15ae7f10-33c2-4930-8057-5cd33e029d4d',
-        categoryName: 'Tömegközlekedési probléma',
-        createdAt: '2025-08-18T21:30:44.000Z',
-        updatedAt: '2025-08-18T21:30:44.000Z',
+        id: '0d3b8406-13c2-4a7f-9140-54ddb5b58ced',
+        categoryName: 'Buszmegálló rongálás',
+        createdAt: '2025-09-18T07:21:46.000Z',
+        updatedAt: '2025-09-18T07:21:46.000Z',
         institution: {
-          id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
-          name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified',
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+          name: 'BKK Zrt. - Admin Modified - Admin Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - ',
           email: 'ugyfelszolgalat@bkk.hu',
           description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
           contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255'
         }
       },
       {
-        id: '18ac9cf8-6fad-4623-b965-cf0950c10b2f',
+        id: '136465eb-c374-46f6-9634-1f72b14fc157',
         categoryName: 'Aladin Kategória',
-        createdAt: '2025-09-01T13:52:57.000Z',
-        updatedAt: '2025-09-01T13:52:57.000Z',
+        createdAt: '2025-09-23T08:10:00.000Z',
+        updatedAt: '2025-09-23T08:10:00.000Z',
         institution: {
-          id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
-          name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified',
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+          name: 'BKK Zrt. - Admin Modified - Admin Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - ',
           email: 'ugyfelszolgalat@bkk.hu',
           description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
           contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255'
         }
       },
       {
-        id: 'e52720e2-7c6c-11f0-9b55-2cf05dad8c1f',
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0001',
         categoryName: 'Illegális szemétlerakás',
-        createdAt: '2025-08-18T21:52:25.000Z',
-        updatedAt: '2025-08-18T21:52:25.000Z',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
         institution: {
-          id: 'a1040145-7c6c-11f0-9b55-2cf05dad8c1f',
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0001',
           name: 'FKF Zrt.',
           email: 'info@fkf.hu',
           description: 'Fővárosi hulladékgazdálkodási szolgáltató.',
           contactInfo: 'Cím: 1081 Budapest, Alföldi u. 7. | Tel: +36 1 459 6700'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0002',
+        categoryName: 'Tömegközlekedési probléma',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+          name: 'BKK Zrt. - Admin Modified - Admin Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - ',
+          email: 'ugyfelszolgalat@bkk.hu',
+          description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
+          contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0003',
+        categoryName: 'Úthiba / kátyú',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0003',
+          name: 'Budapest Közút Zrt.',
+          email: 'kozut@budapestkozut.hu',
+          description: 'Közutak karbantartása és üzemeltetése.',
+          contactInfo: 'Cím: 1113 Budapest, Villányi út 62. | Tel: +36 1 371 3100'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0004',
+        categoryName: 'Villanyoszlop hibája',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0004',
+          name: 'Elmű Hálózati Kft.',
+          email: 'ugyfelszolgalat@elmu.hu',
+          description: 'Villamos energia hálózat üzemeltetés.',
+          contactInfo: 'Cím: 1132 Budapest, Váci út 72-74. | Tel: +36 1 238 3838'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0005',
+        categoryName: 'Zöldterület gondozatlansága',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0005',
+          name: 'FŐKERT Nonprofit Zrt.',
+          email: 'info@fokert.hu',
+          description: 'Fővárosi parkok és zöldterületek fenntartása.',
+          contactInfo: 'Cím: 1149 Budapest, Mogyoródi út 56-60. | Tel: 112'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0006',
+        categoryName: 'Távhőcső szivárgás',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0006',
+          name: 'FŐTÁV Zrt.',
+          email: 'ugyfelszolgalat@fotav.hu',
+          description: 'Távhőszolgáltatás Budapest területén.',
+          contactInfo: 'Cím: 1116 Budapest, Kalotaszeg u. 31. | Tel: +36 1 700 7000'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0007',
+        categoryName: 'Jármű műszaki hibás',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0007',
+          name: 'BKV Zrt.',
+          email: 'bkv@bkv.hu',
+          description: 'Közösségi közlekedés üzemeltetése.',
+          contactInfo: 'Cím: 1072 Budapest, Akácfa u. 15. | Tel: +36 1 461 6500'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0008',
+        categoryName: 'Közbiztonsági észrevétel',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0008',
+          name: 'Rendőrség – BRFK',
+          email: 'brfk@police.hu',
+          description: 'Budapesti Rendőr-főkapitányság.',
+          contactInfo: 'Cím: 1139 Budapest, Teve u. 4-6. | Tel: 112'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0009',
+        categoryName: 'Tűzveszély',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0009',
+          name: 'Katasztrófavédelem',
+          email: 'katasztrofavedelem@katved.hu',
+          description: 'Tűzvédelem, polgári védelem, iparbiztonság.',
+          contactInfo: 'Cím: 1149 Budapest, Mogyoródi út 43. | Tel: 112'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0010',
+        categoryName: 'Ivóvíz probléma',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0010',
+          name: 'Fővárosi Vízművek',
+          email: 'info@vizmuvek.hu',
+          description: 'Ivóvízszolgáltatás és szennyvízkezelés.',
+          contactInfo: 'Cím: 1138 Budapest, Váci út 182. | Tel: +36 1 465 2400'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0011',
+        categoryName: 'Szennyvízcsatorna hibája',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0011',
+          name: 'Csatornázási Művek',
+          email: 'ugyfelszolgalat@fcsm.hu',
+          description: 'Szennyvízelvezetés és -kezelés.',
+          contactInfo: 'Cím: 1087 Budapest, Asztalos Sándor út 4. | Tel: +36 1 455 4400'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0015',
+        categoryName: 'Járda takarítási hiányosság',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0001',
+          name: 'FKF Zrt.',
+          email: 'info@fkf.hu',
+          description: 'Fővárosi hulladékgazdálkodási szolgáltató.',
+          contactInfo: 'Cím: 1081 Budapest, Alföldi u. 7. | Tel: +36 1 459 6700'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0016',
+        categoryName: 'Közvilágítás hiánya',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0004',
+          name: 'Elmű Hálózati Kft.',
+          email: 'ugyfelszolgalat@elmu.hu',
+          description: 'Villamos energia hálózat üzemeltetés.',
+          contactInfo: 'Cím: 1132 Budapest, Váci út 72-74. | Tel: +36 1 238 3838'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0017',
+        categoryName: 'Parkoló jármű akadályozza a forgalmat',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0008',
+          name: 'Rendőrség – BRFK',
+          email: 'brfk@police.hu',
+          description: 'Budapesti Rendőr-főkapitányság.',
+          contactInfo: 'Cím: 1139 Budapest, Teve u. 4-6. | Tel: 112'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0018',
+        categoryName: 'Közösségi tér rongálása',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0015',
+          name: 'XIII. kerületi Önkormányzat',
+          email: 'hivatal@bp13.hu',
+          description: 'Helyi közigazgatási szervezet.',
+          contactInfo: 'Cím: 1139 Budapest, Béke tér 1. | Tel: +36 1 452 4100'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0019',
+        categoryName: 'Kukák túlcsordulása',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0001',
+          name: 'FKF Zrt.',
+          email: 'info@fkf.hu',
+          description: 'Fővárosi hulladékgazdálkodási szolgáltató.',
+          contactInfo: 'Cím: 1081 Budapest, Alföldi u. 7. | Tel: +36 1 459 6700'
+        }
+      },
+      {
+        id: '22222222-bbbb-bbbb-bbbb-bbbbbbbb0020',
+        categoryName: 'Parki játszótér karbantartás',
+        createdAt: '2025-07-26T00:00:00.000Z',
+        updatedAt: '2025-07-26T00:00:00.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0005',
+          name: 'FŐKERT Nonprofit Zrt.',
+          email: 'info@fokert.hu',
+          description: 'Fővárosi parkok és zöldterületek fenntartása.',
+          contactInfo: 'Cím: 1149 Budapest, Mogyoródi út 56-60. | Tel: 112'
+        }
+      },
+      {
+        id: '2244d2ef-5fed-483b-a937-74af37def166',
+        categoryName: 'Postaláda hiba',
+        createdAt: '2025-09-18T07:21:46.000Z',
+        updatedAt: '2025-09-18T07:21:46.000Z',
+        institution: {
+          id: '92f2e0e1-bc95-4a95-af56-e21ace8ece66',
+          name: 'Magyar Posta Zrt.',
+          email: 'ugyfelszolgalat@posta.hu',
+          description: 'Országos postai szolgáltató.',
+          contactInfo: 'Cím: 1138 Budapest, Dunavirág utca 2-6. | Tel: +36 1 767 8200'
+        }
+      },
+      {
+        id: '3f954dba-209c-44d7-8a36-3d66d4158c6e',
+        categoryName: 'Közlekedési tábla hiba',
+        createdAt: '2025-09-18T07:21:46.000Z',
+        updatedAt: '2025-09-18T07:21:46.000Z',
+        institution: {
+          id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+          name: 'BKK Zrt. - Admin Modified - Admin Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - ',
+          email: 'ugyfelszolgalat@bkk.hu',
+          description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
+          contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255'
+        }
+      },
+      {
+        id: '534a5993-4a05-4d3a-87b9-6861321b2091',
+        categoryName: 'Közterületi akadály',
+        createdAt: '2025-09-18T07:21:46.000Z',
+        updatedAt: '2025-09-18T07:21:46.000Z',
+        institution: {
+          id: 'fafac929-084a-4d2d-b13a-099188c167d2',
+          name: 'Nyíregyháza Városüzemeltetés',
+          email: 'info@nyiregyhaza-varosuzemeltetes.hu',
+          description: 'Nyíregyháza város közterületeinek fenntartásáért felelős szervezet.',
+          contactInfo: 'Cím: 4400 Nyíregyháza, Kossuth tér 1. | Tel: +36 42 123 456'
+        }
+      },
+      {
+        id: '7d4609da-abfb-41dd-8c10-b9d2c28f30ca',
+        categoryName: 'Parkoló automata hiba',
+        createdAt: '2025-09-18T07:21:46.000Z',
+        updatedAt: '2025-09-18T07:21:46.000Z',
+        institution: {
+          id: '94aa9ba6-0d58-4762-b881-849a05d444f6',
+          name: 'Zalaegerszeg Parkolási Kft.',
+          email: 'parkolas@zalaegerszeg.hu',
+          description: 'Zalaegerszeg város parkolási szolgáltatója.',
+          contactInfo: 'Cím: 8900 Zalaegerszeg, Kossuth Lajos u. 17. | Tel: +36 92 123 456'
+        }
+      },
+      {
+        id: '9777aeea-2139-46f9-a89a-b7378167f21f',
+        categoryName: 'Járda hiba',
+        createdAt: '2025-09-18T07:21:46.000Z',
+        updatedAt: '2025-09-18T07:21:46.000Z',
+        institution: {
+          id: 'fafac929-084a-4d2d-b13a-099188c167d2',
+          name: 'Nyíregyháza Városüzemeltetés',
+          email: 'info@nyiregyhaza-varosuzemeltetes.hu',
+          description: 'Nyíregyháza város közterületeinek fenntartásáért felelős szervezet.',
+          contactInfo: 'Cím: 4400 Nyíregyháza, Kossuth tér 1. | Tel: +36 42 123 456'
+        }
+      },
+      {
+        id: '98d0f0f7-526f-4174-b914-b4751b52c5f3',
+        categoryName: 'Közterületi berendezés hiba',
+        createdAt: '2025-09-18T07:21:46.000Z',
+        updatedAt: '2025-09-18T07:21:46.000Z',
+        institution: {
+          id: 'fafac929-084a-4d2d-b13a-099188c167d2',
+          name: 'Nyíregyháza Városüzemeltetés',
+          email: 'info@nyiregyhaza-varosuzemeltetes.hu',
+          description: 'Nyíregyháza város közterületeinek fenntartásáért felelős szervezet.',
+          contactInfo: 'Cím: 4400 Nyíregyháza, Kossuth tér 1. | Tel: +36 42 123 456'
         }
       }
     ]
@@ -87,22 +387,22 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
       at Object.log (routes/categoriesRoutes_Ori.test.js:47:17)
 
   console.log
-    Del. Cat.:  18ac9cf8-6fad-4623-b965-cf0950c10b2f
+    Del. Cat.:  136465eb-c374-46f6-9634-1f72b14fc157
 
       at Object.log (routes/categoriesRoutes_Ori.test.js:51:17)
 
   console.log
-    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`id` = '18ac9cf8-6fad-4623-b965-cf0950c10b2f';
+    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`id` = '136465eb-c374-46f6-9634-1f72b14fc157';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
-    Törlésre érkezett kérés: 18ac9cf8-6fad-4623-b965-cf0950c10b2f
+    Törlésre érkezett kérés: 136465eb-c374-46f6-9634-1f72b14fc157
 
-      at log (routes/categoriesRoutes.js:75:17)
+      at log (routes/categoriesRoutes.js:108:17)
 
   console.log
-    Executing (default): DELETE FROM `categories` WHERE `id` = '18ac9cf8-6fad-4623-b965-cf0950c10b2f'
+    Executing (default): DELETE FROM `categories` WHERE `id` = '136465eb-c374-46f6-9634-1f72b14fc157'
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
@@ -123,7 +423,7 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
 
   console.log
 
-    new_cat.id: b29d5681-2369-4da3-844e-386c1abe833b
+    new_cat.id: 1b46379b-7afb-4438-9066-774a8216e317
 
       at Object.log (routes/categoriesRoutes_Ori.test.js:105:17)
 
@@ -135,20 +435,20 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
   console.log
     Törlésre érkezett kérés: 123456789
 
-      at log (routes/categoriesRoutes.js:75:17)
+      at log (routes/categoriesRoutes.js:108:17)
 
   console.log
-    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`id` = 'b29d5681-2369-4da3-844e-386c1abe833b';
+    Executing (default): SELECT `id`, `categoryName`, `defaultInstitutionId`, `createdAt`, `updatedAt` FROM `categories` AS `category` WHERE `category`.`id` = '1b46379b-7afb-4438-9066-774a8216e317';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
-    Törlésre érkezett kérés: b29d5681-2369-4da3-844e-386c1abe833b
+    Törlésre érkezett kérés: 1b46379b-7afb-4438-9066-774a8216e317
 
-      at log (routes/categoriesRoutes.js:75:17)
+      at log (routes/categoriesRoutes.js:108:17)
 
   console.log
-    Executing (default): DELETE FROM `categories` WHERE `id` = 'b29d5681-2369-4da3-844e-386c1abe833b'
+    Executing (default): DELETE FROM `categories` WHERE `id` = '1b46379b-7afb-4438-9066-774a8216e317'
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
@@ -164,28 +464,26 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
 
  PASS  routes/categoriesRoutes_Ori.test.js
   test for "Login" route
-    √ Login as Admin    s11 [200] (244 ms)
-    √ Login as User     s11 [200] (82 ms)
+    √ Login as Admin    s11 [200] (209 ms)
+    √ Login as User     s11 [200] (81 ms)
   test for "Categories" route
-    √ Get Categories List by any User [200] (28 ms)
-    √ Delete Category IF EXIST by Admin { Aladin Kategória } [404] [200] (27 ms)
-    √ Create Category by User - FORBIDDEN [403] (12 ms)
-    √ Create an Existing Category by Admin - FORBIDDEN [409] [Már létezik ilyen nevű kategória.] (17 ms)
-    √ Create a New Category by Admin - Hiányzó adatok s00 [400] (11 ms)
-    √ Create a New Category by Admin - Hiányzó adatok s01 [400] (11 ms)
-    √ Create a New Category by Admin - Hiányzó adatok s10 [400] (12 ms)
-    √ Create a New Category by Admin - s11 { Aladin Kategória } [201] (32 ms)
+    √ Get Categories List by any User [200] (39 ms)
+    √ Delete Category IF EXIST by Admin { Aladin Kategória } [404] [200] (25 ms)
+    √ Create Category by User - FORBIDDEN [403] (11 ms)
+    √ Create an Existing Category by Admin - FORBIDDEN [409] [Már létezik ilyen nevű kategória.] (16 ms)
+    √ Create a New Category by Admin - Hiányzó adatok s00 [400] (10 ms)
+    √ Create a New Category by Admin - Hiányzó adatok s01 [400] (10 ms)
+    √ Create a New Category by Admin - Hiányzó adatok s10 [400] (11 ms)
+    √ Create a New Category by Admin - s11 { Aladin Kategória } [201] (27 ms)
   test for "Categories" route 2
-    √ Delete Category by User Wrong Id - FORBIDDEN [403] (11 ms)
-    √ Delete Category by User - FORBIDDEN [403] (11 ms)
+    √ Delete Category by User Wrong Id - FORBIDDEN [403] (10 ms)
+    √ Delete Category by User - FORBIDDEN [403] (9 ms)
     √ Delete Category by Admin - Wrong Id [404] (16 ms)
-    √ Delete Category by Admin - Good Id [200] (29 ms)
-    √ ReCreate Category by Admin - s11 { Aladin Kategória } [201] (20 ms)
+    √ Delete Category by Admin - Good Id [200] (20 ms)
+    √ ReCreate Category by Admin - s11 { Aladin Kategória } [201] (19 ms)
 
 Test Suites: 1 passed, 1 total
 Tests:       15 passed, 15 total
 Snapshots:   0 total
-Time:        1.842 s
+Time:        1.674 s
 Ran all test suites.
-
-d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>

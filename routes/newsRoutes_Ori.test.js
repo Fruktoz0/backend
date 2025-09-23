@@ -1,4 +1,7 @@
-// Auto Generated Test.js file
+//
+//     newsRoutes_Ori.test.js
+//
+// Excel+VB6 Program Generated Test.js file, using own mnemonic system
 
 const express = require('express')
 const supertest = require('supertest')
@@ -18,7 +21,7 @@ var token_wrong = {};
 
 describe('test for "Login" route', () => {
     test('Login as Admin    s11 [200]', async () => {
-        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin123' })
+        const response = await supertest(server).post('/api/auth/login').send({ email: 'admin@admin.hu', password: 'admin' })
         expect(response.statusCode).toBe(200)
         token_admin = response.body.token;
         logged_admin = JSON.parse(atob(token_admin.split('.')[1]));

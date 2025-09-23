@@ -443,7 +443,7 @@ router.post('/users/sendNotification', authenticateToken, async (req, res) => {
         }
 
         // Push értesítés küldése Firebase segítségével
-  
+
         const message = {
             token: user.pushToken,
             notification: {

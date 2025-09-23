@@ -1,53 +1,72 @@
-
 d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>npm test
 
 > backend@1.0.0 test
 > jest --detectOpenHandles
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
+    Auth Routes Teszt üzemmódban vagyok!
+
+      at Object.log (routes/authRoutes.js:14:29)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'admin@admin.hu';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
+    User.Active = active
+
+      at log (routes/authRoutes.js:199:37)
+
+  console.log
     Logged Admin:  {
-      id: 'c18f964e-9ea0-41ed-b859-96979320b9e2',
+      id: '4ff65594-cc73-4445-bcdf-885ffaad5e69',
       role: 'admin',
-      institutionId: null,
-      iat: 1756799623,
-      exp: 1772351623
+      institutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      iat: 1758627886,
+      exp: 1774179886
     }
 
       at Object.log (routes/institutionsRoutes_Ori.test.js:31:17)
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'zoardakarki@gmail.com';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
+    User.Active = active
+
+      at log (routes/authRoutes.js:199:37)
+
+  console.log
     Logged Worker:  {
-      id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
-      role: 'worker',
-      institutionId: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
-      iat: 1756799624,
-      exp: 1772351624
+      id: 'b419c367-b6d1-48c0-b095-7a405fa469ad',
+      role: 'user',
+      institutionId: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      iat: 1758627886,
+      exp: 1774179886
     }
 
       at Object.log (routes/institutionsRoutes_Ori.test.js:41:17)
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'tesztelget2000@gmail.com';
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`email` = 'tesztelget2000@gmail.com';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
+    User.Active = active
+
+      at log (routes/authRoutes.js:199:37)
+
+  console.log
     Logged User:  {
-      id: '379f8a2e-c223-4e2b-8008-ec5144474007',
+      id: 'b044640a-0ec3-4341-964f-a9befe230032',
       role: 'user',
       institutionId: null,
-      iat: 1756799624,
-      exp: 1772351624
+      iat: 1758627886,
+      exp: 1774179886
     }
 
       at Object.log (routes/institutionsRoutes_Ori.test.js:51:17)
@@ -58,35 +77,40 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
-    4
+    16
 
       at Object.log (routes/institutionsRoutes_Ori.test.js:60:17)
 
   console.log
-    Del. Inst.ID:  271cea68-4ea6-4b9d-93b3-98ddef3b8b3f
+    Del. Inst.ID:  e4540736-507e-43ae-8144-a8b553e11245
 
       at Object.log (routes/institutionsRoutes_Ori.test.js:65:17)
 
   console.log
     Mod. Inst:  {
-      id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
-      name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified',
+      id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      name: 'BKK Zrt. - Admin Modified - Admin Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - ',
       email: 'ugyfelszolgalat@bkk.hu',
       description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
       contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255',
-      logoUrl: null,
-      createdAt: '2025-08-18T21:53:04.000Z',
-      updatedAt: '2025-09-01T14:26:00.000Z',
+      logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/BKK_logo_notext.svg/252px-BKK_logo_notext.svg.png',
+      createdAt: '2025-07-26T00:00:00.000Z',
+      updatedAt: '2025-09-23T08:10:00.000Z',
       users: [
         {
-          id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
-          username: 'Akárki Zoárd',
-          email: 'zoardakarki@gmail.com'
+          id: '4ff65594-cc73-4445-bcdf-885ffaad5e69',
+          username: 'admin',
+          email: 'admin@admin.hu'
         },
         {
-          id: '7046495d-4c2c-487c-a153-4ab4dd1c42de',
-          username: 'Meki Admin',
-          email: 'pepe2@smd.hu'
+          id: '9587e205-86bd-4e64-bd09-73d33702a9cb',
+          username: 'bacsa',
+          email: 'bacsajozseff@gmail.com'
+        },
+        {
+          id: 'b419c367-b6d1-48c0-b095-7a405fa469ad',
+          username: 'Akárki Zoárd',
+          email: 'zoardakarki@gmail.com'
         }
       ]
     }
@@ -94,12 +118,17 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
       at Object.log (routes/institutionsRoutes_Ori.test.js:66:17)
 
   console.log
-    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '271cea68-4ea6-4b9d-93b3-98ddef3b8b3f';
+    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = 'e4540736-507e-43ae-8144-a8b553e11245';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
-    Executing (default): DELETE FROM `institutions` WHERE `id` = '271cea68-4ea6-4b9d-93b3-98ddef3b8b3f'
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`institutionId` = 'e4540736-507e-43ae-8144-a8b553e11245';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): DELETE FROM `institutions` WHERE `id` = 'e4540736-507e-43ae-8144-a8b553e11245'
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
@@ -109,15 +138,221 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
-    Executing (default): SELECT `institution`.`id`, `institution`.`name`, `institution`.`email`, `institution`.`description`, `institution`.`contactInfo`, `institution`.`logoUrl`, `institution`.`createdAt`, `institution`.`updatedAt`, `users`.`id` AS `users.id`, `users`.`username` AS `users.username`, `users`.`email` AS `users.email` FROM `institutions` AS `institution` LEFT OUTER JOIN `users` AS `users` ON `institution`.`id` = `users`.`institutionId` WHERE `institution`.`id` = '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f';
+    Executing (default): SELECT `institution`.`id`, `institution`.`name`, `institution`.`email`, `institution`.`description`, `institution`.`contactInfo`, `institution`.`logoUrl`, `institution`.`createdAt`, `institution`.`updatedAt`, `users`.`id` AS `users.id`, `users`.`username` AS `users.username`, `users`.`email` AS `users.email` FROM `institutions` AS `institution` LEFT OUTER JOIN `users` AS `users` ON `institution`.`id` = `users`.`institutionId` WHERE `institution`.`id` = '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
 
-    Exist_Inst.name: BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified
+    Exist_Inst.name: BKK Zrt. - Admin Modified - Admin Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified -
 
       at Object.log (routes/institutionsRoutes_Ori.test.js:94:17)
+
+  console.log
+    {
+      name: 'Álomfejtő Hatóság',
+      email: 'a_dream@dream_all.hu',
+      description: 'Rosz Álmokat Elűző Központi hatóság',
+      contactInfo: '2201 Budapest, Áloműzők utca 1.'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    {}
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: undefined
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    { contactInfo: '2201 Budapest, Áloműzők utca 1.' }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: undefined
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    { description: 'Rosz Álmokat Elűző Központi hatóság' }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: undefined
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      description: 'Rosz Álmokat Elűző Központi hatóság',
+      contactInfo: '2201 Budapest, Áloműzők utca 1.'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: undefined
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    { email: 'a_dream@dream_all.hu' }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: undefined
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      email: 'a_dream@dream_all.hu',
+      contactInfo: '2201 Budapest, Áloműzők utca 1.'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: undefined
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      email: 'a_dream@dream_all.hu',
+      description: 'Rosz Álmokat Elűző Központi hatóság'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: undefined
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      email: 'a_dream@dream_all.hu',
+      description: 'Rosz Álmokat Elűző Központi hatóság',
+      contactInfo: '2201 Budapest, Áloműzők utca 1.'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: undefined
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    { name: 'Álomfejtő Hatóság' }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: Álomfejtő Hatóság
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      name: 'Álomfejtő Hatóság',
+      contactInfo: '2201 Budapest, Áloműzők utca 1.'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: Álomfejtő Hatóság
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      name: 'Álomfejtő Hatóság',
+      description: 'Rosz Álmokat Elűző Központi hatóság'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: Álomfejtő Hatóság
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      name: 'Álomfejtő Hatóság',
+      description: 'Rosz Álmokat Elűző Központi hatóság',
+      contactInfo: '2201 Budapest, Áloműzők utca 1.'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: Álomfejtő Hatóság
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    { name: 'Álomfejtő Hatóság', email: 'a_dream@dream_all.hu' }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: Álomfejtő Hatóság
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      name: 'Álomfejtő Hatóság',
+      email: 'a_dream@dream_all.hu',
+      contactInfo: '2201 Budapest, Áloműzők utca 1.'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: Álomfejtő Hatóság
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      name: 'Álomfejtő Hatóság',
+      email: 'a_dream@dream_all.hu',
+      description: 'Rosz Álmokat Elűző Központi hatóság'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: Álomfejtő Hatóság
+
+      at log (routes/institutionsRoutes.js:55:33)
+
+  console.log
+    {
+      name: 'Álomfejtő Hatóság',
+      email: 'a_dream@dream_all.hu',
+      description: 'Rosz Álmokat Elűző Központi hatóság',
+      contactInfo: '2201 Budapest, Áloműzők utca 1.'
+    }
+
+      at log (routes/institutionsRoutes.js:49:33)
+
+  console.log
+    Inst Name: Álomfejtő Hatóság
+
+      at log (routes/institutionsRoutes.js:55:33)
 
   console.log
     Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`name` = 'Álomfejtő Hatóság' LIMIT 1;
@@ -131,24 +366,29 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
 
   console.log
     To Modify: {
-      id: '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f',
-      name: 'BKK Zrt. - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified',
+      id: '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002',
+      name: 'BKK Zrt. - Admin Modified - Admin Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified - Admin Modified - Worker Modified -  - Admin Modified',
       email: 'ugyfelszolgalat@bkk.hu',
       description: 'Közösségi közlekedésért felelős szervezet Budapesten.',
       contactInfo: 'Cím: 1075 Budapest, Rumbach Sebestyén u. 19-21. | Tel: +36 1 325 5255',
-      logoUrl: null,
-      createdAt: '2025-08-18T21:53:04.000Z',
-      updatedAt: '2025-09-01T14:26:00.000Z',
+      logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/BKK_logo_notext.svg/252px-BKK_logo_notext.svg.png',
+      createdAt: '2025-07-26T00:00:00.000Z',
+      updatedAt: '2025-09-23T08:10:00.000Z',
       users: [
         {
-          id: '0855dcd3-cf33-4d75-9ce9-1248fb2979a0',
-          username: 'Akárki Zoárd',
-          email: 'zoardakarki@gmail.com'
+          id: '4ff65594-cc73-4445-bcdf-885ffaad5e69',
+          username: 'admin',
+          email: 'admin@admin.hu'
         },
         {
-          id: '7046495d-4c2c-487c-a153-4ab4dd1c42de',
-          username: 'Meki Admin',
-          email: 'pepe2@smd.hu'
+          id: '9587e205-86bd-4e64-bd09-73d33702a9cb',
+          username: 'bacsa',
+          email: 'bacsajozseff@gmail.com'
+        },
+        {
+          id: 'b419c367-b6d1-48c0-b095-7a405fa469ad',
+          username: 'Akárki Zoárd',
+          email: 'zoardakarki@gmail.com'
         }
       ]
     }
@@ -156,27 +396,12 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
       at Object.log (routes/institutionsRoutes_Ori.test.js:194:17)
 
   console.log
-    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f';
+    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = 'c18f964e-9ea0-41ed-b859-96979320b9e2';
-
-      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
-
-  console.log
-    Executing (default): UPDATE `institutions` SET `name`=?,`updatedAt`=? WHERE `id` = ?
-
-      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
-
-  console.log
-    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f';
-
-      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
-
-  console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = '0855dcd3-cf33-4d75-9ce9-1248fb2979a0';
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = '4ff65594-cc73-4445-bcdf-885ffaad5e69';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
@@ -186,60 +411,73 @@ d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
-    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '0841b0fc-7c6d-11f0-9b55-2cf05dad8c1f';
+    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
-    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = '379f8a2e-c223-4e2b-8008-ec5144474007';
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = 'b419c367-b6d1-48c0-b095-7a405fa469ad';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): UPDATE `institutions` SET `name`=?,`updatedAt`=? WHERE `id` = ?
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `name`, `email`, `description`, `contactInfo`, `logoUrl`, `createdAt`, `updatedAt` FROM `institutions` AS `institution` WHERE `institution`.`id` = '11111111-aaaa-aaaa-aaaa-aaaaaaaa0002';
+
+      at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
+
+  console.log
+    Executing (default): SELECT `id`, `username`, `password`, `email`, `zipCode`, `city`, `address`, `points`, `role`, `isActive`, `institutionId`, `avatarStyle`, `avatarSeed`, `avatarChangesToday`, `lastAvatarChangeDate`, `activationToken`, `activationExpires`, `pushToken`, `createdAt`, `updatedAt` FROM `users` AS `user` WHERE `user`.`id` = 'b044640a-0ec3-4341-964f-a9befe230032';
 
       at Sequelize.log (node_modules/sequelize/src/sequelize.js:1281:15)
 
   console.log
     403:  user
 
-      at log (routes/institutionsRoutes.js:83:21)
+      at log (routes/institutionsRoutes.js:90:21)
 
  PASS  routes/institutionsRoutes_Ori.test.js
   test for "Login" route
-    √ Login as Admin    s11 [200] (229 ms)
-    √ Login as Worker     s11 [200] (77 ms)
-    √ Login as User     s11 [200] (81 ms)
+    √ Login as Admin    s11 [200] (207 ms)
+    √ Login as Worker     s11 [200] (79 ms)
+    √ Login as User     s11 [200] (78 ms)
   GetList of "Institutions" route :
-    √ Get Institutions List [200] (28 ms)
+    √ Get Institutions List [200] (32 ms)
   DeleteOne of "Institutions" route:
-    √ Delete Institution IF EXIST by Admin { Álomfejtő Hatóság } [404] [200] (37 ms)
+    √ Delete Institution IF EXIST by Admin { Álomfejtő Hatóság } [404] [200] (30 ms)
   GetOne of "Institutions" route:
-    √ Get One Institution by Wrong id: 0123456789 [404] (14 ms)
-    √ Get One Institution by Existing id [200] (16 ms)
+    √ Get One Institution by Wrong id: 0123456789 [404] (15 ms)
+    √ Get One Institution by Existing id [200] (17 ms)
   CreateOne of "Institutions" route:
-    √ Create Institution by User s1111 - FORBIDDEN 403 [403] (13 ms)
-    √ Create Institution by Admin - Hiányzó adat s0000 [400] (11 ms)
-    √ Create Institution by Admin - Hiányzó adat s0001 [400] (11 ms)
-    √ Create Institution by Admin - Hiányzó adat s0010 [400] (11 ms)
-    √ Create Institution by Admin - Hiányzó adat s0011 [400] (10 ms)
-    √ Create Institution by Admin - Hiányzó adat s0100 [400] (10 ms)
-    √ Create Institution by Admin - Hiányzó adat s0101 [400] (10 ms)
-    √ Create Institution by Admin - Hiányzó adat s0110 [400] (11 ms)
-    √ Create Institution by Admin - Hiányzó adat s0111 [400] (10 ms)
-    √ Create Institution by Admin - Hiányzó adat s1000 [400] (10 ms)
-    √ Create Institution by Admin - Hiányzó adat s1001 [400] (10 ms)
-    √ Create Institution by Admin - Hiányzó adat s1010 [400] (10 ms)
-    √ Create Institution by Admin - Hiányzó adat s1011 [400] (9 ms)
-    √ Create Institution by Admin - Hiányzó adat s1100 [400] (9 ms)
-    √ Create Institution by Admin - Hiányzó adat s1101 [400] (10 ms)
-    √ Create Institution by Admin - Hiányzó adat s1110 [400] (10 ms)
+    √ Create Institution by User s1111 - FORBIDDEN 403 [403] (16 ms)
+    √ Create Institution by Admin - Hiányzó adat s0000 [401] (18 ms)
+    √ Create Institution by Admin - Hiányzó adat s0001 [401] (15 ms)
+    √ Create Institution by Admin - Hiányzó adat s0010 [401] (16 ms)
+    √ Create Institution by Admin - Hiányzó adat s0011 [401] (15 ms)
+    √ Create Institution by Admin - Hiányzó adat s0100 [401] (15 ms)
+    √ Create Institution by Admin - Hiányzó adat s0101 [401] (14 ms)
+    √ Create Institution by Admin - Hiányzó adat s0110 [401] (15 ms)
+    √ Create Institution by Admin - Hiányzó adat s0111 [401] (14 ms)
+    √ Create Institution by Admin - Hiányzó adat s1000 [401] (14 ms)
+    √ Create Institution by Admin - Hiányzó adat s1001 [401] (15 ms)
+    √ Create Institution by Admin - Hiányzó adat s1010 [401] (15 ms)
+    √ Create Institution by Admin - Hiányzó adat s1011 [401] (14 ms)
+    √ Create Institution by Admin - Hiányzó adat s1100 [401] (15 ms)
+    √ Create Institution by Admin - Hiányzó adat s1101 [401] (14 ms)
+    √ Create Institution by Admin - Hiányzó adat s1110 [401] (17 ms)
   CreateOne of "Institutions" route s1111:
-    √ Create Institution by Amin { Álomfejtő Hatóság } [201] (27 ms)
+    √ Create Institution by Amin { Álomfejtő Hatóság } [201] (30 ms)
   ModifyOne of "Institutions" route:
-    √ Modify Institution by Admin  - Adat Módosítás BKK [200] (28 ms)
+    √ Modify Institution by Admin  - Adat Módosítás BKK [200] (26 ms)
     √ Modify Institution by Worker - Adat Módosítás BKK [200] (21 ms)
-    √ Modify Institution by User   - Adat Módosítás BKK - FORBIDDEN [403] (19 ms)
+    √ Modify Institution by User   - Adat Módosítás BKK - FORBIDDEN [403] (17 ms)
 
 Test Suites: 1 passed, 1 total
 Tests:       27 passed, 27 total
 Snapshots:   0 total
-Time:        1.932 s
+Time:        1.946 s
 Ran all test suites.
-
-d:\- - - - - x.Egressy 2023\- 3. Félév\- - - Tiszta Város\TisztaVaros_BackEnd__Github\backend\routes>
