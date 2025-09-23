@@ -84,10 +84,10 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
             return res.status(403).json({ message: 'Nincs jogosultság!' });
         }
 
-        let a_name=""
-        if (req.body.name!=undefined){a_name=req.body.name}
-        let a_emil=""
-        if (req.body.email!=undefined){a_emil=req.body.email}
+        let a_name = ""
+        if (req.body.name != undefined) { a_name = req.body.name }
+        let a_emil = ""
+        if (req.body.email != undefined) { a_emil = req.body.email }
 
         if (test_y != '') { console.log("\nGet User Name/Email:", '%' + a_name + '%', '%' + a_emil + '%') }
         allUser = await users.findAll({
@@ -100,7 +100,6 @@ router.post('/admin/user_en', authenticateToken, async (req, res) => {
         return res.status(500).json({ message: 'Hiba történt a jogosultság ellenőrzése során.' });
     }
 })
-
 
 
 // Admin_FP / Foglalt Felhasználói UserName és Email ellenőrzés
@@ -391,7 +390,7 @@ router.put('/admin/inst_all', authenticateToken, async (req, res) => {
             return res.status(404).json({ message: "Intézmény nem található." });
         }
 
-        const { id, name, email, description, contactInfo, logoUrl}= req.body;
+        const { id, name, email, description, contactInfo, logoUrl }= req.body;
         instRecord.name = name;
         instRecord.email = email;
         instRecord.description = description;
