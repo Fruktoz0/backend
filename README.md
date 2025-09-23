@@ -1,36 +1,6 @@
-![Tiszta Város logó](tisztavaros_logo.png)
-
-# Tiszta Város – Backend
-
-## A projekt célja
-A Tiszta Város egy olyan alkalmazás, amelynek célja, hogy a lakosság és az önkormányzati intézmények együttműködésével tisztábbá tegye a várost. A rendszer lehetővé teszi a felhasználóknak, hogy mobilalkalmazáson vagy weben keresztül bejelentsék a városban tapasztalt problémákat (például illegális hulladéklerakás, graffiti, kátyú stb.). A bejelentéseket a háttérrendszer továbbítja az illetékes városi szerveknek, nyomon követi azok státuszát, és visszajelzést ad a bejelentőknek. Emellett a rendszer gamifikációs elemeket (kihívások, pontok, jelvények) is tartalmaz, hogy ösztönözze a lakosokat az aktív részvételre és a közösség motiválását szolgálja.
-
-## Funkcionalitások
-A Tiszta Város backendje egy **REST API**, amely a következő főbb szolgáltatásokat nyújtja:
-
-- **Felhasználókezelés és autentikáció**
-- **Bejelentés-kezelés**
-- **Visszajelzések (szavazatok, megerősítések)**
-- **Kategóriák és intézmények kezelése**
-- **Hírközlés (városi hírek)**
-- **Gamifikáció (kihívások és jelvények)**
-- **Értesítések**
-- **Összefoglaló statisztikák**
-
-## Telepítés (lokális fejlesztői környezet)
-**Előfeltételek:**
-- Node.js (LTS)
-- MySQL adatbázis
-- npm
-
-**Lépések:**
-```bash
-git clone https://github.com/Fruktoz0/backend.git tisztavaros-backend
-cd tisztavaros-backend
-npm install
-```
-
-![Tiszta Város logó](tisztavaros_logo.png)
+<p align="center">
+  <img src="tisztavaros_logo.png" alt="Tiszta Város logó" width="220"/>
+</p>
 
 # Tiszta Város – Backend
 
