@@ -31,8 +31,9 @@ npm install
 ```
 
 **Környezeti változók beállítása:**
-A konfigurációhoz hozz létre egy .env fájlt a projekt gyökerében. A .env fájl tartalmazza az érzékeny adatokat és beállításokat (adatbázis csatlakozáshoz adatok, JWT titok, külső API kulcsok, stb.). Készíts egy másolatot a példából, és töltsd ki a saját adataiddal:
+A konfigurációhoz hozz létre egy `.env` fájlt a projekt gyökerében. A `.env` fájl tartalmazza az érzékeny adatokat és beállításokat (adatbázis csatlakozáshoz adatok, JWT titok, külső API kulcsok, stb.). Készíts egy másolatot a példából, és töltsd ki a saját adataiddal:
 
+```env
 PORT=3000
 DB_HOST=localhost
 DB_NAME=tisztavaros_db       # A MySQL adatbázis neve
@@ -40,18 +41,17 @@ DB_USER=tisztavaros_user     # MySQL felhasználó
 DB_PASS=eros_jelszo          # MySQL jelszó
 JWT_SECRET=valami_hosszú_random_szöveg  # JWT tokenek aláírásához
 EXPIRE_TIME=1h               # JWT lejárati idő (pl. 1h, 24h, 7d)
-TRY_MAX=5                    # Maximális belépési próbálkozások (rate limit)
-MAILJET_API_KEY=***          # Mailjet API kulcs (aktivációs email küldéshez)
+TRY_MAX=5                    # Maximális belépési próbálkozások
+MAILJET_API_KEY=***          # Mailjet API kulcs
 MAILJET_API_SECRET=***       # Mailjet API titok
-MAILJET_SENDER_EMAIL=no-reply@tisztavaros.hu  # Aktivációs email feladó címe
-MAILJET_SENDER_NAME=Tiszta Város          # Feladó neve az emaileken
-FIREBASE_PROJECT_ID=***      # Firebase projekt azonosító (értesítésekhez)
-FIREBASE_PRIVATE_KEY_ID=***  # Firebase privát kulcs azonosítója
-FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n***\n-----END PRIVATE KEY-----\n"
-FIREBASE_CLIENT_EMAIL=***    # Firebase kliens email (service account)
-FIREBASE_CLIENT_ID=***       # Firebase kliens azonosító
-TEST_Y=1                     # Teszt mód engedélyezése (1 vagy üres). Teszt módban egyes    műveletek (pl. törlés) véglegesek.
-
+MAILJET_SENDER_EMAIL=no-reply@tisztavaros.hu
+MAILJET_SENDER_NAME=Tiszta Város
+FIREBASE_PROJECT_ID=***
+FIREBASE_PRIVATE_KEY_ID=***
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\\n***\\n-----END PRIVATE KEY-----\\n"
+FIREBASE_CLIENT_EMAIL=***
+FIREBASE_CLIENT_ID=***
+TEST_Y=1
 
 **Adatbázis inicializálás:**
 ```sql
