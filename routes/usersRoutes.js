@@ -390,7 +390,7 @@ router.put('/admin/inst_all', authenticateToken, async (req, res) => {
             return res.status(404).json({ message: "Intézmény nem található." });
         }
 
-        const { id, name, email, description, contactInfo, logoUrl }= req.body;
+        const { id, name, email, description, contactInfo, logoUrl } = req.body;
         instRecord.name = name;
         instRecord.email = email;
         instRecord.description = description;
