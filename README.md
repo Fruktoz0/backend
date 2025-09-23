@@ -54,10 +54,12 @@ FIREBASE_CLIENT_ID=***
 TEST_Y=1
 
 **Adatbázis inicializálás:**
+
 ```sql
 CREATE DATABASE tisztavaros_db CHARACTER SET utf8mb4 COLLATE utf8mb4_hungarian_ci;
 
 **Szerver indítás:**
+
 ```bash
 npm start
 ```
