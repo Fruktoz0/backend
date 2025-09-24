@@ -44,7 +44,7 @@ router.post('/getAllReportsFromDate', authenticateToken, async (req, res) => {
             },
             include: [{
                 model: reportImages,
-                attributes: ['imageUrl']
+                attributes: ['id', 'imageUrl']
             },
             {
                 model: users,
