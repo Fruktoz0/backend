@@ -753,4 +753,24 @@ router.get('/:id', authenticateToken, async (req, res) => {
 })
 
 
+//FP Kép törlése ID alapján az adatbázisból
+router.delete("/delPict/:id", authenticateToken, async (req, res) => {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Nincs jogosultságod a kép törlésére." }).end()
+    }
+    try {
+        const oneImage = await reportImages.findByPk(req.params.id)
+        console.log("Törlésre érkezett kérés:", req.params.id);
+        if (!oneImage)
+            return res.status(404).json({ message: "A kép nem található" })
+
+        await oneImage.destroy();
+        res.json({ message: "Kép törölve" }).end()
+    } catch (err) {
+        console.error("Hiba az kategória törlésekor", err)
+        res.status(500).json({ message: "Szerverhiba az kategória törlésekor" }).end()
+    }
+})
+
+
 module.exports = router;
