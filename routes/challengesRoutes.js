@@ -40,6 +40,46 @@ const upload = multer({
 });
 
 
+// Összes challenges lekérése Dátumtól Dátumig
+router.post('/activeDate', authenticateToken, async (req, res) => {
+    console.log(req.body)
+    try {
+        if (req.user.role !== 'admin' && req.user.role !== 'inspector') {
+            return res.status(403).json({ message: 'Nincs jogosultságod ehhez a lekérdezéshez!.' }).end()
+        }
+
+        if (!req.body?.k_date || req.body?.v_date)
+        {
+            // return res.status(401).json({ message: 'Érvénytelen Dátum kezdet vagy vég!' }).end()
+        }
+
+        const activeChallengesList = await challenges.findAll({
+            where: {
+                createdAt: {
+                    [Op.and]:
+                        [
+                            { [Op.lte]: new Date(req.body.v_date) },
+                            { [Op.gte]: new Date(req.body.k_date) }
+                        ]
+                },
+                //status: 'active'
+            }
+        })
+
+        const formatted = activeChallengesList.map(challenge => ({
+            ...challenge.toJSON(),
+            isUnlocked: challenge.userChallenges && challenge.userChallenges.length > 0
+                && challenge.userChallenges[0].status === 'unlocked'
+        }));
+
+        res.json(formatted);
+    } catch (err) {
+        console.error("Hiba az aktív kihívások lekérésekor:", err)
+        res.status(500).json({ message: "Szerverhiba az aktív kihívások lekérésekor." })
+    }
+})
+
+
 //Kihívás létrehozása admin/intézményi felhasználónak
 router.post('/create', authenticateToken, (req, res) => {
     upload.single('image')(req, res, async (err) => {
@@ -109,6 +149,7 @@ router.post('/create', authenticateToken, (req, res) => {
     });
 });
 
+
 // Összes aktív challenges lekérése
 router.get('/active', authenticateToken, async (req, res) => {
     try {
@@ -141,6 +182,7 @@ router.get('/active', authenticateToken, async (req, res) => {
     }
 })
 
+
 // Összes inaktív challenges lekérése
 router.get('/inactive', authenticateToken, async (req, res) => {
     try {
@@ -159,6 +201,7 @@ router.get('/inactive', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba az inaktív kihívások lekérésekor." })
     }
 })
+
 
 // Összes archivált challenges lekérése
 router.get('/archived', authenticateToken, async (req, res) => {
@@ -194,6 +237,7 @@ router.get('/all', authenticateToken, async (req, res) => {
     }
 })
 
+
 //Adott intézményhez rendelt kihívások lekérése
 router.get('/assigned-challenges', authenticateToken, async (req, res) => {
     try {
@@ -212,6 +256,7 @@ router.get('/assigned-challenges', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba az intézményhez kapcsolt kihívások lekérdeésekor" })
     }
 })
+
 
 //Felhasználó teljesített kihívásainak lekérése
 router.get('/completed', authenticateToken, async (req, res) => {
@@ -234,6 +279,7 @@ router.get('/completed', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a felhasználó teljesített kihívásainak lekérésekor." })
     }
 })
+
 
 //Jóváhagyásra váró kihívások lekérése (admin/intézményi felhasználó)
 router.get('/pending', authenticateToken, async (req, res) => {
@@ -262,6 +308,7 @@ router.get('/pending', authenticateToken, async (req, res) => {
         res.status(500).json({ message: "Szerverhiba a jóváhagyásra váró kihívások lekérésekor." })
     }
 })
+
 
 //Intézményhez tarotzó összes beküldött kihívás listázása(bármilyen státuszban)
 router.get('/institution-submissions', authenticateToken, async (req, res) => {
@@ -373,6 +420,7 @@ router.post('/:id/unlock', authenticateToken, async (req, res) => {
     }
 })
 
+
 // Kihívás teljesítésének beküldése felhasználó által
 router.post('/:id/submit', authenticateToken, upload.array('images', 3), async (req, res) => {
     try {
@@ -419,6 +467,7 @@ router.post('/:id/submit', authenticateToken, upload.array('images', 3), async (
         res.status(500).json({ message: "Szerverhiba a kihívás teljesítésének küldésekor." });
     }
 });
+
 
 // Kihívás jóváhagyása, elutasítása
 router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
@@ -477,6 +526,8 @@ router.put('/:userChallengeId/approve', authenticateToken, async (req, res) => {
     }
 })
 
+
+// Kihívás törlése
 router.delete('/delete', authenticateToken, async (req, res) => {
     try {
         //Jogosultság ellenörzés
@@ -536,6 +587,8 @@ router.delete('/delete', authenticateToken, async (req, res) => {
     }
 })
 
+
+// Kihívás ladatainak lekérése ID alapján
 router.get('/:id', authenticateToken, async (req, res) => {
     try {
         const challengeId = req.params.id
