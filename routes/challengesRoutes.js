@@ -39,8 +39,11 @@ const upload = multer({
     }
 });
 
+const test_y = process.env.TEST_Y;
+const { Op } = require('sequelize');
 
-// Összes challenges lekérése Dátumtól Dátumig
+
+// FP: Összes challenge lekérése Dátumtól Dátumig
 router.post('/activeDate', authenticateToken, async (req, res) => {
     console.log(req.body)
     try {
