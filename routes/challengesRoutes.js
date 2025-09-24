@@ -621,5 +621,36 @@ router.get('/:id', authenticateToken, async (req, res) => {
 })
 
 
+// FP: Felhasználói Kihívás adatainak lekérése ID alapján
+router.get('/userChallenges/:id', authenticateToken, async (req, res) => {
+    try {
+        if (!req.user.role || (req.user.role !== 'admin' && req.user.role !== 'institution')) {
+            return res.status(403).json({ message: "Nincs jogosultságod a kihívás törléséhez." })
+        }
+
+        const challengeId = req.params.id
+        console.log(challengeId)
+        const challenge = await userChallenges.findAll({
+            where: { challengeId: challengeId },
+            include: [
+                {
+                    model: users,
+                    attributes: ['username']
+                }
+            ]
+        })
+        if (!challenge) {
+            return res.status(404).json({ message: "Kihívás nem található" })
+        }
+        console.log("\n\n", challenge.length)
+        res.status(200).json(challenge).end()
+
+    } catch (err) {
+        console.error("Hiba az adott kihívás lekérdezésekor", err)
+        res.status(500).json({ message: "Szerverhiba az adott kihívás lekérdezésekor" })
+    }
+})
+
+
 module.exports = router
 
