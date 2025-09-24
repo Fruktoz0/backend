@@ -1,4 +1,4 @@
-<p align="center">
+<p >
   <img src="tisztavaros_logo.png" alt="Tiszta Város logó" width="220"/>
 </p>
 
