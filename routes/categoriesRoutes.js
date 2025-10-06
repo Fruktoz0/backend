@@ -118,7 +118,7 @@ router.post('/modify', authenticateToken, async (req, res) => {
         }
         //Ha van, akkor módosítom
         existingCategory.defaultInstitutionId = defaultInstitutionId;
-        await instRecord.save();
+        await existingCategory.save();
         res.status(201).json(existingCategory)
 
     } catch (error) {
